@@ -72,6 +72,7 @@ class SecurityConfig {
             arrayOf(
                 "/v1/reissue",
                 "/login/kakao",
+                "/v1/auth/social-login/kakao",
                 "/error",
             )
     }

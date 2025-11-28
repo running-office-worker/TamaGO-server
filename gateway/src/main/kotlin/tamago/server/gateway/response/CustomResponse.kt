@@ -34,13 +34,14 @@ data class CustomResponse<T>(
 
     companion object {
 
-        fun <T> ok(): CustomResponse<T?> = ok(null)
+        fun <T> ok(): CustomResponse<T> = ok(null)
 
-        fun <T> ok(data: T?): CustomResponse<T?> = ok(data, GlobalExceptionCode.SUCCESS)
+        fun <T> ok(data: T?): CustomResponse<T> = ok(data, GlobalExceptionCode.SUCCESS)
 
         fun <T> ok(
-            data: T?, globalExceptionCode: GlobalExceptionCode
-        ): CustomResponse<T?> = CustomResponse(
+            data: T?,
+            globalExceptionCode: GlobalExceptionCode
+        ): CustomResponse<T> = CustomResponse(
             status = globalExceptionCode.status,
             message = globalExceptionCode.message,
             code = globalExceptionCode.code,
@@ -61,11 +62,11 @@ data class CustomResponse<T>(
             data = null
         )
 
-        fun error(exceptionCode: ExceptionCode): CustomResponse<Void?> = error(exceptionCode, exceptionCode.getMessage())
+        fun error(exceptionCode: ExceptionCode): CustomResponse<Void> = error(exceptionCode, exceptionCode.getMessage())
 
         fun error(
             exceptionCode: ExceptionCode, message: String
-        ): CustomResponse<Void?> = CustomResponse(
+        ): CustomResponse<Void> = CustomResponse(
             status = exceptionCode.getStatus(), message = message, code = exceptionCode.getCode(), data = null
         )
     }

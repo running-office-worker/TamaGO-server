@@ -33,7 +33,7 @@ class SwaggerConfig(
     private fun swaggerInfo(): Info =
         Info()
             .version("v0.0.1")
-            .title("TamaGo")
+            .title("TamaGO")
             .description("TamaGo API 문서입니다.")
 
     private fun securityRequirement(): SecurityRequirement = SecurityRequirement().addList(JWT)
