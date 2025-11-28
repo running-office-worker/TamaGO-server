@@ -2,5 +2,5 @@ spring:
   profiles:
     active: local # default
     group:
-      local: local-db, swagger
+      local: local-db, local-security, swagger
       dev: dev-db, dev-security, swagger
