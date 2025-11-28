@@ -1,0 +1,20 @@
+# ---------- build stage ----------
+FROM gradle:8-jdk AS build
+WORKDIR /workspace
+
+COPY . .
+RUN ./gradlew :gateway:bootJar -x test --no-daemon
+
+# ---------- runtime stage ----------
+FROM eclipse-temurin:21-jre-jammy AS runtime
+
+RUN addgroup --system app && adduser --system --ingroup app app
+USER app
+WORKDIR /app
+
+COPY --from=build /workspace/gateway/build/libs/*.jar app.jar
+
+EXPOSE 8080
+ENV JAVA_OPTS="-XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom"
+
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
