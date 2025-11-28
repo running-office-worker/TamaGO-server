@@ -1,7 +1,7 @@
 services:
   application:
-    image: ${DOCKER_USERNAME}/TamaGO-server:latest
-    container_name: TamaGO-server
+    image: ${DOCKER_USERNAME}/tamago-server:latest
+    container_name: tamago-server
     ports:
       - "8001:8080"
     env_file:
@@ -9,13 +9,13 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
-        - TamaGO
+        - tamago
     depends_on:
       - database
 
   database:
     image: mysql:8
-    container_name: TamaGO-db
+    container_name: tamago-db
     ports:
       - "3301:3306"
     environment:
@@ -26,8 +26,8 @@ services:
     volumes:
       - ./tamago/db:/var/lib/mysql
     networks:
-      - TamaGO
+      - tamago
 
 networks:
-  TamaGO:
+  tamago:
     driver: bridge
