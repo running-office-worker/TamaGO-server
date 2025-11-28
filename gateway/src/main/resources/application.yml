@@ -3,4 +3,4 @@ spring:
     active: local # default
     group:
       local: local-db, swagger
-      dev: dev-db, swagger
+      dev: dev-db, dev-security, swagger

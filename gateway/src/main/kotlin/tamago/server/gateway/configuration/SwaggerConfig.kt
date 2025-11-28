@@ -19,6 +19,7 @@ class SwaggerConfig(
         private val PROFILE_SERVER_URL_MAP =
             mapOf(
                 "local" to "http://localhost:8080",
+                "dev" to "https://tamago.ummdev.com",
             )
     }
 
