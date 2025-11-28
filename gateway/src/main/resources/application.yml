@@ -1,0 +1,5 @@
+spring:
+  profiles:
+    active: local # default
+    group:
+      local: local-db, local-security, swagger

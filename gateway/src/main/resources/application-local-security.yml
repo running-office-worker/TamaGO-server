@@ -1,0 +1,8 @@
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiry: 24h
+  refresh-token-expiry: 30d
+
+cors:
+  allowed-origins:
+    - http://localhost:5173
