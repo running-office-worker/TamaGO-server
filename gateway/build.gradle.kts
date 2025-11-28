@@ -28,14 +28,14 @@ dependencies {
 }
 
 springBoot {
-    mainClass.set("tamago.server.gateway.TamaGoApplication")
+    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
 }
 
 tasks.named<BootJar>("bootJar") {
     archiveFileName.set("TamaGo-server.jar")
-    mainClass.set("tamago.server.gateway.TamaGoApplication")
+    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
 }
 
 tasks.named<BootRun>("bootRun") {
-    mainClass.set("tamago.server.gateway.TamaGoApplication")
+    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
 }
