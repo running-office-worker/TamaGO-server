@@ -1,0 +1,47 @@
+name: Deploy to Development Server
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    environment: development
+
+    steps:
+      - name: "레포지토리에서 체크아웃한다."
+        uses: actions/checkout@v4
+
+      - name: "도커 허브에 로그인한다."
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: "도커 이미지를 빌드한다."
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/TamaGO-server:latest .
+
+      - name: "도커 허브에 빌드된 이미지를 푸시한다."
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/TamaGO-server:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-22.04
+    environment: development
+
+    steps:
+      - name: "애플리케이션 서버를 구동한다."
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker compose -f ${{ secrets.DOCKER_COMPOSE_YAML_PATH }}/docker-compose.yml pull
+            echo "${{ secrets.SERVER_PASSWORD }}" | sudo -S docker compose -f ${{ secrets.DOCKER_COMPOSE_YAML_PATH }}/docker-compose.yml up -d
