@@ -1,3 +1,8 @@
 cors:
   allowed-origins:
     - http://localhost:8080
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiry-ms: 3600000
+  refresh-token-expiry-ms: 604800000

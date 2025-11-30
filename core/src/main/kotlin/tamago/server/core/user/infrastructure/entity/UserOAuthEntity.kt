@@ -26,8 +26,8 @@ data class UserOAuthEntity (
     @Column(nullable = false)
     val externalId: String,
 
-    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     val user: UserEntity,
 ) {
 }

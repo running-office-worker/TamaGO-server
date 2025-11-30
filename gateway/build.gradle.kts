@@ -25,6 +25,8 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
 
     implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
 springBoot {
