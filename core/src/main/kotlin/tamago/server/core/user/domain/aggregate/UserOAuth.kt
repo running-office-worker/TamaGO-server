@@ -9,7 +9,15 @@ class UserOAuth(
     val email: String,
     val provider: OAuthProvider,
     val externalId: String,
-    val userId: UserId,
+    val userId: UserId? = null,
+) {
 
-    ) {
+    companion object {
+        fun create(email: String, provider: OAuthProvider, externalId: String) =
+            UserOAuth(
+                email = email,
+                provider = provider,
+                externalId = externalId,
+            )
+    }
 }

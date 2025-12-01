@@ -6,3 +6,6 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiry-ms: 3600000
   refresh-token-expiry-ms: 604800000
+
+apple:
+  bundle-id: ${APPLE_BUNDLE_ID}

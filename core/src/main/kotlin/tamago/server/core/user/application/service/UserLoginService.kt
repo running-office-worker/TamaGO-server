@@ -5,7 +5,6 @@ import tamago.server.core.common.jwt.JwtTokenProvider
 import tamago.server.core.user.UserLoginUseCase
 import tamago.server.core.user.application.exception.UserSaveErrorException
 import tamago.server.core.user.domain.aggregate.User
-import tamago.server.core.user.domain.enum.OAuthProvider
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
 import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
 import tamago.server.core.user.domain.port.outbound.UserPersistencePort
@@ -18,7 +17,7 @@ class UserLoginService(
 ) : UserLoginUseCase {
 
     override fun login(command: LoginCommandDto): TokenQueryDto {
-        val (userId, isNewUser) = userPersistencePort.findByExternalId(OAuthProvider.KAKAO, command.externalId)?.id
+        val (userId, isNewUser) = userPersistencePort.findByExternalId(command.provider, command.externalId)?.id
             ?.let { existingUser -> existingUser to false }
             ?: run { signUp(command) to true }
 
@@ -30,6 +29,6 @@ class UserLoginService(
     }
 
     private fun signUp(command: LoginCommandDto): UserId =
-        userPersistencePort.save(User.create(command.name)).id
+        userPersistencePort.save(User.create(command.email, command.provider, command.externalId)).id
             ?: throw UserSaveErrorException()
 }

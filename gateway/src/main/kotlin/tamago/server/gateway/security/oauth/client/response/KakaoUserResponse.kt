@@ -14,17 +14,10 @@ data class KaKaoUserResponse(
         KakaoClientResult(
             externalId = id,
             email = kakaoAccount.email ?: "",
-            name = kakaoAccount.profile?.nickname ?: ""
         )
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoAccount(
     val email: String?,
-    val profile: KakaoProfile?
-)
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class KakaoProfile(
-    val nickname: String?
 )

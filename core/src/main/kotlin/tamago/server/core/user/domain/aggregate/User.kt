@@ -1,11 +1,11 @@
 package tamago.server.core.user.domain.aggregate
 
+import tamago.server.core.user.domain.enum.OAuthProvider
 import tamago.server.core.user.domain.vo.UserId
 import java.time.LocalDateTime
 
 class User(
     val id: UserId? = null,
-    val name: String,
     oauths: List<UserOAuth> = emptyList(),
     lastLoginAt: LocalDateTime? = null,
     createdAt: LocalDateTime? = null,
@@ -17,9 +17,17 @@ class User(
 
     companion object {
         fun create(
-            name: String,
+            email: String,
+            provider: OAuthProvider,
+            externalId: String
         ) = User(
-            name = name
+            oauths = listOf(
+                UserOAuth.create(
+                    email = email,
+                    provider = provider,
+                    externalId = externalId
+                )
+            ),
         )
     }
 }

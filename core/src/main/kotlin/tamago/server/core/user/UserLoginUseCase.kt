@@ -5,5 +5,4 @@ import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
 
 interface UserLoginUseCase {
     fun login(command: LoginCommandDto): TokenQueryDto
-
 }
