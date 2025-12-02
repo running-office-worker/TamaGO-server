@@ -14,6 +14,8 @@ dependencies {
 
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
+    implementation ("io.jsonwebtoken:jjwt:0.12.6")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

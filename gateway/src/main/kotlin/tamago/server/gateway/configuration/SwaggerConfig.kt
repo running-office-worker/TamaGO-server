@@ -1,11 +1,14 @@
 package tamago.server.gateway.configuration
 
+import io.swagger.v3.core.converter.ModelConverter
+import io.swagger.v3.core.converter.ModelConverters
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.servers.Server
+import org.springdoc.core.customizers.OpenApiCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
@@ -30,6 +33,23 @@ class SwaggerConfig(
             .addSecurityItem(securityRequirement())
             .servers(initializeServers())
             .components(components())
+
+    @Bean
+    fun remove4xxContentCustomizer(): OpenApiCustomizer =
+        OpenApiCustomizer { openApi ->
+            openApi
+                .paths
+                ?.values
+                ?.forEach { pathItem ->
+                    pathItem.readOperations()?.forEach { operation ->
+                        operation.responses?.forEach { (statusCode, response) ->
+                            if (statusCode.startsWith("4")) {
+                                response.content = null
+                            }
+                        }
+                    }
+                }
+        }
 
     private fun swaggerInfo(): Info =
         Info()

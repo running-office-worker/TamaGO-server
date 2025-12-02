@@ -12,14 +12,12 @@ data class KaKaoUserResponse(
 ) {
     fun toResult(): KakaoClientResult =
         KakaoClientResult(
-            id = id,
+            externalId = id,
             email = kakaoAccount.email ?: "",
-            name = kakaoAccount.name ?: ""
         )
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoAccount(
     val email: String?,
-    val name: String?,
 )

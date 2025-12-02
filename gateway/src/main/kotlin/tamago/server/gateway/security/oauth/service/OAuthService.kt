@@ -13,7 +13,7 @@ class OAuthService(
     private val kakaoClient: KakaoClient,
     private val appleClient: AppleClient,
 ) {
-    fun getKaKaoUserInfo(token: String): KakaoClientResult =
+    fun getKakaoUserInfo(token: String): KakaoClientResult =
         try {
             kakaoClient.getUserInfo(token)
         } catch (e: FeignException) {

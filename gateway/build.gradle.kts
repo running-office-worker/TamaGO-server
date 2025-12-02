@@ -25,17 +25,19 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
 
     implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
 springBoot {
-    mainClass.set("tamago.server.gateway.TamaGoApplication")
+    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
 }
 
 tasks.named<BootJar>("bootJar") {
     archiveFileName.set("TamaGo-server.jar")
-    mainClass.set("tamago.server.gateway.TamaGoApplication")
+    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
 }
 
 tasks.named<BootRun>("bootRun") {
-    mainClass.set("tamago.server.gateway.TamaGoApplication")
+    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
 }
