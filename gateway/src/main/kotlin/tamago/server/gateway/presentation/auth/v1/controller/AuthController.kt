@@ -34,7 +34,7 @@ class AuthController(
     }
 
     @PostMapping("/api/v1/auth/social-login/apple")
-    override fun socialAppleLogin(request: AppleLoginRequest): CustomResponse<SocialLoginResponse> {
+    override fun socialAppleLogin(@RequestBody request: AppleLoginRequest): CustomResponse<SocialLoginResponse> {
         val appleUser = oauthService.getAppleUserInfo(request.token)
         val dto = userLoginUseCase.login(appleUser.toCommand(OAuthProvider.APPLE))
 
