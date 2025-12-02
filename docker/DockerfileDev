@@ -2,7 +2,7 @@
 FROM gradle:8-jdk AS build
 WORKDIR /workspace
 
-COPY . .
+COPY development .
 RUN ./gradlew :gateway:bootJar -x test --no-daemon
 
 # ---------- runtime stage ----------
@@ -15,6 +15,6 @@ WORKDIR /app
 COPY --from=build /workspace/gateway/build/libs/*.jar app.jar
 
 EXPOSE 8080
-ENV JAVA_OPTS="-XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom"
+ENV JAVA_OPTS="-Xmx512m -Xms256m -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom"
 
 ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
