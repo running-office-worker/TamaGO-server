@@ -8,7 +8,6 @@ object UserMapper {
     fun toEntity(user: User): UserEntity {
         return UserEntity(
             id = user.id?.value,
-            name = user.name,
             lastLoginAt = user.lastLoginAt,
         )
     }
@@ -18,7 +17,6 @@ object UserMapper {
 
         return User(
             id = UserId(entity.id ?: 0L),
-            name = entity.name,
             oauths = UserOAuthMapper.toDomain(entity.oauths),
             lastLoginAt = entity.lastLoginAt,
             createdAt = entity.createdAt,

@@ -20,9 +20,6 @@ data class UserEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column(nullable = false)
-    val name: String,
-
     @OneToMany(
         mappedBy = "user",
         fetch = FetchType.LAZY,

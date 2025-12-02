@@ -13,19 +13,19 @@ import tamago.server.core.common.exception.GlobalExceptionCode
 @JsonPropertyOrder(value = ["requestId", "status", "message", "code", "data"])
 data class CustomResponse<T>(
 
-    @Schema(
+    @field:Schema(
         description = "요청 식별자", example = "550e8400-e29b-41d4-a716-446655440000", requiredMode = REQUIRED
     ) val requestId: String? = MDC.get("requestId"),
 
-    @Schema(
+    @field:Schema(
         description = "HTTP 상태 코드", example = "OK", requiredMode = REQUIRED
     ) val status: HttpStatus,
 
-    @Schema(
+    @field:Schema(
         description = "응답 메시지", example = "요청에 성공했습니다.", requiredMode = REQUIRED
     ) val message: String,
 
-    @Schema(
+    @field:Schema(
         description = "응답 코드", example = "GLOBAL_2000", requiredMode = REQUIRED
     ) val code: String,
 
