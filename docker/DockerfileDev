@@ -2,7 +2,7 @@
 FROM gradle:8-jdk AS build
 WORKDIR /workspace
 
-COPY development .
+COPY . .
 RUN ./gradlew :gateway:bootJar -x test --no-daemon
 
 # ---------- runtime stage ----------
