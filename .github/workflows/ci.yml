@@ -33,4 +33,4 @@ jobs:
       - name: "Kotlin 빌드 및 테스트 실행"
         uses: gradle/gradle-build-action@v3
         with:
-          arguments: build --configuration-cache --build-cache --no-daemon
+          arguments: build --configuration-cache --build-cache --no-daemon --warning-mode=all
