@@ -1,6 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.springframework.boot.gradle.tasks.run.BootRun
-
 plugins {
     kotlin("jvm")
     kotlin("plugin.spring")
@@ -27,17 +24,4 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-}
-
-springBoot {
-    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
-}
-
-tasks.named<BootJar>("bootJar") {
-    archiveFileName.set("TamaGo-server.jar")
-    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
-}
-
-tasks.named<BootRun>("bootRun") {
-    mainClass.set("tamago.server.gateway.TamaGoApplicationKt")
 }
