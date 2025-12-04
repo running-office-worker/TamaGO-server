@@ -8,26 +8,36 @@ class User(
     val id: UserId? = null,
     oauths: List<UserOAuth> = emptyList(),
     lastLoginAt: LocalDateTime? = null,
-    createdAt: LocalDateTime? = null,
-    updatedAt: LocalDateTime? = null,
-    withdrawAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null,
+    val withdrawAt: LocalDateTime? = null,
 ) {
+    val oauths: List<UserOAuth> = oauths
+        .sortedBy { it.provider }
+        .toList()
+
     var lastLoginAt: LocalDateTime? = lastLoginAt
         private set
+
+    fun updateLastLogin() {
+        this.lastLoginAt = LocalDateTime.now()
+    }
 
     companion object {
         fun create(
             email: String,
             provider: OAuthProvider,
             externalId: String
-        ) = User(
-            oauths = listOf(
-                UserOAuth.create(
-                    email = email,
-                    provider = provider,
-                    externalId = externalId
-                )
-            ),
-        )
+        ): User {
+            return User(
+                oauths = listOf(
+                    UserOAuth.create(
+                        email = email,
+                        provider = provider,
+                        externalId = externalId
+                    )
+                ),
+            )
+        }
     }
 }
