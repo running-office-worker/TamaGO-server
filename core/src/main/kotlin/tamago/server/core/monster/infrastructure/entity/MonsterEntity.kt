@@ -1,4 +1,4 @@
-package tamago.server.core.user.infrastructure.entity
+package tamago.server.core.monster.infrastructure.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -9,24 +9,17 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import tamago.server.core.common.entity.BaseTimeEntity
 
 @Entity
-@Table(name = "t_user_oauth")
-class UserOAuthEntity(
+@Table(name = "t_monsters")
+class MonsterEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "monster_id")
     val id: Long? = null,
 
-    @Column(nullable = true)
-    val email: String? = null,
-
-    @Column(nullable = true)
-    val provider: String? = null,
-
-    @Column(nullable = true)
-    val externalId: String? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    val user: UserEntity,
-)
+    @JoinColumn(name = "next_monster_id")
+    val nextMonster: MonsterEntity? = null,
+) : BaseTimeEntity()
