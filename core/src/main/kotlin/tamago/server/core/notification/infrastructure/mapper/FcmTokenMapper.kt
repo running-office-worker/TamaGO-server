@@ -1,8 +1,8 @@
-package tamago.server.core.fcmtoken.infrastructure.mapper
+package tamago.server.core.notification.infrastructure.mapper
 
-import tamago.server.core.fcmtoken.domain.aggregate.FcmToken
-import tamago.server.core.fcmtoken.domain.vo.FcmTokenId
-import tamago.server.core.fcmtoken.infrastructure.entity.FcmTokenEntity
+import tamago.server.core.notification.domain.aggregate.FcmToken
+import tamago.server.core.notification.domain.vo.FcmTokenId
+import tamago.server.core.notification.infrastructure.entity.FcmTokenEntity
 import tamago.server.core.user.domain.vo.UserId
 
 object FcmTokenMapper {

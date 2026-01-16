@@ -1,7 +1,7 @@
-package tamago.server.core.fcmtoken.domain.aggregate
+package tamago.server.core.notification.domain.aggregate
 
-import tamago.server.core.fcmtoken.domain.enum.DeviceType
-import tamago.server.core.fcmtoken.domain.vo.FcmTokenId
+import tamago.server.core.notification.domain.enum.DeviceType
+import tamago.server.core.notification.domain.vo.FcmTokenId
 import tamago.server.core.user.domain.vo.UserId
 import java.time.LocalDateTime
 

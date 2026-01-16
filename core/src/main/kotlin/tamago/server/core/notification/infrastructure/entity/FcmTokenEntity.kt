@@ -1,4 +1,4 @@
-package tamago.server.core.fcmtoken.infrastructure.entity
+package tamago.server.core.notification.infrastructure.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
@@ -12,7 +12,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
-import tamago.server.core.fcmtoken.domain.enum.DeviceType
+import tamago.server.core.notification.domain.enum.DeviceType
 import java.time.LocalDateTime
 
 @Entity

@@ -1,4 +1,4 @@
-package tamago.server.core.fcmtoken.domain.enum
+package tamago.server.core.notification.domain.enum
 
 enum class DeviceType {
     IOS,

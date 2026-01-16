@@ -1,4 +1,4 @@
-package tamago.server.core.fcmtoken.domain.vo
+package tamago.server.core.notification.domain.vo
 
 @JvmInline
 value class FcmTokenId(
