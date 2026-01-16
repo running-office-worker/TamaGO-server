@@ -14,7 +14,7 @@ dependencies {
 
     implementation ("org.springframework.modulith:spring-modulith-starter-core")
 
-    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 
     implementation(platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")

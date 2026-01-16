@@ -11,9 +11,9 @@ object UserOAuthMapper {
         return oauths.map {
             UserOAuth(
                 id = UserOAuthId(it.id ?: 0L),
-                email = it.email,
-                provider = OAuthProvider.valueOf(it.provider),
-                externalId = it.externalId,
+                email = checkNotNull(it.email),
+                provider = OAuthProvider.valueOf(checkNotNull(it.provider)),
+                externalId = checkNotNull(it.externalId),
                 userId = UserId(it.user.id ?: 0L),
             )
         }
