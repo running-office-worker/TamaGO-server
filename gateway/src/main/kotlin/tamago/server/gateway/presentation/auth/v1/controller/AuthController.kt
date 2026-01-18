@@ -3,7 +3,7 @@ package tamago.server.gateway.presentation.auth.v1.controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import tamago.server.core.user.UserLoginUseCase
+import tamago.server.core.user.UserFacade
 import tamago.server.core.user.domain.enum.OAuthProvider
 import tamago.server.gateway.presentation.auth.v1.api.AuthApi
 import tamago.server.gateway.presentation.auth.v1.request.AppleLoginRequest
@@ -16,13 +16,13 @@ import tamago.server.gateway.security.oauth.service.OAuthService
 @RestController
 class AuthController(
     private val oauthService: OAuthService,
-    private val userLoginUseCase: UserLoginUseCase
+    private val userFacade: UserFacade,
 ) : AuthApi {
 
     @PostMapping("/api/v1/auth/social-login/kakao")
     override fun socialKakaoLogin(@RequestBody request: KakaoLoginRequest): CustomResponse<SocialLoginResponse> {
         val kakaoUser = oauthService.getKakaoUserInfo(request.token)
-        val dto = userLoginUseCase.login(kakaoUser.toCommand(OAuthProvider.KAKAO))
+        val dto = userFacade.socialLogin(kakaoUser.toCommand(OAuthProvider.KAKAO))
 
         return CustomResponse.ok(
             SocialLoginResponse(
@@ -36,7 +36,7 @@ class AuthController(
     @PostMapping("/api/v1/auth/social-login/apple")
     override fun socialAppleLogin(@RequestBody request: AppleLoginRequest): CustomResponse<SocialLoginResponse> {
         val appleUser = oauthService.getAppleUserInfo(request.token)
-        val dto = userLoginUseCase.login(appleUser.toCommand(OAuthProvider.APPLE))
+        val dto = userFacade.socialLogin(appleUser.toCommand(OAuthProvider.APPLE))
 
         return CustomResponse.ok(
             SocialLoginResponse(

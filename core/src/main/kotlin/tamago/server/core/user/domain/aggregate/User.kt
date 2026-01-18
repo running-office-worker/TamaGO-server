@@ -35,14 +35,14 @@ class User(
         fun create(
             email: String,
             provider: OAuthProvider,
-            externalId: String
+            credentials: String
         ): User {
             return User(
                 oauths = listOf(
                     UserOAuth.create(
                         email = email,
                         provider = provider,
-                        externalId = externalId
+                        credentials = credentials
                     )
                 ),
             )

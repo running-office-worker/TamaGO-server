@@ -1,34 +1,48 @@
 package tamago.server.core.user.application.service
 
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import tamago.server.core.common.jwt.JwtTokenProvider
-import tamago.server.core.user.UserLoginUseCase
+import tamago.server.core.user.UserCommandUseCase
 import tamago.server.core.user.application.exception.UserSaveErrorException
 import tamago.server.core.user.domain.aggregate.User
+import tamago.server.core.user.domain.enum.OAuthProvider
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
+import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
 import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
 import tamago.server.core.user.domain.port.outbound.UserPersistencePort
-import tamago.server.core.user.domain.vo.UserId
 
 @Service
-class UserLoginService(
+class UserCommandService(
     private val userPersistencePort: UserPersistencePort,
-    private val jwtTokenProvider: JwtTokenProvider
-) : UserLoginUseCase {
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val passwordEncoder: PasswordEncoder
+) : UserCommandUseCase {
 
-    override fun login(command: LoginCommandDto): TokenQueryDto {
+    override fun createUser(command: SignUpCommandDto) {
+        val encodedPassword = passwordEncoder.encode(command.password)
+        val user = User.create(
+            command.email,
+            OAuthProvider.EMAIL,
+            encodedPassword
+        )
+
+        userPersistencePort.save(user)
+    }
+
+    override fun socialLogin(command: LoginCommandDto): TokenQueryDto {
         val (userId, isNewUser) = userPersistencePort.findByExternalId(command.provider, command.externalId)?.id
             ?.let { existingUser -> existingUser to false }
-            ?: run { signUp(command) to true }
+            ?: run { createSocialUser(command) to true }
 
         return TokenQueryDto(
             accessToken = jwtTokenProvider.generateAccessToken(userId),
             refreshToken = jwtTokenProvider.generateRefreshToken(userId),
-            isNewUser = isNewUser
+            isNewUser = isNewUser,
         )
     }
 
-    private fun signUp(command: LoginCommandDto): UserId =
+    private fun createSocialUser(command: LoginCommandDto) =
         userPersistencePort.save(User.create(command.email, command.provider, command.externalId)).id
             ?: throw UserSaveErrorException()
 }

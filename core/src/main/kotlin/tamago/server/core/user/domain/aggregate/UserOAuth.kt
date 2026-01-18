@@ -8,16 +8,29 @@ class UserOAuth(
     val id: UserOAuthId? = null,
     val email: String,
     val provider: OAuthProvider,
-    val externalId: String,
+    password: String? = null,
+    externalId: String? = null,
     val userId: UserId? = null,
 ) {
+    var password: String? = password
+        private set
+
+    var externalId: String? = externalId
+        private set
 
     companion object {
-        fun create(email: String, provider: OAuthProvider, externalId: String) =
-            UserOAuth(
-                email = email,
-                provider = provider,
-                externalId = externalId,
-            )
+        fun create(email: String, provider: OAuthProvider, credentials: String) =
+            when (provider) {
+                OAuthProvider.EMAIL -> UserOAuth(
+                    email = email,
+                    provider = provider,
+                    password = credentials
+                )
+                else -> UserOAuth(
+                    email = email,
+                    provider = provider,
+                    externalId = credentials
+                )
+            }
     }
 }

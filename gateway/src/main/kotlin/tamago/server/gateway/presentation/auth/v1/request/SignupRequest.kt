@@ -14,7 +14,4 @@ data class SignupRequest(
     @field:Schema(description = "비밀번호", example = "password123!", requiredMode = Schema.RequiredMode.REQUIRED)
     @field:NotBlank(message = "비밀번호는 필수입니다.")
     val password: String,
-
-    @field:Schema(description = "닉네임", example = "타마고", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    val nickname: String? = null,
 )

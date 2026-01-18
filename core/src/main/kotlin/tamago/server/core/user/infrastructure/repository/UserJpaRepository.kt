@@ -5,4 +5,6 @@ import tamago.server.core.user.infrastructure.entity.UserEntity
 
 interface UserJpaRepository : JpaRepository<UserEntity, Long> {
     fun findByOauthsProviderAndOauthsExternalId(provider: String, externalId: String): UserEntity?
+    fun findByOauthsEmail(email: String): UserEntity?
+    fun existsByOauthsEmail(email: String): Boolean
 }
