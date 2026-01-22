@@ -9,11 +9,15 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import tamago.server.gateway.filter.JwtAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+) {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
@@ -23,7 +27,13 @@ class SecurityConfig {
         configurationSessionManagement(httpSecurity)
         configurationCors(httpSecurity)
         configureAuthorizeHttpRequests(httpSecurity)
+        configureJwtFilter(httpSecurity)
         return httpSecurity.build()
+    }
+
+    private fun configureJwtFilter(httpSecurity: HttpSecurity) {
+        httpSecurity
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 
     private fun disabledConfigurations(httpSecurity: HttpSecurity) {

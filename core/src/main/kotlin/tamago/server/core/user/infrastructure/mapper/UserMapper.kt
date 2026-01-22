@@ -9,6 +9,7 @@ object UserMapper {
         val userEntity = UserEntity(
             id = user.id?.value,
             nickname = user.nickname,
+            role = user.role,
             lastLoginAt = user.lastLoginAt,
         )
 
@@ -27,6 +28,7 @@ object UserMapper {
         return User(
             id = UserId(entity.id ?: 0L),
             nickname = entity.nickname,
+            role = entity.role,
             oauths = UserOAuthMapper.toDomain(entity.oauths),
             lastLoginAt = entity.lastLoginAt,
             createdAt = entity.createdAt,

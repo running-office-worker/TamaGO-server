@@ -9,6 +9,7 @@ import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
 import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
 import tamago.server.core.user.domain.port.inbound.command.TestLoginCommandDto
 import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
+import tamago.server.core.user.domain.vo.UserId
 
 @Component
 class UserFacade(
@@ -26,20 +27,28 @@ class UserFacade(
         userCommandUseCase.socialLogin(command)
 
     fun emailLogin(command: TestLoginCommandDto): TokenQueryDto {
-        val user = userQueryUseCase.getEmailOAuth(command.email)
+        val oauth = userQueryUseCase.getEmailOAuth(command.email)
 
-        require(passwordEncoder.matches(command.password, user.password)) {
+        require(passwordEncoder.matches(command.password, oauth.password)) {
             throw InvalidCredentialsException()
         }
 
-        val userId = user.userId ?: throw InvalidCredentialsException()
+        val userId = oauth.userId ?: throw InvalidCredentialsException()
+        val user = userQueryUseCase.get(userId)
 
-        return TokenQueryDto(
+        val response = TokenQueryDto(
             userId = userId.value,
-            accessToken = jwtTokenProvider.generateAccessToken(userId),
-            refreshToken = jwtTokenProvider.generateRefreshToken(userId),
+            accessToken = jwtTokenProvider.generateAccessToken(userId, user.role),
+            refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role),
             isNewUser = false,
         )
+        userCommandUseCase.recordLogin(user)
+
+        return response
     }
+
+    fun giveNickname(userId: UserId, nickname: String) =
+        userQueryUseCase.get(userId)
+            .let { userCommandUseCase.updateNickname(it, nickname) }
 
 }

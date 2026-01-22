@@ -6,8 +6,10 @@ import io.jsonwebtoken.security.Keys
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
+import tamago.server.core.user.domain.enum.UserRole
 import tamago.server.core.user.domain.vo.UserId
 import java.nio.charset.StandardCharsets
 import java.util.Date
@@ -17,13 +19,13 @@ import javax.crypto.SecretKey
 class JwtTokenProvider(
     private val jwtProperties: JwtProperties
 ) {
-    fun generateAccessToken(userId: UserId): String =
-        makeToken(userId, jwtProperties.accessTokenExpiryMs, TokenType.ACCESS_TOKEN)
+    fun generateAccessToken(userId: UserId, role: UserRole): String =
+        makeToken(userId, role, jwtProperties.accessTokenExpiryMs, TokenType.ACCESS_TOKEN)
 
-    fun generateRefreshToken(userId: UserId): String =
-        makeToken(userId, jwtProperties.refreshTokenExpiryMs, TokenType.REFRESH_TOKEN)
+    fun generateRefreshToken(userId: UserId, role: UserRole): String =
+        makeToken(userId, role, jwtProperties.refreshTokenExpiryMs, TokenType.REFRESH_TOKEN)
 
-    private fun makeToken(userId: UserId, expiryMillis: Long, tokenType: TokenType): String {
+    private fun makeToken(userId: UserId, role: UserRole, expiryMillis: Long, tokenType: TokenType): String {
         val now = Date()
         val expiry = Date(now.time + expiryMillis)
 
@@ -35,6 +37,7 @@ class JwtTokenProvider(
             .expiration(expiry)
             .subject(userId.value.toString())
             .claim("userId", userId.value.toString())
+            .claim("role", role.name)
             .claim("tokenType", tokenType.name)
             .signWith(getSigningKey())
             .compact()
@@ -51,12 +54,14 @@ class JwtTokenProvider(
     fun getAuthentication(token: String): Authentication {
         val claims = getClaims(token)
         val userId = claims["userId", String::class.java]
+        val role = claims["role", String::class.java]
 
         if (TokenType.valueOf(claims["tokenType", String::class.java]) != TokenType.ACCESS_TOKEN) {
             throw AuthorizationDeniedException("Invalid token type for authentication")
         }
 
-        val principal = User(userId, "", emptyList())
+        val authorities = listOf(SimpleGrantedAuthority("ROLE_$role"))
+        val principal = User(userId, "", authorities)
 
         return UsernamePasswordAuthenticationToken(
             principal,

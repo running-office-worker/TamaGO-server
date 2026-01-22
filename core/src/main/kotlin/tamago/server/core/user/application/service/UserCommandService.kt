@@ -2,12 +2,11 @@ package tamago.server.core.user.application.service
 
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.jwt.JwtTokenProvider
 import tamago.server.core.user.UserCommandUseCase
-import tamago.server.core.user.application.exception.InvalidCredentialsException
 import tamago.server.core.user.application.exception.UserSaveErrorException
 import tamago.server.core.user.domain.aggregate.User
-import tamago.server.core.user.domain.aggregate.UserOAuth
 import tamago.server.core.user.domain.enum.OAuthProvider
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
 import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
@@ -33,19 +32,30 @@ class UserCommandService(
     }
 
     override fun socialLogin(command: LoginCommandDto): TokenQueryDto {
-        val (userId, isNewUser) = userPersistencePort.findByExternalId(command.provider, command.externalId)?.id
-            ?.let { existingUser -> existingUser to false }
+        val (user, isNewUser) = userPersistencePort.findByExternalId(command.provider, command.externalId)
+            ?.let { it to false }
             ?: run { createSocialUser(command) to true }
+
+        val userId = user.id ?: throw UserSaveErrorException()
 
         return TokenQueryDto(
             userId = userId.value,
-            accessToken = jwtTokenProvider.generateAccessToken(userId),
-            refreshToken = jwtTokenProvider.generateRefreshToken(userId),
+            accessToken = jwtTokenProvider.generateAccessToken(userId, user.role),
+            refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role),
             isNewUser = isNewUser,
         )
     }
 
-    private fun createSocialUser(command: LoginCommandDto) =
-        userPersistencePort.save(User.create(command.email, command.provider, command.externalId)).id
-            ?: throw UserSaveErrorException()
+    override fun updateNickname(user: User, nickname: String) {
+        user.updateNickname(nickname)
+        userPersistencePort.save(user)
+    }
+
+    override fun recordLogin(user: User) {
+        user.updateLastLogin()
+        userPersistencePort.save(user)
+    }
+
+    private fun createSocialUser(command: LoginCommandDto): User =
+        userPersistencePort.save(User.create(command.email, command.provider, command.externalId))
 }
