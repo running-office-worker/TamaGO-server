@@ -4,8 +4,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import tamago.server.core.common.jwt.JwtTokenProvider
 import tamago.server.core.user.UserCommandUseCase
+import tamago.server.core.user.application.exception.InvalidCredentialsException
 import tamago.server.core.user.application.exception.UserSaveErrorException
 import tamago.server.core.user.domain.aggregate.User
+import tamago.server.core.user.domain.aggregate.UserOAuth
 import tamago.server.core.user.domain.enum.OAuthProvider
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
 import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
@@ -36,6 +38,7 @@ class UserCommandService(
             ?: run { createSocialUser(command) to true }
 
         return TokenQueryDto(
+            userId = userId.value,
             accessToken = jwtTokenProvider.generateAccessToken(userId),
             refreshToken = jwtTokenProvider.generateRefreshToken(userId),
             isNewUser = isNewUser,

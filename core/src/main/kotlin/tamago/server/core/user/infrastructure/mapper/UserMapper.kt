@@ -6,11 +6,19 @@ import tamago.server.core.user.infrastructure.entity.UserEntity
 
 object UserMapper {
     fun toEntity(user: User): UserEntity {
-        return UserEntity(
+        val userEntity = UserEntity(
             id = user.id?.value,
             nickname = user.nickname,
             lastLoginAt = user.lastLoginAt,
         )
+
+        user.oauths.forEach { oauth ->
+            val oauthEntity = UserOAuthMapper.toEntity(oauth)
+            oauthEntity.user = userEntity
+            userEntity.oauths.add(oauthEntity)
+        }
+
+        return userEntity
     }
 
     fun toDomain(entity: UserEntity?): User? {

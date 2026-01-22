@@ -13,9 +13,20 @@ object UserOAuthMapper {
                 id = UserOAuthId(it.id ?: 0L),
                 email = checkNotNull(it.email),
                 provider = OAuthProvider.valueOf(checkNotNull(it.provider)),
-                externalId = checkNotNull(it.externalId),
-                userId = UserId(it.user.id ?: 0L),
+                password = it.password,
+                externalId = it.externalId,
+                userId = UserId(it.user?.id ?: 0L),
             )
         }
+    }
+
+    fun toEntity(oauth: UserOAuth): UserOAuthEntity {
+        return UserOAuthEntity(
+            id = oauth.id?.value,
+            email = oauth.email,
+            provider = oauth.provider.name,
+            password = oauth.password,
+            externalId = oauth.externalId,
+        )
     }
 }

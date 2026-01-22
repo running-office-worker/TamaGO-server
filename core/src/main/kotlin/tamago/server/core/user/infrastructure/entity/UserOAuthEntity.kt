@@ -24,9 +24,12 @@ class UserOAuthEntity(
     val provider: String? = null,
 
     @Column(nullable = true)
+    val password: String? = null,
+
+    @Column(nullable = true)
     val externalId: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    val user: UserEntity,
+    var user: UserEntity? = null,
 )

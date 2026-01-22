@@ -23,10 +23,10 @@ class UserEntity(
     @OneToMany(
         mappedBy = "user",
         fetch = FetchType.LAZY,
-        cascade = [CascadeType.PERSIST, CascadeType.MERGE],
-        orphanRemoval = false
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true
     )
-    val oauths: List<UserOAuthEntity> = emptyList(),
+    val oauths: MutableList<UserOAuthEntity> = mutableListOf(),
 
     var lastLoginAt: LocalDateTime? = null,
 ) : BaseTimeEntity()
