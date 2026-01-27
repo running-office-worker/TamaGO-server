@@ -10,7 +10,7 @@ class User(
     nickname: String? = null,
     val role: UserRole = UserRole.USER,
     auths: List<UserAuth> = emptyList(),
-    goalKilo: Int? = null,
+    runningData: UserRunningData = UserRunningData(),
     lastLoginAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -23,7 +23,7 @@ class User(
         .sortedBy { it.provider }
         .toList()
 
-    var goalKilo: Int? = goalKilo
+    var runningData: UserRunningData = runningData
         private set
 
     var lastLoginAt: LocalDateTime? = lastLoginAt
@@ -38,7 +38,7 @@ class User(
     }
 
     fun updateGoalKilo(goalKilo: Int) {
-        this.goalKilo = goalKilo
+        this.runningData = runningData.updateGoalKilo(goalKilo)
     }
 
     companion object {
