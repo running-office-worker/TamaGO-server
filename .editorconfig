@@ -1,0 +1,43 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.{json,xml}]
+indent_size = 2
+
+[{*.kt,*.kts}]
+indent_size = 4
+max_line_length = 120
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+ij_kotlin_name_count_to_use_star_import = 5
+ij_kotlin_name_count_to_use_star_import_for_members = 3
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+
+# ktlint specific rules
+ktlint_standard = enabled
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_package-name = enabled
+ktlint_standard_filename = enabled
+ktlint_standard_function-naming = enabled
+ktlint_standard_property-naming = enabled
+ktlint_standard_backing-property-naming = enabled
+ktlint_standard_class-naming = enabled
+
+[*.gradle.kts]
+indent_size = 4
+
+[**Test.{kt,kts}]
+max_line_length = 999
