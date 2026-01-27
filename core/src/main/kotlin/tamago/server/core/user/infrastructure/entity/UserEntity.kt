@@ -21,20 +21,17 @@ class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     var nickname: String? = null,
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val role: UserRole = UserRole.USER,
-
     @OneToMany(
         mappedBy = "user",
         fetch = FetchType.LAZY,
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    val oauths: MutableList<UserOAuthEntity> = mutableListOf(),
-
+    val auths: MutableList<UserAuthEntity> = mutableListOf(),
+    val goalKilo: Int? = null,
     var lastLoginAt: LocalDateTime? = null,
 ) : BaseTimeEntity()

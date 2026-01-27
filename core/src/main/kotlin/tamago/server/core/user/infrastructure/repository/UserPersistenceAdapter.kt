@@ -2,7 +2,7 @@ package tamago.server.core.user.infrastructure.repository
 
 import org.springframework.stereotype.Repository
 import tamago.server.core.user.domain.aggregate.User
-import tamago.server.core.user.domain.enum.OAuthProvider
+import tamago.server.core.user.domain.enum.AuthProvider
 import tamago.server.core.user.domain.port.outbound.UserPersistencePort
 import tamago.server.core.user.domain.vo.UserId
 import tamago.server.core.user.infrastructure.mapper.UserMapper
@@ -17,12 +17,12 @@ class UserPersistenceAdapter(
     override fun findById(id: UserId): User? =
         UserMapper.toDomain(userJpaRepository.findById(id.value).orElse(null))
 
-    override fun findByExternalId(provider: OAuthProvider, externalId: String): User? =
-        UserMapper.toDomain(userJpaRepository.findByOauthsProviderAndOauthsExternalId(provider.name, externalId))
+    override fun findByExternalId(provider: AuthProvider, externalId: String): User? =
+        UserMapper.toDomain(userJpaRepository.findByAuthsProviderAndAuthsExternalId(provider.name, externalId))
 
     override fun findByEmail(email: String): User? =
-        UserMapper.toDomain(userJpaRepository.findByOauthsEmail(email))
+        UserMapper.toDomain(userJpaRepository.findByAuthsEmail(email))
 
     override fun existsByEmail(email: String): Boolean =
-        userJpaRepository.existsByOauthsEmail(email)
+        userJpaRepository.existsByAuthsEmail(email)
 }

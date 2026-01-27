@@ -13,10 +13,10 @@ object UserMapper {
             lastLoginAt = user.lastLoginAt,
         )
 
-        user.oauths.forEach { oauth ->
-            val oauthEntity = UserOAuthMapper.toEntity(oauth)
-            oauthEntity.user = userEntity
-            userEntity.oauths.add(oauthEntity)
+        user.auths.forEach { auth ->
+            val authEntity = UserAuthMapper.toEntity(auth)
+            authEntity.user = userEntity
+            userEntity.auths.add(authEntity)
         }
 
         return userEntity
@@ -29,7 +29,7 @@ object UserMapper {
             id = UserId(entity.id ?: 0L),
             nickname = entity.nickname,
             role = entity.role,
-            oauths = UserOAuthMapper.toDomain(entity.oauths),
+            auths = UserAuthMapper.toDomain(entity.auths),
             lastLoginAt = entity.lastLoginAt,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,

@@ -31,13 +31,13 @@ class UserFacade(
         userCommandUseCase.socialLogin(command)
 
     fun emailLogin(command: TestLoginCommandDto): TokenQueryDto {
-        val oauth = userQueryUseCase.getEmailOAuth(command.email)
+        val auth = userQueryUseCase.getEmailAuth(command.email)
 
-        require(passwordEncoder.matches(command.password, oauth.password)) {
+        require(passwordEncoder.matches(command.password, auth.password)) {
             throw InvalidCredentialsException()
         }
 
-        val userId = oauth.userId ?: throw InvalidCredentialsException()
+        val userId = auth.userId ?: throw InvalidCredentialsException()
         val user = userQueryUseCase.get(userId)
 
         val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role)

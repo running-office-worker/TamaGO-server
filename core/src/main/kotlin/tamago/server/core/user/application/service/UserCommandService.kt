@@ -7,7 +7,7 @@ import tamago.server.core.refreshtoken.RefreshTokenCommandUseCase
 import tamago.server.core.user.UserCommandUseCase
 import tamago.server.core.user.application.exception.UserSaveErrorException
 import tamago.server.core.user.domain.aggregate.User
-import tamago.server.core.user.domain.enum.OAuthProvider
+import tamago.server.core.user.domain.enum.AuthProvider
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
 import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
 import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
@@ -25,7 +25,7 @@ class UserCommandService(
         val encodedPassword = passwordEncoder.encode(command.password)
         val user = User.create(
             command.email,
-            OAuthProvider.EMAIL,
+            AuthProvider.EMAIL,
             encodedPassword
         )
 

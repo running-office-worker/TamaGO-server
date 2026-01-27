@@ -5,8 +5,8 @@ import tamago.server.core.user.UserQueryUseCase
 import tamago.server.core.user.application.exception.InvalidCredentialsException
 import tamago.server.core.user.application.exception.UserNotFoundException
 import tamago.server.core.user.domain.aggregate.User
-import tamago.server.core.user.domain.aggregate.UserOAuth
-import tamago.server.core.user.domain.enum.OAuthProvider
+import tamago.server.core.user.domain.aggregate.UserAuth
+import tamago.server.core.user.domain.enum.AuthProvider
 import tamago.server.core.user.domain.port.outbound.UserPersistencePort
 import tamago.server.core.user.domain.vo.UserId
 
@@ -22,11 +22,11 @@ class UserQueryService(
         userPersistencePort.findByEmail(email)
             ?: throw InvalidCredentialsException()
 
-    override fun getEmailOAuth(email: String): UserOAuth {
+    override fun getEmailAuth(email: String): UserAuth {
         val user = userPersistencePort.findByEmail(email)
             ?: throw InvalidCredentialsException()
 
-        return user.oauths.find { it.provider == OAuthProvider.EMAIL }
+        return user.auths.find { it.provider == AuthProvider.EMAIL }
             ?: throw InvalidCredentialsException()
     }
 

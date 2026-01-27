@@ -1,13 +1,13 @@
 package tamago.server.core.user.domain.aggregate
 
-import tamago.server.core.user.domain.enum.OAuthProvider
+import tamago.server.core.user.domain.enum.AuthProvider
 import tamago.server.core.user.domain.vo.UserId
-import tamago.server.core.user.domain.vo.UserOAuthId
+import tamago.server.core.user.domain.vo.UserAuthId
 
-class UserOAuth(
-    val id: UserOAuthId? = null,
+class UserAuth(
+    val id: UserAuthId? = null,
     val email: String,
-    val provider: OAuthProvider,
+    val provider: AuthProvider,
     password: String? = null,
     externalId: String? = null,
     val userId: UserId? = null,
@@ -19,14 +19,14 @@ class UserOAuth(
         private set
 
     companion object {
-        fun create(email: String, provider: OAuthProvider, credentials: String) =
+        fun create(email: String, provider: AuthProvider, credentials: String) =
             when (provider) {
-                OAuthProvider.EMAIL -> UserOAuth(
+                AuthProvider.EMAIL -> UserAuth(
                     email = email,
                     provider = provider,
                     password = credentials
                 )
-                else -> UserOAuth(
+                else -> UserAuth(
                     email = email,
                     provider = provider,
                     externalId = credentials
