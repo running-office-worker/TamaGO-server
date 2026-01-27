@@ -6,6 +6,7 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.25"
 	id("org.springframework.boot") version "3.5.8"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
 }
 
 group = "tamago"
@@ -33,6 +34,16 @@ subprojects {
 				languageVersion.set(JavaLanguageVersion.of(21))
 			}
 		}
+	}
+}
+
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+	debug.set(true)
+	verbose.set(true)
+	outputToConsole.set(true)
+	ignoreFailures.set(false)
+	filter {
+		exclude("**/generated/**")
 	}
 }
 
