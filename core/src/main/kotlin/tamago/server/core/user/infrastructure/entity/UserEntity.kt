@@ -32,6 +32,6 @@ class UserEntity(
         orphanRemoval = true
     )
     val auths: MutableList<UserAuthEntity> = mutableListOf(),
-    val goalKilo: Int? = null,
+    var goalKilo: Int? = null,
     var lastLoginAt: LocalDateTime? = null,
 ) : BaseTimeEntity()

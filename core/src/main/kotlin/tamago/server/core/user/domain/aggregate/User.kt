@@ -10,6 +10,7 @@ class User(
     nickname: String? = null,
     val role: UserRole = UserRole.USER,
     auths: List<UserAuth> = emptyList(),
+    goalKilo: Int? = null,
     lastLoginAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -22,6 +23,9 @@ class User(
         .sortedBy { it.provider }
         .toList()
 
+    var goalKilo: Int? = goalKilo
+        private set
+
     var lastLoginAt: LocalDateTime? = lastLoginAt
         private set
 
@@ -31,6 +35,10 @@ class User(
 
     fun updateNickname(nickname: String) {
         this.nickname = nickname
+    }
+
+    fun updateGoalKilo(goalKilo: Int) {
+        this.goalKilo = goalKilo
     }
 
     companion object {

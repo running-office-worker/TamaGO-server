@@ -9,5 +9,6 @@ interface UserCommandUseCase {
     fun socialLogin(command: LoginCommandDto): TokenQueryDto
     fun createUser(command: SignUpCommandDto)
     fun updateNickname(user: User, nickname: String)
+    fun updateGoalKilo(user: User, goalKilo: Int)
     fun recordLogin(user: User)
 }

@@ -10,6 +10,7 @@ object UserMapper {
             id = user.id?.value,
             nickname = user.nickname,
             role = user.role,
+            goalKilo = user.goalKilo,
             lastLoginAt = user.lastLoginAt,
         )
 
@@ -30,6 +31,7 @@ object UserMapper {
             nickname = entity.nickname,
             role = entity.role,
             auths = UserAuthMapper.toDomain(entity.auths),
+            goalKilo = entity.goalKilo,
             lastLoginAt = entity.lastLoginAt,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,

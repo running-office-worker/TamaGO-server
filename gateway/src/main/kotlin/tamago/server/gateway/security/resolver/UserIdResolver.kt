@@ -7,12 +7,16 @@ import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
-import tamago.server.gateway.security.annotation.CurrentUserId
+import tamago.server.core.user.UserQueryUseCase
+import tamago.server.core.user.domain.vo.UserId
+import tamago.server.gateway.security.annotation.CurrentUser
 
 @Component
-class UserIdResolver : HandlerMethodArgumentResolver {
+class UserIdResolver(
+    private val userQueryUseCase: UserQueryUseCase,
+) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean =
-        parameter.hasParameterAnnotation(CurrentUserId::class.java)
+        parameter.hasParameterAnnotation(CurrentUser::class.java)
 
     override fun resolveArgument(
         parameter: MethodParameter,
@@ -20,8 +24,12 @@ class UserIdResolver : HandlerMethodArgumentResolver {
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?,
     ): Any? =
-        SecurityContextHolder
-            .getContext()
-            .authentication.name
-            .toLong()
+        userQueryUseCase.get(
+            UserId(
+                SecurityContextHolder
+                    .getContext()
+                    .authentication.name
+                    .toLong(),
+            ),
+        )
 }

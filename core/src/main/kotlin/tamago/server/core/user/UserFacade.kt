@@ -11,7 +11,6 @@ import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
 import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
 import tamago.server.core.user.domain.port.inbound.command.TestLoginCommandDto
 import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
-import tamago.server.core.user.domain.vo.UserId
 
 @Component
 class UserFacade(
@@ -53,10 +52,6 @@ class UserFacade(
             isNewUser = false,
         )
     }
-
-    fun giveNickname(userId: UserId, nickname: String) =
-        userQueryUseCase.get(userId)
-            .let { userCommandUseCase.updateNickname(it, nickname) }
 
     fun reissueToken(refreshToken: String): TokenQueryDto {
         val userId = jwtTokenProvider.getUserId(refreshToken)
