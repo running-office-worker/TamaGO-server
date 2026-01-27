@@ -3,6 +3,8 @@ package tamago.server.core.user
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import tamago.server.core.common.jwt.JwtTokenProvider
+import tamago.server.core.refreshtoken.RefreshTokenCommandUseCase
+import tamago.server.core.refreshtoken.RefreshTokenQueryUseCase
 import tamago.server.core.user.application.exception.EmailAlreadyExistsException
 import tamago.server.core.user.application.exception.InvalidCredentialsException
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
@@ -15,6 +17,8 @@ import tamago.server.core.user.domain.vo.UserId
 class UserFacade(
     private val userCommandUseCase: UserCommandUseCase,
     private val userQueryUseCase: UserQueryUseCase,
+    private val refreshTokenCommandUseCase: RefreshTokenCommandUseCase,
+    private val refreshTokenQueryUseCase: RefreshTokenQueryUseCase,
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder,
 ) {
@@ -36,19 +40,40 @@ class UserFacade(
         val userId = oauth.userId ?: throw InvalidCredentialsException()
         val user = userQueryUseCase.get(userId)
 
-        val response = TokenQueryDto(
-            userId = userId.value,
-            accessToken = jwtTokenProvider.generateAccessToken(userId, user.role),
-            refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role),
-            isNewUser = false,
-        )
+        val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role)
+        val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role)
+
+        refreshTokenCommandUseCase.saveOrUpdate(userId, refreshToken)
         userCommandUseCase.recordLogin(user)
 
-        return response
+        return TokenQueryDto(
+            userId = userId.value,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            isNewUser = false,
+        )
     }
 
     fun giveNickname(userId: UserId, nickname: String) =
         userQueryUseCase.get(userId)
             .let { userCommandUseCase.updateNickname(it, nickname) }
 
+    fun reissueToken(refreshToken: String): TokenQueryDto {
+        val userId = jwtTokenProvider.getUserId(refreshToken)
+        val role = jwtTokenProvider.getUserRole(refreshToken)
+
+        refreshTokenQueryUseCase.validation(userId, refreshToken)
+
+        val newAccessToken = jwtTokenProvider.generateAccessToken(userId, role)
+        val newRefreshToken = jwtTokenProvider.generateRefreshToken(userId, role)
+
+        refreshTokenCommandUseCase.rotate(userId, newRefreshToken)
+
+        return TokenQueryDto(
+            userId = userId.value,
+            accessToken = newAccessToken,
+            refreshToken = newRefreshToken,
+            isNewUser = false,
+        )
+    }
 }

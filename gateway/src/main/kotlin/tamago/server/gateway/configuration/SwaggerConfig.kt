@@ -1,7 +1,5 @@
 package tamago.server.gateway.configuration
 
-import io.swagger.v3.core.converter.ModelConverter
-import io.swagger.v3.core.converter.ModelConverters
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
@@ -22,7 +20,7 @@ class SwaggerConfig(
         private val PROFILE_SERVER_URL_MAP =
             mapOf(
                 "local" to "http://localhost:8080",
-                "dev" to "https://tamago.ummdev.com",
+                "dev" to "https://dev.runtamago.shop",
             )
     }
 

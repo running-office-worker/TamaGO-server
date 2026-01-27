@@ -8,6 +8,8 @@ import tamago.server.core.user.domain.enum.OAuthProvider
 import tamago.server.gateway.presentation.auth.v1.api.AuthApi
 import tamago.server.gateway.presentation.auth.v1.request.AppleLoginRequest
 import tamago.server.gateway.presentation.auth.v1.request.KakaoLoginRequest
+import tamago.server.gateway.presentation.auth.v1.request.ReissueRequest
+import tamago.server.gateway.presentation.auth.v1.response.LoginResponse
 import tamago.server.gateway.presentation.auth.v1.response.SocialLoginResponse
 import tamago.server.gateway.response.CustomResponse
 import tamago.server.gateway.security.oauth.client.toCommand
@@ -43,6 +45,19 @@ class AuthController(
                 accessToken = dto.accessToken,
                 refreshToken = dto.refreshToken,
                 isNewUser = dto.isNewUser
+            )
+        )
+    }
+
+    @PostMapping("/api/v1/auth/reissue")
+    override fun reissue(@RequestBody request: ReissueRequest): CustomResponse<LoginResponse> {
+        val token = userFacade.reissueToken(request.refreshToken)
+
+        return CustomResponse.ok(
+            LoginResponse(
+                userId = token.userId,
+                accessToken = token.accessToken,
+                refreshToken = token.refreshToken,
             )
         )
     }

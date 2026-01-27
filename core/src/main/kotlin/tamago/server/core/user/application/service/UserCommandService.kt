@@ -2,8 +2,8 @@ package tamago.server.core.user.application.service
 
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.jwt.JwtTokenProvider
+import tamago.server.core.refreshtoken.RefreshTokenCommandUseCase
 import tamago.server.core.user.UserCommandUseCase
 import tamago.server.core.user.application.exception.UserSaveErrorException
 import tamago.server.core.user.domain.aggregate.User
@@ -16,6 +16,7 @@ import tamago.server.core.user.domain.port.outbound.UserPersistencePort
 @Service
 class UserCommandService(
     private val userPersistencePort: UserPersistencePort,
+    private val refreshTokenCommandUseCase: RefreshTokenCommandUseCase,
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder
 ) : UserCommandUseCase {
@@ -38,10 +39,15 @@ class UserCommandService(
 
         val userId = user.id ?: throw UserSaveErrorException()
 
+        val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role)
+        val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role)
+
+        refreshTokenCommandUseCase.saveOrUpdate(userId, refreshToken)
+
         return TokenQueryDto(
             userId = userId.value,
-            accessToken = jwtTokenProvider.generateAccessToken(userId, user.role),
-            refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role),
+            accessToken = accessToken,
+            refreshToken = refreshToken,
             isNewUser = isNewUser,
         )
     }

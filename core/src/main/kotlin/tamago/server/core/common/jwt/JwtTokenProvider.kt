@@ -70,6 +70,15 @@ class JwtTokenProvider(
         )
     }
 
+    fun getUserId(token: String): UserId =
+        UserId(getClaims(token).subject.toLong())
+
+    fun getUserRole(token: String): UserRole =
+        UserRole.valueOf(getClaims(token)["role", String::class.java])
+
+    fun getTokenType(token: String): TokenType =
+        TokenType.valueOf(getClaims(token)["tokenType", String::class.java])
+
     private fun getClaims(token: String): Claims =
         Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).payload
 

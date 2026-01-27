@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import tamago.server.gateway.presentation.auth.v1.request.AppleLoginRequest
 import tamago.server.gateway.presentation.auth.v1.request.KakaoLoginRequest
+import tamago.server.gateway.presentation.auth.v1.request.ReissueRequest
+import tamago.server.gateway.presentation.auth.v1.response.LoginResponse
 import tamago.server.gateway.presentation.auth.v1.response.SocialLoginResponse
 import tamago.server.gateway.response.CustomResponse
 
@@ -14,4 +16,7 @@ interface AuthApi {
 
     @Operation(summary = "애플 소셜 로그인", description = "애플 소셜 로그인을 처리합니다.")
     fun socialAppleLogin(request: AppleLoginRequest): CustomResponse<SocialLoginResponse>
+
+    @Operation(summary = "토큰 재발급", description = "리프레시 토큰을 받아 액세스 토큰과 리프레시 토큰을 재발급합니다.")
+    fun reissue(request: ReissueRequest): CustomResponse<LoginResponse>
 }
