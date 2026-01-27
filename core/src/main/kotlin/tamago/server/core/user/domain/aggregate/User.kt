@@ -1,13 +1,16 @@
 package tamago.server.core.user.domain.aggregate
 
-import tamago.server.core.user.domain.enum.OAuthProvider
+import tamago.server.core.user.domain.enum.AuthProvider
+import tamago.server.core.user.domain.enum.UserRole
 import tamago.server.core.user.domain.vo.UserId
 import java.time.LocalDateTime
 
 class User(
     val id: UserId? = null,
     nickname: String? = null,
-    oauths: List<UserOAuth> = emptyList(),
+    val role: UserRole = UserRole.USER,
+    auths: List<UserAuth> = emptyList(),
+    goalKilo: Int? = null,
     lastLoginAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -16,9 +19,12 @@ class User(
     var nickname: String? = nickname
         private set
 
-    val oauths: List<UserOAuth> = oauths
+    val auths: List<UserAuth> = auths
         .sortedBy { it.provider }
         .toList()
+
+    var goalKilo: Int? = goalKilo
+        private set
 
     var lastLoginAt: LocalDateTime? = lastLoginAt
         private set
@@ -31,18 +37,22 @@ class User(
         this.nickname = nickname
     }
 
+    fun updateGoalKilo(goalKilo: Int) {
+        this.goalKilo = goalKilo
+    }
+
     companion object {
         fun create(
             email: String,
-            provider: OAuthProvider,
-            externalId: String
+            provider: AuthProvider,
+            credentials: String
         ): User {
             return User(
-                oauths = listOf(
-                    UserOAuth.create(
+                auths = listOf(
+                    UserAuth.create(
                         email = email,
                         provider = provider,
-                        externalId = externalId
+                        credentials = credentials
                     )
                 ),
             )

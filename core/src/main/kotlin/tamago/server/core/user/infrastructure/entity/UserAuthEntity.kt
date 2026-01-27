@@ -11,8 +11,8 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "t_user_oauth")
-class UserOAuthEntity(
+@Table(name = "t_user_auth")
+class UserAuthEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -24,9 +24,12 @@ class UserOAuthEntity(
     val provider: String? = null,
 
     @Column(nullable = true)
+    val password: String? = null,
+
+    @Column(nullable = true)
     val externalId: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    val user: UserEntity,
+    var user: UserEntity? = null,
 )

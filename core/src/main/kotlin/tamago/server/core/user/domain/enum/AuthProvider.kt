@@ -1,6 +1,7 @@
 package tamago.server.core.user.domain.enum
 
-enum class OAuthProvider {
+enum class AuthProvider {
     APPLE,
     KAKAO,
+    EMAIL,
 }

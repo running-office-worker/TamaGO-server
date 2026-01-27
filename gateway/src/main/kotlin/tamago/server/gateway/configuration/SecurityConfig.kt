@@ -6,19 +6,34 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import tamago.server.gateway.filter.JwtAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+) {
+    @Bean
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+
     @Bean
     fun filterChain(httpSecurity: HttpSecurity): SecurityFilterChain {
         disabledConfigurations(httpSecurity)
         configurationSessionManagement(httpSecurity)
         configurationCors(httpSecurity)
         configureAuthorizeHttpRequests(httpSecurity)
+        configureJwtFilter(httpSecurity)
         return httpSecurity.build()
+    }
+
+    private fun configureJwtFilter(httpSecurity: HttpSecurity) {
+        httpSecurity
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 
     private fun disabledConfigurations(httpSecurity: HttpSecurity) {
@@ -70,9 +85,9 @@ class SecurityConfig {
             )
         private val PERMIT_ALL_PATTERNS =
             arrayOf(
-                "/v1/reissue",
                 "/login/kakao",
                 "/v1/auth/social-login/kakao",
+                "/api/v1/auth/**",
                 "/error",
             )
     }
