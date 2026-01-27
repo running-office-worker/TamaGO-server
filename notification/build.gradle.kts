@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation("org.springframework.modulith:spring-modulith-starter-core")
+    implementation("com.google.firebase:firebase-admin:9.7.0")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
