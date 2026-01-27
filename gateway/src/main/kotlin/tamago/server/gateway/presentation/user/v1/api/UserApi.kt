@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.presentation.user.v1.request.GoalKiloRequest
 import tamago.server.gateway.presentation.user.v1.request.NicknameRequest
+import tamago.server.gateway.presentation.user.v1.response.RunningDataResponse
 import tamago.server.gateway.response.CustomResponse
 
 @Tag(name = "User API", description = "유저 관련 API")
@@ -14,4 +15,7 @@ interface UserApi {
 
     @Operation(summary = "하루 러닝 목표 설정", description = "하루 러닝 목표를 정합니다.")
     fun setRunningGoal(user: User, request: GoalKiloRequest): CustomResponse<Void>
+
+    @Operation(summary = "누적 러닝 거리와 러닝 일수를 반환", description = "누적 러닝 거리와 러닝 일수를 반환합니다.")
+    fun getRunningData(user: User): CustomResponse<RunningDataResponse>
 }
