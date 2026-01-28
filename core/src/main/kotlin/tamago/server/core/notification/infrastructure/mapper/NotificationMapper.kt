@@ -13,6 +13,7 @@ object NotificationMapper {
             content = notification.content,
             isRead = notification.isRead,
             userId = notification.userId.value,
+            scheduledAt = notification.scheduledAt,
         )
     }
 
@@ -25,6 +26,7 @@ object NotificationMapper {
             content = entity.content,
             isRead = entity.isRead,
             userId = UserId(entity.userId),
+            scheduledAt = entity.scheduledAt,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,

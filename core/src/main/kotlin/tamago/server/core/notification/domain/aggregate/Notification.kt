@@ -10,6 +10,7 @@ class Notification(
     val content: String? = null,
     isRead: Boolean = false,
     val userId: UserId,
+    val scheduledAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
@@ -21,13 +22,21 @@ class Notification(
         this.isRead = true
     }
 
+    fun isScheduled(): Boolean = scheduledAt != null
+
     companion object {
-        fun create(userId: UserId, title: String, content: String): Notification {
+        fun create(
+            userId: UserId,
+            title: String,
+            content: String,
+            scheduledAt: LocalDateTime? = null,
+        ): Notification {
             return Notification(
                 userId = userId,
                 title = title,
                 content = content,
                 isRead = false,
+                scheduledAt = scheduledAt,
             )
         }
     }

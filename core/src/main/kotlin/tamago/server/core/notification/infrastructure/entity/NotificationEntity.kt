@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "t_notifications")
@@ -32,4 +33,7 @@ class NotificationEntity(
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     val userId: Long,
+
+    @Column(name = "scheduled_at")
+    val scheduledAt: LocalDateTime? = null,
 ) : BaseTimeEntity()
