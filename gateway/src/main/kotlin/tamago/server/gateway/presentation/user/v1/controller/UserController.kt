@@ -22,7 +22,7 @@ class UserController(
     private val userCommandUseCase: UserCommandUseCase,
 ) : UserApi {
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/api/v1/users/nickname")
     override fun giveNickname(
         @CurrentUser user: User,
@@ -32,7 +32,7 @@ class UserController(
         return CustomResponse.ok()
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/api/v1/users/running-goal")
     override fun setRunningGoal(
         @CurrentUser user: User,
@@ -42,7 +42,7 @@ class UserController(
         return CustomResponse.ok()
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/api/v1/users/running-data")
     override fun getRunningData(
         @CurrentUser user: User

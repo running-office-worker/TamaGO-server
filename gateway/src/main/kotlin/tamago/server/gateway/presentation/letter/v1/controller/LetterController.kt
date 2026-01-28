@@ -23,7 +23,7 @@ class LetterController(
     private val letterFacade: LetterFacade,
 ) : LetterApi {
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/api/v1/letters")
     override fun readLetterInbox(@CurrentUser user: User): CustomResponse<LetterResponse> {
         val result = letterQueryUseCase.getLatestReceivedLetter(user.id!!)
@@ -39,7 +39,7 @@ class LetterController(
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/api/v1/letters/read")
     override fun markAsReadLetter(
         @CurrentUser user: User,
@@ -50,7 +50,7 @@ class LetterController(
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/api/v1/letters")
     override fun createTemplate(@RequestBody @Valid request: LetterCreate): CustomResponse<Void> {
         letterCommandUseCase.createTemplate(
