@@ -48,7 +48,7 @@ class UserCommandService(
             userId = userId.value,
             accessToken = accessToken,
             refreshToken = refreshToken,
-            isNewUser = isNewUser,
+            isNewUser = !user.isOnboarded(),
         )
     }
 

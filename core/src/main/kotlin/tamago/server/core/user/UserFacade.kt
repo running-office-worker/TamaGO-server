@@ -49,18 +49,18 @@ class UserFacade(
             userId = userId.value,
             accessToken = accessToken,
             refreshToken = refreshToken,
-            isNewUser = false,
+            isNewUser = !user.isOnboarded(),
         )
     }
 
     fun reissueToken(refreshToken: String): TokenQueryDto {
         val userId = jwtTokenProvider.getUserId(refreshToken)
-        val role = jwtTokenProvider.getUserRole(refreshToken)
+        val user = userQueryUseCase.get(userId)
 
         refreshTokenQueryUseCase.validation(userId, refreshToken)
 
-        val newAccessToken = jwtTokenProvider.generateAccessToken(userId, role)
-        val newRefreshToken = jwtTokenProvider.generateRefreshToken(userId, role)
+        val newAccessToken = jwtTokenProvider.generateAccessToken(userId, user.role)
+        val newRefreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role)
 
         refreshTokenCommandUseCase.rotate(userId, newRefreshToken)
 
@@ -68,7 +68,7 @@ class UserFacade(
             userId = userId.value,
             accessToken = newAccessToken,
             refreshToken = newRefreshToken,
-            isNewUser = false,
+            isNewUser = !user.isOnboarded(),
         )
     }
 }

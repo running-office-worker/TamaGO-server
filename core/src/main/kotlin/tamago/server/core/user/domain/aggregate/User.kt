@@ -41,6 +41,10 @@ class User(
         this.runningData = runningData.updateGoalKilo(goalKilo)
     }
 
+    fun isOnboarded(): Boolean {
+        return !nickname.isNullOrBlank() && runningData.goalKilo != null
+    }
+
     companion object {
         fun create(
             email: String,
