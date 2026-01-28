@@ -55,7 +55,7 @@ data class CustomResponse<T>(
             data = data
         )
 
-        fun noContent(): CustomResponse<Void?> = CustomResponse(
+        fun noContent(): CustomResponse<Void> = CustomResponse(
             status = GlobalExceptionCode.NO_CONTENT.status,
             message = GlobalExceptionCode.NO_CONTENT.message,
             code = GlobalExceptionCode.NO_CONTENT.code,

@@ -27,4 +27,7 @@ class ReceivedLetterPersistenceAdapter(
 
     override fun findByUserIdAndLetterId(userId: UserId, letterId: LetterId): ReceivedLetter? =
         ReceivedLetterMapper.toDomain(receivedLetterJpaRepository.findByUserIdAndLetterId(userId.value, letterId.value))
+
+    override fun findLatestByUserId(userId: UserId): ReceivedLetter? =
+        ReceivedLetterMapper.toDomain(receivedLetterJpaRepository.findTopByUserIdOrderByCreatedAtDesc(userId.value))
 }

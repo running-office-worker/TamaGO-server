@@ -11,4 +11,5 @@ interface ReceivedLetterPersistencePort {
     fun findById(id: ReceivedLetterId): ReceivedLetter?
     fun findByUserId(userId: UserId): List<ReceivedLetter>
     fun findByUserIdAndLetterId(userId: UserId, letterId: LetterId): ReceivedLetter?
+    fun findLatestByUserId(userId: UserId): ReceivedLetter?
 }
