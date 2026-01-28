@@ -45,7 +45,7 @@ class LetterController(
         @CurrentUser user: User,
         @RequestParam @Parameter(required = true) letterId: ReceivedLetterId,
     ): CustomResponse<Void> {
-        letterFacade.markAsRead(letterId)
+        letterFacade.markAsRead(user, letterId)
         return CustomResponse.noContent()
     }
 

@@ -22,6 +22,8 @@ class ReceivedLetter(
         this.readStatus = ReadStatus.READ
     }
 
+    fun isOwnedBy(userId: UserId): Boolean = this.userId == userId
+
     companion object {
         fun create(userId: UserId, letterId: LetterId): ReceivedLetter {
             return ReceivedLetter(
