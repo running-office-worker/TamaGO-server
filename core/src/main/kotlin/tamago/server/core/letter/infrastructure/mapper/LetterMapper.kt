@@ -11,6 +11,7 @@ object LetterMapper {
             id = letter.id?.value,
             title = letter.title,
             content = letter.content.value,
+            mood = letter.mood,
         )
     }
 
@@ -21,6 +22,7 @@ object LetterMapper {
             id = entity.id?.let { LetterId(it) },
             title = entity.title,
             content = LetterContent(entity.content),
+            mood = entity.mood,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,
