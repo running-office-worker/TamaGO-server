@@ -51,7 +51,7 @@ class UserController(
             ChronoUnit.DAYS.between(it.toLocalDate(), LocalDate.now()) + 1
         } ?: 1
         val response = RunningDataResponse(
-            totalKilo = user.runningData.totalKilo ?: 0,
+            totalKilo = user.runningData.totalKilo ?: 0.0,
             runningDays = runningDays,
         )
         return CustomResponse.ok(response)
