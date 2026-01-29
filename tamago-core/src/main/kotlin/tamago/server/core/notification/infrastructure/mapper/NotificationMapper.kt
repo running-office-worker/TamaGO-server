@@ -3,7 +3,7 @@ package tamago.server.core.notification.infrastructure.mapper
 import tamago.server.core.notification.domain.aggregate.Notification
 import tamago.server.core.notification.domain.vo.NotificationId
 import tamago.server.core.notification.infrastructure.entity.NotificationEntity
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 object NotificationMapper {
     fun toEntity(notification: Notification): NotificationEntity {

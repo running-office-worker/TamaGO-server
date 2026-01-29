@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository
 import tamago.server.core.refreshtoken.domain.aggregate.RefreshToken
 import tamago.server.core.refreshtoken.domain.port.outbound.RefreshTokenPersistencePort
 import tamago.server.core.refreshtoken.infrastructure.mapper.RefreshTokenMapper
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 @Repository
 class RefreshTokenPersistenceAdapter(

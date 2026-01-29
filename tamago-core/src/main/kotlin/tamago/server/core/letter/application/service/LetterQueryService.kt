@@ -8,7 +8,7 @@ import tamago.server.core.letter.domain.port.inbound.query.LetterInboxDto
 import tamago.server.core.letter.domain.port.outbound.LetterPersistencePort
 import tamago.server.core.letter.domain.port.outbound.ReceivedLetterPersistencePort
 import tamago.server.core.letter.domain.vo.ReceivedLetterId
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 @Service
 class LetterQueryService(

@@ -2,7 +2,7 @@ package tamago.server.core.monster.domain.aggregate
 
 import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 
 class OwnedMonster(

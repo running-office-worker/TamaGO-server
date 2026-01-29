@@ -2,7 +2,7 @@ package tamago.server.core.user.domain.aggregate
 
 import tamago.server.core.user.domain.enum.AuthProvider
 import tamago.server.core.user.domain.enum.UserRole
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 
 class User(

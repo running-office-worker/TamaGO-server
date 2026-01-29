@@ -2,7 +2,7 @@ package tamago.server.core.notification.domain.aggregate
 
 import tamago.server.core.notification.domain.enum.DeviceType
 import tamago.server.core.notification.domain.vo.FcmTokenId
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 
 class FcmToken(

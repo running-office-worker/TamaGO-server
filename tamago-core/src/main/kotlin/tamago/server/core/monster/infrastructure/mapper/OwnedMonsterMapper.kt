@@ -4,7 +4,7 @@ import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.monster.infrastructure.entity.OwnedMonsterEntity
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 object OwnedMonsterMapper {
     fun toEntity(ownedMonster: OwnedMonster): OwnedMonsterEntity {

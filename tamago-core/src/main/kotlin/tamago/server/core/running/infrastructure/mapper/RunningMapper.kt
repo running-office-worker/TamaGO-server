@@ -3,7 +3,7 @@ package tamago.server.core.running.infrastructure.mapper
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.vo.RunningId
 import tamago.server.core.running.infrastructure.entity.RunningEntity
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 object RunningMapper {
     fun toEntity(running: Running): RunningEntity {

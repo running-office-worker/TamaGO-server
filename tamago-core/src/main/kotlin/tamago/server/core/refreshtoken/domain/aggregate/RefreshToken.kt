@@ -1,7 +1,7 @@
 package tamago.server.core.refreshtoken.domain.aggregate
 
 import tamago.server.core.refreshtoken.domain.vo.RefreshTokenId
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 
 class RefreshToken(

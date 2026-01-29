@@ -1,7 +1,7 @@
 package tamago.server.core.running.domain.aggregate
 
 import tamago.server.core.running.domain.vo.RunningId
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 import java.time.LocalTime
 

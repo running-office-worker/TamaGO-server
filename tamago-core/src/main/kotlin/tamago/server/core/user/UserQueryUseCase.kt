@@ -2,7 +2,7 @@ package tamago.server.core.user
 
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.user.domain.aggregate.UserAuth
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 interface UserQueryUseCase {
     fun get(userId: UserId): User

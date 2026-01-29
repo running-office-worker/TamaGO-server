@@ -4,7 +4,7 @@ import tamago.server.core.letter.domain.aggregate.ReceivedLetter
 import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.ReceivedLetterId
 import tamago.server.core.letter.infrastructure.entity.ReceivedLetterEntity
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 object ReceivedLetterMapper {
     fun toEntity(receivedLetter: ReceivedLetter): ReceivedLetterEntity {

@@ -9,7 +9,7 @@ import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.infrastructure.entity.LetterEntity
 import tamago.server.core.letter.infrastructure.entity.ReceivedLetterEntity
 import tamago.server.core.letter.infrastructure.mapper.LetterMapper
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 @Repository
 class LetterPersistenceAdapter(

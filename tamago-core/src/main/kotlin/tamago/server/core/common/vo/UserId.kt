@@ -1,4 +1,4 @@
-package tamago.server.core.user.domain.vo
+package tamago.server.core.common.vo
 
 @JvmInline
 value class UserId(

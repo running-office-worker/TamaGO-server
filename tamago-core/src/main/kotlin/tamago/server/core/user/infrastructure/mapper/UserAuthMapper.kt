@@ -2,7 +2,7 @@ package tamago.server.core.user.infrastructure.mapper
 
 import tamago.server.core.user.domain.aggregate.UserAuth
 import tamago.server.core.user.domain.enum.AuthProvider
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.user.domain.vo.UserAuthId
 import tamago.server.core.user.infrastructure.entity.UserAuthEntity
 
