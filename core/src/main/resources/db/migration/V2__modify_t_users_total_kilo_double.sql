@@ -1,0 +1,2 @@
+ALTER TABLE t_users
+    MODIFY COLUMN total_kilo DOUBLE NULL;

@@ -1,8 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: local-db
-
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_SCHEMA:tamago}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${DB_USERNAME}
@@ -11,9 +7,20 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
 
 logging:
   level:
     org.springframework.orm.jpa: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect

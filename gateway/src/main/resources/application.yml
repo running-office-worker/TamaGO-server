@@ -1,6 +1,9 @@
 spring:
   profiles:
-    active: local # default
-    group:
-      local: local-db, local-security, swagger
-      dev: dev-db, dev-security, swagger
+    active: local
+  config:
+    import:
+      - database.yml
+      - flyway.yml
+      - security.yml
+      - swagger.yml

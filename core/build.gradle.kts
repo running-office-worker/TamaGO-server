@@ -21,6 +21,7 @@ dependencies {
     implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:$kotlinJdslVersion")
 
     runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("org.flywaydb:flyway-mysql")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     implementation("io.jsonwebtoken:jjwt:0.12.6")
