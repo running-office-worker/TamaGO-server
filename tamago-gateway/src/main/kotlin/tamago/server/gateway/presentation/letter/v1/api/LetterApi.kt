@@ -7,7 +7,7 @@ import tamago.server.core.letter.domain.vo.ReceivedLetterId
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.presentation.letter.v1.request.LetterCreate
 import tamago.server.gateway.presentation.letter.v1.response.LetterResponse
-import tamago.server.gateway.response.CustomResponse
+import tamago.server.gateway.common.response.CustomResponse
 
 @Tag(name = "Letter API", description = "타마고의 편지 API")
 interface LetterApi {

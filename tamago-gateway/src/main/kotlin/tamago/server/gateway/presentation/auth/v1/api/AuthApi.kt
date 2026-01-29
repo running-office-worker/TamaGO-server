@@ -7,7 +7,7 @@ import tamago.server.gateway.presentation.auth.v1.request.KakaoLoginRequest
 import tamago.server.gateway.presentation.auth.v1.request.ReissueRequest
 import tamago.server.gateway.presentation.auth.v1.response.LoginResponse
 import tamago.server.gateway.presentation.auth.v1.response.SocialLoginResponse
-import tamago.server.gateway.response.CustomResponse
+import tamago.server.gateway.common.response.CustomResponse
 
 @Tag(name = "Auth API", description = "인증 관련 API")
 interface AuthApi {

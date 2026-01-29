@@ -18,3 +18,4 @@ rootProject.name = "tamago-server"
 include("tamago-core")
 include("tamago-gateway")
 include("tamago-notification")
+include("tamago-oauth")

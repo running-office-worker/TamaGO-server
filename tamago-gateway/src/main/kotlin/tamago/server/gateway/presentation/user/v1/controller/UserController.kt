@@ -12,8 +12,8 @@ import tamago.server.gateway.presentation.user.v1.api.UserApi
 import tamago.server.gateway.presentation.user.v1.request.GoalKiloRequest
 import tamago.server.gateway.presentation.user.v1.request.NicknameRequest
 import tamago.server.gateway.presentation.user.v1.response.RunningDataResponse
-import tamago.server.gateway.response.CustomResponse
-import tamago.server.gateway.security.annotation.CurrentUser
+import tamago.server.gateway.common.response.CustomResponse
+import tamago.server.gateway.common.annotation.CurrentUser
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 

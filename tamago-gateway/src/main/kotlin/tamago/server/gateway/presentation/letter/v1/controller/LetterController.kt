@@ -13,8 +13,8 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.presentation.letter.v1.api.LetterApi
 import tamago.server.gateway.presentation.letter.v1.request.LetterCreate
 import tamago.server.gateway.presentation.letter.v1.response.LetterResponse
-import tamago.server.gateway.response.CustomResponse
-import tamago.server.gateway.security.annotation.CurrentUser
+import tamago.server.gateway.common.response.CustomResponse
+import tamago.server.gateway.common.annotation.CurrentUser
 
 @RestController
 class LetterController(

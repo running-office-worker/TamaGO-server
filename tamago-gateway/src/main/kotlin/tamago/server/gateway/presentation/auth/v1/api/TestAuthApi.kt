@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import tamago.server.gateway.presentation.auth.v1.request.LoginRequest
 import tamago.server.gateway.presentation.auth.v1.request.SignupRequest
 import tamago.server.gateway.presentation.auth.v1.response.LoginResponse
-import tamago.server.gateway.response.CustomResponse
+import tamago.server.gateway.common.response.CustomResponse
 
 @Tag(name = "Test Auth API", description = "테스트용 인증 API (local, dev 환경에서만 사용 가능)")
 interface TestAuthApi {

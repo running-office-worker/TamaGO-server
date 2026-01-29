@@ -6,7 +6,7 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.presentation.user.v1.request.GoalKiloRequest
 import tamago.server.gateway.presentation.user.v1.request.NicknameRequest
 import tamago.server.gateway.presentation.user.v1.response.RunningDataResponse
-import tamago.server.gateway.response.CustomResponse
+import tamago.server.gateway.common.response.CustomResponse
 
 @Tag(name = "User API", description = "유저 관련 API")
 interface UserApi {

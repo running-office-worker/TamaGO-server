@@ -13,7 +13,7 @@ import tamago.server.gateway.presentation.auth.v1.api.TestAuthApi
 import tamago.server.gateway.presentation.auth.v1.request.LoginRequest
 import tamago.server.gateway.presentation.auth.v1.request.SignupRequest
 import tamago.server.gateway.presentation.auth.v1.response.LoginResponse
-import tamago.server.gateway.response.CustomResponse
+import tamago.server.gateway.common.response.CustomResponse
 
 @Profile("local", "dev")
 @RestController
