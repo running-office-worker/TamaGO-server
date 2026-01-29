@@ -15,6 +15,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "tamago-server"
 
-include("core")
-include("gateway")
-include("notification")
+include("tamago-core")
+include("tamago-gateway")
+include("tamago-notification")
+include("tamago-oauth")
