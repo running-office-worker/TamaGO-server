@@ -1,12 +1,12 @@
-package tamago.server.core.usermonster.domain.aggregate
+package tamago.server.core.monster.domain.aggregate
 
 import tamago.server.core.monster.domain.vo.MonsterId
+import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.user.domain.vo.UserId
-import tamago.server.core.usermonster.domain.vo.UserMonsterId
 import java.time.LocalDateTime
 
-class UserMonster(
-    val id: UserMonsterId? = null,
+class OwnedMonster(
+    val id: OwnedMonsterId? = null,
     val monsterId: MonsterId,
     val userId: UserId,
     val createdAt: LocalDateTime? = null,
@@ -14,8 +14,8 @@ class UserMonster(
     val deletedAt: LocalDateTime? = null,
 ) {
     companion object {
-        fun create(monsterId: MonsterId, userId: UserId): UserMonster {
-            return UserMonster(
+        fun create(monsterId: MonsterId, userId: UserId): OwnedMonster {
+            return OwnedMonster(
                 monsterId = monsterId,
                 userId = userId,
             )
