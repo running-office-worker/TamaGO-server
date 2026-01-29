@@ -9,8 +9,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
-import tamago.server.core.user.domain.enum.UserRole
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.nio.charset.StandardCharsets
 import java.util.Date
 import javax.crypto.SecretKey
@@ -19,13 +18,13 @@ import javax.crypto.SecretKey
 class JwtTokenProvider(
     private val jwtProperties: JwtProperties
 ) {
-    fun generateAccessToken(userId: UserId, role: UserRole): String =
+    fun generateAccessToken(userId: UserId, role: String): String =
         makeToken(userId, role, jwtProperties.accessTokenExpiryMs, TokenType.ACCESS_TOKEN)
 
-    fun generateRefreshToken(userId: UserId, role: UserRole): String =
+    fun generateRefreshToken(userId: UserId, role: String): String =
         makeToken(userId, role, jwtProperties.refreshTokenExpiryMs, TokenType.REFRESH_TOKEN)
 
-    private fun makeToken(userId: UserId, role: UserRole, expiryMillis: Long, tokenType: TokenType): String {
+    private fun makeToken(userId: UserId, role: String, expiryMillis: Long, tokenType: TokenType): String {
         val now = Date()
         val expiry = Date(now.time + expiryMillis)
 
@@ -37,7 +36,7 @@ class JwtTokenProvider(
             .expiration(expiry)
             .subject(userId.value.toString())
             .claim("userId", userId.value.toString())
-            .claim("role", role.name)
+            .claim("role", role)
             .claim("tokenType", tokenType.name)
             .signWith(getSigningKey())
             .compact()
@@ -73,8 +72,8 @@ class JwtTokenProvider(
     fun getUserId(token: String): UserId =
         UserId(getClaims(token).subject.toLong())
 
-    fun getUserRole(token: String): UserRole =
-        UserRole.valueOf(getClaims(token)["role", String::class.java])
+    fun getUserRole(token: String): String =
+        getClaims(token)["role", String::class.java]
 
     fun getTokenType(token: String): TokenType =
         TokenType.valueOf(getClaims(token)["tokenType", String::class.java])

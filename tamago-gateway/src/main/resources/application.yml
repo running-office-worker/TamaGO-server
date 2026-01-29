@@ -7,3 +7,5 @@ spring:
       - flyway.yml
       - security.yml
       - swagger.yml
+      - oauth.yml
+      - modulith.yml

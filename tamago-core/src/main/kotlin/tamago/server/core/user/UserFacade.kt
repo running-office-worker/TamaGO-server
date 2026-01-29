@@ -39,8 +39,8 @@ class UserFacade(
         val userId = auth.userId ?: throw InvalidCredentialsException()
         val user = userQueryUseCase.get(userId)
 
-        val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role)
-        val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role)
+        val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role.name)
+        val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role.name)
 
         refreshTokenCommandUseCase.saveOrUpdate(userId, refreshToken)
         userCommandUseCase.recordLogin(user)
@@ -59,8 +59,8 @@ class UserFacade(
 
         refreshTokenQueryUseCase.validation(userId, refreshToken)
 
-        val newAccessToken = jwtTokenProvider.generateAccessToken(userId, user.role)
-        val newRefreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role)
+        val newAccessToken = jwtTokenProvider.generateAccessToken(userId, user.role.name)
+        val newRefreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role.name)
 
         refreshTokenCommandUseCase.rotate(userId, newRefreshToken)
 

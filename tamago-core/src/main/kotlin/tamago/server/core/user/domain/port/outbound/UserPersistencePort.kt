@@ -2,7 +2,7 @@ package tamago.server.core.user.domain.port.outbound
 
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.user.domain.enum.AuthProvider
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 interface UserPersistencePort {
     fun save(user: User): User

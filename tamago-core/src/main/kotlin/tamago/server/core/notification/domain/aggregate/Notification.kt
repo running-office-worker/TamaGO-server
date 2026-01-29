@@ -1,7 +1,7 @@
 package tamago.server.core.notification.domain.aggregate
 
 import tamago.server.core.notification.domain.vo.NotificationId
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 
 class Notification(

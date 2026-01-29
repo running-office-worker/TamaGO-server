@@ -1,7 +1,7 @@
 package tamago.server.core.refreshtoken
 
 import tamago.server.core.refreshtoken.domain.aggregate.RefreshToken
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 interface RefreshTokenCommandUseCase {
     fun saveOrUpdate(userId: UserId, token: String): RefreshToken

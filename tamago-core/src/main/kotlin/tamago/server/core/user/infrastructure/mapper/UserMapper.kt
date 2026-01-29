@@ -1,7 +1,7 @@
 package tamago.server.core.user.infrastructure.mapper
 
 import tamago.server.core.user.domain.aggregate.User
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.user.domain.aggregate.UserRunningData
 import tamago.server.core.user.infrastructure.entity.UserEntity
 

@@ -3,7 +3,7 @@ package tamago.server.core.letter.domain.aggregate
 import tamago.server.core.letter.domain.enum.ReadStatus
 import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.ReceivedLetterId
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 
 class ReceivedLetter(

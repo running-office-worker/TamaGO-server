@@ -8,7 +8,7 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.user.domain.aggregate.UserAuth
 import tamago.server.core.user.domain.enum.AuthProvider
 import tamago.server.core.user.domain.port.outbound.UserPersistencePort
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 @Service
 class UserQueryService(

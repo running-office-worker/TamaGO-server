@@ -3,7 +3,7 @@ package tamago.server.core.refreshtoken.infrastructure.mapper
 import tamago.server.core.refreshtoken.domain.aggregate.RefreshToken
 import tamago.server.core.refreshtoken.domain.vo.RefreshTokenId
 import tamago.server.core.refreshtoken.infrastructure.entity.RefreshTokenEntity
-import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.common.vo.UserId
 
 object RefreshTokenMapper {
     fun toEntity(refreshToken: RefreshToken): RefreshTokenEntity {

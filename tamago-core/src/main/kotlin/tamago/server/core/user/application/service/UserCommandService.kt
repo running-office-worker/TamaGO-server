@@ -39,8 +39,8 @@ class UserCommandService(
 
         val userId = user.id ?: throw UserSaveErrorException()
 
-        val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role)
-        val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role)
+        val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role.name)
+        val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role.name)
 
         refreshTokenCommandUseCase.saveOrUpdate(userId, refreshToken)
 
