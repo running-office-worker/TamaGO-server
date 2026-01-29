@@ -6,6 +6,8 @@ plugins {
     id("io.spring.dependency-management")
 }
 
+val kotlinJdslVersion = "3.7.1"
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -13,10 +15,15 @@ dependencies {
 
     implementation("org.springframework.modulith:spring-modulith-starter-core")
 
+    // Kotlin JDSL
+    implementation("com.linecorp.kotlin-jdsl:jpql-dsl:$kotlinJdslVersion")
+    implementation("com.linecorp.kotlin-jdsl:jpql-render:$kotlinJdslVersion")
+    implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:$kotlinJdslVersion")
+
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
-    implementation ("io.jsonwebtoken:jjwt:0.12.6")
+    implementation("io.jsonwebtoken:jjwt:0.12.6")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

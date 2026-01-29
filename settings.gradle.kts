@@ -17,3 +17,4 @@ rootProject.name = "tamago-server"
 
 include("core")
 include("gateway")
+include("notification")

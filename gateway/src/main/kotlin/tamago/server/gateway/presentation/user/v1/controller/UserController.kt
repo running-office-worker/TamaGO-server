@@ -2,6 +2,7 @@ package tamago.server.gateway.presentation.user.v1.controller
 
 import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -10,8 +11,11 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.presentation.user.v1.api.UserApi
 import tamago.server.gateway.presentation.user.v1.request.GoalKiloRequest
 import tamago.server.gateway.presentation.user.v1.request.NicknameRequest
+import tamago.server.gateway.presentation.user.v1.response.RunningDataResponse
 import tamago.server.gateway.response.CustomResponse
 import tamago.server.gateway.security.annotation.CurrentUser
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 @RestController
 class UserController(
@@ -36,5 +40,20 @@ class UserController(
     ): CustomResponse<Void> {
         userCommandUseCase.updateGoalKilo(user, request.goalKilo)
         return CustomResponse.ok()
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/api/v1/users/running-data")
+    override fun getRunningData(
+        @CurrentUser user: User
+    ): CustomResponse<RunningDataResponse> {
+        val runningDays = user.createdAt?.let {
+            ChronoUnit.DAYS.between(it.toLocalDate(), LocalDate.now()) + 1
+        } ?: 1
+        val response = RunningDataResponse(
+            totalKilo = user.runningData.totalKilo ?: 0.0,
+            runningDays = runningDays,
+        )
+        return CustomResponse.ok(response)
     }
 }

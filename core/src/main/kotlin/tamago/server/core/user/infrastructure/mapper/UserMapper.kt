@@ -2,6 +2,7 @@ package tamago.server.core.user.infrastructure.mapper
 
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.user.domain.vo.UserId
+import tamago.server.core.user.domain.aggregate.UserRunningData
 import tamago.server.core.user.infrastructure.entity.UserEntity
 
 object UserMapper {
@@ -10,7 +11,8 @@ object UserMapper {
             id = user.id?.value,
             nickname = user.nickname,
             role = user.role,
-            goalKilo = user.goalKilo,
+            goalKilo = user.runningData.goalKilo,
+            totalKilo = user.runningData.totalKilo,
             lastLoginAt = user.lastLoginAt,
         )
 
@@ -31,7 +33,10 @@ object UserMapper {
             nickname = entity.nickname,
             role = entity.role,
             auths = UserAuthMapper.toDomain(entity.auths),
-            goalKilo = entity.goalKilo,
+            runningData = UserRunningData(
+                goalKilo = entity.goalKilo,
+                totalKilo = entity.totalKilo,
+            ),
             lastLoginAt = entity.lastLoginAt,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,

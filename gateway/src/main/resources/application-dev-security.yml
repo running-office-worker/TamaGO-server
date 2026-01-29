@@ -1,6 +1,6 @@
 cors:
   allowed-origins:
-    - https://tamago.ummdev.com
+    - https://dev.runtamago.shop
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}

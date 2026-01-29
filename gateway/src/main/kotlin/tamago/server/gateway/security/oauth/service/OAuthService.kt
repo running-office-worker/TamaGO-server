@@ -17,11 +17,7 @@ class OAuthService(
         try {
             kakaoClient.getUserInfo(token)
         } catch (e: FeignException) {
-            if (e.status() == 401) {
-                throw AuthenticationErrorException()
-            } else {
-                throw AuthenticationErrorException()
-            }
+            throw AuthenticationErrorException()
         }
 
     fun getAppleUserInfo(token: String): AppleClientResult {

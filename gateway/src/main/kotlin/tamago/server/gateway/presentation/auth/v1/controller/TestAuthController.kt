@@ -48,6 +48,7 @@ class TestAuthController(
                 userId = token.userId,
                 accessToken = token.accessToken,
                 refreshToken = token.refreshToken,
+                newUser = token.isNewUser,
             )
         )
     }
