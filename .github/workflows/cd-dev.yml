@@ -44,19 +44,28 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             docker rm -f tamago-server || true
-            
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/tamago-server:latest
-            
+
             docker run -d \
               --name tamago-server \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=dev \
+              -e JAVA_TOOL_OPTIONS="-Xms192m -Xmx320m -XX:MaxMetaspaceSize=128m" \
               -p 8080:8080 \
               --network tamago \
               --cpus="0.5" \
               --memory="512m" \
               --memory-swap="512m" \
               ${{ secrets.DOCKER_USERNAME }}/tamago-server:latest
-            
+
             docker image prune -f
+
+      - name: "애플리케이션이 정상적으로 구동되었는지 확인한다."
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://dev.runtamago.shop/actuator/health
+          max-attempts: 10
+          retry-delay: 10s
+          retry-all: true
 
