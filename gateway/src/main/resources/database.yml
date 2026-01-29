@@ -6,6 +6,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
+    hibernate:
+      ddl-auto: validate
     show-sql: true
 
 logging:
@@ -16,21 +18,9 @@ logging:
 spring:
   config:
     activate:
-      on-profile: local
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-
----
-spring:
-  config:
-    activate:
       on-profile: dev
 
   jpa:
-    hibernate:
-      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect

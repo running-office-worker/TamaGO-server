@@ -3,6 +3,7 @@ spring:
     active: local
   config:
     import:
-      - classpath:database.yml
-      - classpath:security.yml
-      - classpath:swagger.yml
+      - database.yml
+      - flyway.yml
+      - security.yml
+      - swagger.yml
