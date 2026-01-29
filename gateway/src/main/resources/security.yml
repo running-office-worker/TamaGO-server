@@ -1,0 +1,27 @@
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiry-ms: 3600000
+  refresh-token-expiry-ms: 604800000
+
+apple:
+  bundle-id: ${APPLE_BUNDLE_ID}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+cors:
+  allowed-origins:
+    - http://localhost:8080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+cors:
+  allowed-origins:
+    - https://dev.runtamago.shop

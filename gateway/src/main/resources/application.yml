@@ -1,6 +1,8 @@
 spring:
   profiles:
-    active: local # default
-    group:
-      local: local-db, local-security, swagger
-      dev: dev-db, dev-security, swagger
+    active: local
+  config:
+    import:
+      - classpath:database.yml
+      - classpath:security.yml
+      - classpath:swagger.yml
