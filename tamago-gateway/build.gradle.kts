@@ -13,7 +13,10 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-security")
     implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    implementation ("org.springframework.modulith:spring-modulith-starter-core")
+    implementation ("org.springframework.modulith:spring-modulith-actuator")
+    implementation ("org.springframework.modulith:spring-modulith-observability")
+
+    implementation ("org.springframework.boot:spring-boot-starter-actuator")
 
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 
