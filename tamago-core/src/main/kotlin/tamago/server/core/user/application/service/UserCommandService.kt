@@ -18,7 +18,7 @@ class UserCommandService(
     private val userPersistencePort: UserPersistencePort,
     private val refreshTokenCommandUseCase: RefreshTokenCommandUseCase,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
 ) : UserCommandUseCase {
 
     override fun createUser(command: SignUpCommandDto) {
@@ -26,16 +26,15 @@ class UserCommandService(
         val user = User.create(
             command.email,
             AuthProvider.EMAIL,
-            encodedPassword
+            encodedPassword,
         )
 
         userPersistencePort.save(user)
     }
 
     override fun socialLogin(command: LoginCommandDto): TokenQueryDto {
-        val (user, isNewUser) = userPersistencePort.findByExternalId(command.provider, command.externalId)
-            ?.let { it to false }
-            ?: run { createSocialUser(command) to true }
+        val user = userPersistencePort.findByExternalId(command.provider, command.externalId)
+            ?: run { createSocialUser(command) }
 
         val userId = user.id ?: throw UserSaveErrorException()
 
