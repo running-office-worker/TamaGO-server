@@ -25,7 +25,6 @@ jobs:
           distribution: ${{ matrix.distribution }}
           java-version: ${{ matrix.java-version }}
           cache: gradle
-          kotlin-version: ${{ matrix.kotlin-version }}
 
       - name: "Gradle 실행 권한 부여"
         run: chmod +x ./gradlew
