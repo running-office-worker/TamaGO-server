@@ -13,6 +13,7 @@ object UserMapper {
             role = user.role,
             goalKilo = user.runningData.goalKilo,
             totalKilo = user.runningData.totalKilo,
+            weight = user.weight,
             lastLoginAt = user.lastLoginAt,
         )
 
@@ -37,6 +38,7 @@ object UserMapper {
                 goalKilo = entity.goalKilo,
                 totalKilo = entity.totalKilo,
             ),
+            weight = entity.weight,
             lastLoginAt = entity.lastLoginAt,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
