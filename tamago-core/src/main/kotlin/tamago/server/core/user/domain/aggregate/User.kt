@@ -11,6 +11,7 @@ class User(
     val role: UserRole = UserRole.USER,
     auths: List<UserAuth> = emptyList(),
     runningData: UserRunningData = UserRunningData(),
+    weight: Double = 70.0,
     lastLoginAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -24,6 +25,9 @@ class User(
         .toList()
 
     var runningData: UserRunningData = runningData
+        private set
+
+    var weight: Double = weight
         private set
 
     var lastLoginAt: LocalDateTime? = lastLoginAt

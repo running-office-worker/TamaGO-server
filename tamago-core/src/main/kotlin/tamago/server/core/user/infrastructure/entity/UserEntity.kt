@@ -34,5 +34,7 @@ class UserEntity(
     val auths: MutableList<UserAuthEntity> = mutableListOf(),
     var goalKilo: Int? = null,
     var totalKilo: Double? = null,
+    @Column(nullable = false)
+    var weight: Double = 70.0,
     var lastLoginAt: LocalDateTime? = null,
 ) : BaseTimeEntity()

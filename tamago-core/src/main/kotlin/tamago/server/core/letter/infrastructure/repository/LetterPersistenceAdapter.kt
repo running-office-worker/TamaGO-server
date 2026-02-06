@@ -33,9 +33,7 @@ class LetterPersistenceAdapter(
                 path(ReceivedLetterEntity::readStatus),
             ).from(
                 entity(ReceivedLetterEntity::class),
-                join(LetterEntity::class).on(
-                    path(ReceivedLetterEntity::letterId).eq(path(LetterEntity::id))
-                ),
+                join(ReceivedLetterEntity::letter),
             ).where(
                 path(ReceivedLetterEntity::userId).eq(userId.value)
             ).orderBy(
