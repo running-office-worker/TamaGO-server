@@ -56,7 +56,6 @@ class LetterController(
         letterCommandUseCase.createTemplate(
             title = request.title,
             content = request.content,
-            mood = request.mood
         )
 
         return CustomResponse.created()

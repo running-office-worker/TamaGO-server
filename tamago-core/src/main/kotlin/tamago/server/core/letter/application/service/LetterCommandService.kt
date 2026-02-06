@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.letter.LetterCommandUseCase
 import tamago.server.core.letter.domain.aggregate.Letter
 import tamago.server.core.letter.domain.aggregate.ReceivedLetter
-import tamago.server.core.letter.domain.enum.LetterMood
 import tamago.server.core.letter.domain.port.outbound.LetterPersistencePort
 import tamago.server.core.letter.domain.port.outbound.ReceivedLetterPersistencePort
 
@@ -25,9 +24,8 @@ class LetterCommandService(
     override fun createTemplate(
         title: String,
         content: String,
-        mood: LetterMood
     ): Letter {
-        val letter = Letter.create(title, content, mood)
+        val letter = Letter.create(title, content)
         return letterPersistencePort.save(letter)
     }
 }
