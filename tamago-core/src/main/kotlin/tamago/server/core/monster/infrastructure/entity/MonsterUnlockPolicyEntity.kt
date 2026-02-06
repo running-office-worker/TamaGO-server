@@ -14,14 +14,14 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
-import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
+import tamago.server.core.monster.domain.enum.MonsterRuleType
 
 @Entity
-@Table(name = "t_owned_monsters")
-class OwnedMonsterEntity(
+@Table(name = "t_monster_unlock_policy")
+class MonsterUnlockPolicyEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "owned_monster_id")
+    @Column(name = "monster_unlock_policy_id")
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,13 +32,12 @@ class OwnedMonsterEntity(
     )
     val monster: MonsterEntity,
 
-    @Column(name = "user_id", nullable = false)
-    val userId: Long,
-
-    @Column(name = "earned_xp")
-    val earnedXp: Int? = null,
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    val status: OwnedMonsterStatus? = null,
+    @Column(name = "rule_type")
+    val ruleType: MonsterRuleType? = null,
+
+    @Column(name = "rule_value")
+    val ruleValue: Int? = null,
+
+    val description: String? = null,
 ) : BaseTimeEntity()

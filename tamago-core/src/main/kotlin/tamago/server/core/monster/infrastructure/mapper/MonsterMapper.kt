@@ -9,6 +9,8 @@ object MonsterMapper {
         return MonsterEntity(
             id = monster.id?.value,
             nextMonster = nextMonster,
+            nickname = monster.nickname,
+            evolutionXp = monster.evolutionXp,
         )
     }
 
@@ -18,6 +20,8 @@ object MonsterMapper {
         return Monster(
             id = entity.id?.let { MonsterId(it) },
             nextMonsterId = entity.nextMonster?.id?.let { MonsterId(it) },
+            nickname = entity.nickname,
+            evolutionXp = entity.evolutionXp,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,
