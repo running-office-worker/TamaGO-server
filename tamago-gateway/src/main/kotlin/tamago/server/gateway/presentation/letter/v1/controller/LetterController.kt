@@ -11,7 +11,7 @@ import tamago.server.core.letter.LetterQueryUseCase
 import tamago.server.core.letter.domain.vo.ReceivedLetterId
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.presentation.letter.v1.api.LetterApi
-import tamago.server.gateway.presentation.letter.v1.request.LetterCreate
+import tamago.server.gateway.presentation.letter.v1.request.LetterCreateRequest
 import tamago.server.gateway.presentation.letter.v1.response.LetterResponse
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.common.annotation.CurrentUser
@@ -52,7 +52,7 @@ class LetterController(
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/api/v1/letters")
-    override fun createTemplate(@RequestBody @Valid request: LetterCreate): CustomResponse<Void> {
+    override fun createTemplate(@RequestBody @Valid request: LetterCreateRequest): CustomResponse<Void> {
         letterCommandUseCase.createTemplate(
             title = request.title,
             content = request.content,
