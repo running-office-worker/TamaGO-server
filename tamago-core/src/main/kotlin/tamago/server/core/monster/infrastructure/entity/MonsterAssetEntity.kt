@@ -1,4 +1,4 @@
-package tamago.server.core.letter.infrastructure.entity
+package tamago.server.core.monster.infrastructure.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
@@ -14,28 +14,28 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
-import tamago.server.core.letter.domain.enum.ReadStatus
+import tamago.server.core.monster.domain.enum.AssetType
 
 @Entity
-@Table(name = "t_received_letters")
-class ReceivedLetterEntity(
+@Table(name = "t_monster_assets")
+class MonsterAssetEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "received_letter_id")
+    @Column(name = "monster_asset_id")
     val id: Long? = null,
-
-    @Column(name = "user_id", nullable = false)
-    val userId: Long,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "letter_id",
+        name = "monster_id",
         nullable = false,
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT),
     )
-    val letter: LetterEntity,
+    val monster: MonsterEntity,
+
+    @Column(name = "asset_key")
+    val assetKey: String? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "read_status")
-    var readStatus: ReadStatus = ReadStatus.UNREAD,
+    @Column(name = "asset_type")
+    val assetType: AssetType? = null,
 ) : BaseTimeEntity()

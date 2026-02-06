@@ -1,17 +1,18 @@
 package tamago.server.core.letter.infrastructure.mapper
 
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.letter.domain.aggregate.ReceivedLetter
 import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.ReceivedLetterId
+import tamago.server.core.letter.infrastructure.entity.LetterEntity
 import tamago.server.core.letter.infrastructure.entity.ReceivedLetterEntity
-import tamago.server.core.common.vo.UserId
 
 object ReceivedLetterMapper {
-    fun toEntity(receivedLetter: ReceivedLetter): ReceivedLetterEntity {
+    fun toEntity(receivedLetter: ReceivedLetter, letter: LetterEntity): ReceivedLetterEntity {
         return ReceivedLetterEntity(
             id = receivedLetter.id?.value,
             userId = receivedLetter.userId.value,
-            letterId = receivedLetter.letterId.value,
+            letter = letter,
             readStatus = receivedLetter.readStatus,
         )
     }
@@ -22,7 +23,7 @@ object ReceivedLetterMapper {
         return ReceivedLetter(
             id = entity.id?.let { ReceivedLetterId(it) },
             userId = UserId(entity.userId),
-            letterId = LetterId(entity.letterId),
+            letterId = LetterId(entity.letter.id!!),
             readStatus = entity.readStatus,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,

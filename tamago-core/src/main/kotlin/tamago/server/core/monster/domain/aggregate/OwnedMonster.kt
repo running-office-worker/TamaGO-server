@@ -1,5 +1,6 @@
 package tamago.server.core.monster.domain.aggregate
 
+import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
@@ -9,15 +10,24 @@ class OwnedMonster(
     val id: OwnedMonsterId? = null,
     val monsterId: MonsterId,
     val userId: UserId,
+    val earnedXp: Int? = null,
+    val status: OwnedMonsterStatus? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
     companion object {
-        fun create(monsterId: MonsterId, userId: UserId): OwnedMonster {
+        fun create(
+            monsterId: MonsterId,
+            userId: UserId,
+            earnedXp: Int? = null,
+            status: OwnedMonsterStatus? = null,
+        ): OwnedMonster {
             return OwnedMonster(
                 monsterId = monsterId,
                 userId = userId,
+                earnedXp = earnedXp,
+                status = status,
             )
         }
     }
