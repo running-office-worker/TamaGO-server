@@ -112,6 +112,12 @@ module/
 - Trailing commas allowed
 - Test files have no line length limit
 
+## Working Rules
+
+- **Always `git add` new files:** Immediately run `git add <file_path>` after creating any new file.
+- **Never modify existing Flyway migrations:** Never edit previously created migration files (V1–VN). Always create a new version file for any schema changes.
+- **Proceed with code changes without asking:** Unless explicitly told otherwise, implement code changes directly without requesting confirmation first.
+
 ## Git Workflow
 
 - **Main branch for PRs:** `develop`
