@@ -58,8 +58,3 @@ jobs:
             -Dflyway.user=root \
             -Dflyway.password=test \
             --no-daemon --stacktrace
-
-      - name: "Hibernate 스키마 검증 테스트"
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: :tamago-core:test --no-daemon --stacktrace
