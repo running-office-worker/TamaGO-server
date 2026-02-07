@@ -36,6 +36,6 @@ class MonsterEvolutionPolicyEntity(
     @Column(name = "rule_type")
     val ruleType: MonsterRuleType? = null,
 
-    @Column(name = "rule_value")
-    val ruleValue: Int? = null,
+    @Column(name = "multiplier")
+    val multiplier: Int? = null,
 ) : BaseTimeEntity()
