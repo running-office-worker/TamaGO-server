@@ -35,5 +35,8 @@ data class RunningFinishResponse(
 
         @field:Schema(description = "다음 단계로 진화에 필요한 경험치", example = "200", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         val evolutionXp: Int?,
+
+        @field:Schema(description = "현재 단계 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
+        val current: Boolean,
     )
 }

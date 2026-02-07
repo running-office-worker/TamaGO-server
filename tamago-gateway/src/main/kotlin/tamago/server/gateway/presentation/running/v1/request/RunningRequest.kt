@@ -24,7 +24,7 @@ data class RunningRequest(
     val finishedAt: LocalDateTime,
 
     @field:Schema(description = "소유한 몬스터 ID", example = "42", requiredMode = Schema.RequiredMode.REQUIRED)
-    val ownedMonsterId: OwnedMonsterId,
+    val ownedMonsterId: Long,
 )
 
 fun RunningRequest.toCommand(userId: UserId, weight: Double) = SaveRunningCommandDto(
@@ -35,5 +35,5 @@ fun RunningRequest.toCommand(userId: UserId, weight: Double) = SaveRunningComman
     heartbeat = heartbeat,
     startedAt = startedAt,
     finishedAt = finishedAt,
-    ownedMonsterId = ownedMonsterId,
+    ownedMonsterId = OwnedMonsterId(ownedMonsterId),
 )

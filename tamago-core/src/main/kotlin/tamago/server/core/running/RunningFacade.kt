@@ -33,6 +33,7 @@ class RunningFacade(
                     stage = index + 1,
                     monsterId = monster.id!!.value,
                     evolutionXp = monster.evolutionXp,
+                    current = monster.id == ownedMonster.monsterId,
                 )
             },
         )

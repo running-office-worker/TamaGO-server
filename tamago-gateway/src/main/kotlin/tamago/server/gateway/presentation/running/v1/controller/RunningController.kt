@@ -43,6 +43,7 @@ class RunningController(
                         stage = stage.stage,
                         monsterId = stage.monsterId,
                         evolutionXp = stage.evolutionXp,
+                        current = stage.current,
                     )
                 },
             ),
