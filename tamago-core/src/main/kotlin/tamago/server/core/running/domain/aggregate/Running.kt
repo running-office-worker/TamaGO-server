@@ -1,17 +1,20 @@
 package tamago.server.core.running.domain.aggregate
 
-import tamago.server.core.running.domain.vo.RunningId
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.monster.domain.vo.OwnedMonsterId
+import tamago.server.core.running.domain.vo.RunningId
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 class Running(
     val id: RunningId? = null,
     val userId: UserId,
+    val ownedMonsterId: OwnedMonsterId,
     val pace: Double? = null,
-    val time: LocalTime? = null,
-    val kcal: Int? = null,
-    val kilometre: Double? = null,
+    val cadence: Int? = null,
+    val calories: Int? = null,
+    val distance: Double? = null,
+    val elevationGain: Double? = null,
+    val heartbeat: Int? = null,
     val startedAt: LocalDateTime? = null,
     val finishedAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
@@ -21,19 +24,25 @@ class Running(
     companion object {
         fun create(
             userId: UserId,
+            ownedMonsterId: OwnedMonsterId,
             pace: Double,
-            time: LocalTime,
-            kcal: Int,
-            kilometre: Double,
+            cadence: Int,
+            calories: Int,
+            distance: Double,
+            elevationGain: Double,
+            heartbeat: Int?,
             startedAt: LocalDateTime,
             finishedAt: LocalDateTime,
         ): Running {
             return Running(
                 userId = userId,
+                ownedMonsterId = ownedMonsterId,
                 pace = pace,
-                time = time,
-                kcal = kcal,
-                kilometre = kilometre,
+                cadence = cadence,
+                calories = calories,
+                distance = distance,
+                elevationGain = elevationGain,
+                heartbeat = heartbeat,
                 startedAt = startedAt,
                 finishedAt = finishedAt,
             )

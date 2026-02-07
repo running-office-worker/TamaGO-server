@@ -22,6 +22,10 @@ class MonsterEntity(
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "previous_monster_id")
+    val previousMonster: MonsterEntity? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_monster_id")
     val nextMonster: MonsterEntity? = null,
 

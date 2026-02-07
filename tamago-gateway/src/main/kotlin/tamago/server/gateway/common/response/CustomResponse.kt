@@ -48,10 +48,13 @@ data class CustomResponse<T>(
             data = data
         )
 
-        fun <T> created(): CustomResponse<T> = CustomResponse(
+        fun <T> created(): CustomResponse<T> = created(null)
+
+        fun <T> created(data: T?): CustomResponse<T> = CustomResponse(
             status = GlobalExceptionCode.CREATED.status,
             message = GlobalExceptionCode.CREATED.message,
             code = GlobalExceptionCode.CREATED.code,
+            data = data,
         )
 
         fun noContent(): CustomResponse<Void> = CustomResponse(
