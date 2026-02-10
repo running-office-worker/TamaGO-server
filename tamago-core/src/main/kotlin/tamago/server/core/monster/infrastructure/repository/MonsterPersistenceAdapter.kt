@@ -13,4 +13,7 @@ class MonsterPersistenceAdapter(
 
     override fun findById(id: MonsterId): Monster? =
         MonsterMapper.toDomain(monsterJpaRepository.findById(id.value).orElse(null))
+
+    override fun findAllByPreviousMonsterIdIsNull(): List<Monster> =
+        monsterJpaRepository.findAllByPreviousMonsterIsNull().mapNotNull { MonsterMapper.toDomain(it) }
 }

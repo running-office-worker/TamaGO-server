@@ -1,31 +1,11 @@
 -- ==============================================
--- 테스트 시드 데이터 (유저, 몬스터, 소유 몬스터, 진화 정책)
+-- 몬스터 시드 데이터 (몬스터 정의 + 진화 정책)
 -- Repeatable migration: 내용 변경 시 자동 재실행
 -- ==============================================
 
 -- 기존 시드 데이터 정리
 DELETE FROM t_monster_evolution_policy WHERE monster_id IN (SELECT monster_id FROM t_monsters WHERE nickname IN ('타마알', '타마베이비', '타마러너', '타마히어로'));
-DELETE FROM t_owned_monsters WHERE user_id IN (SELECT id FROM t_users WHERE nickname IN ('테스트유저1', '테스트유저2'));
-DELETE FROM t_user_auth WHERE user_id IN (SELECT id FROM t_users WHERE nickname IN ('테스트유저1', '테스트유저2'));
 DELETE FROM t_monsters WHERE nickname IN ('타마알', '타마베이비', '타마러너', '타마히어로');
-DELETE FROM t_users WHERE nickname IN ('테스트유저1', '테스트유저2');
-
--- ==============================================
--- 테스트 유저
--- ==============================================
-
-INSERT INTO t_users (nickname, role, goal_kilo, total_kilo, weight, created_at, updated_at)
-VALUES ('테스트유저1', 'USER', 10, 25.5, 65.0, NOW(), NOW());
-
-INSERT INTO t_users (nickname, role, goal_kilo, total_kilo, weight, created_at, updated_at)
-VALUES ('테스트유저2', 'USER', 5, 0.0, 70.0, NOW(), NOW());
-
--- 유저 인증 정보 (카카오 OAuth)
-INSERT INTO t_user_auth (user_id, email, provider, external_id)
-VALUES ((SELECT id FROM t_users WHERE nickname = '테스트유저1'), 'test1@test.com', 'KAKAO', 'kakao_test_001');
-
-INSERT INTO t_user_auth (user_id, email, provider, external_id)
-VALUES ((SELECT id FROM t_users WHERE nickname = '테스트유저2'), 'test2@test.com', 'KAKAO', 'kakao_test_002');
 
 -- ==============================================
 -- 몬스터 (4단계 진화 체인)
@@ -48,18 +28,6 @@ UPDATE t_monsters SET next_monster_id = (SELECT m.monster_id FROM (SELECT monste
 UPDATE t_monsters SET previous_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마알') m), next_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마러너') m) WHERE nickname = '타마베이비';
 UPDATE t_monsters SET previous_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마베이비') m), next_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마히어로') m) WHERE nickname = '타마러너';
 UPDATE t_monsters SET previous_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마러너') m) WHERE nickname = '타마히어로';
-
--- ==============================================
--- 소유 몬스터
--- ==============================================
-
--- 유저1: 1단계 몬스터 소유 중 (XP 50 보유, 진화 중)
-INSERT INTO t_owned_monsters (monster_id, user_id, having_xp, status, created_at, updated_at)
-VALUES ((SELECT monster_id FROM t_monsters WHERE nickname = '타마알'), (SELECT id FROM t_users WHERE nickname = '테스트유저1'), 50, 'OWNED', NOW(), NOW());
-
--- 유저2: 1단계 몬스터 소유 (XP 0, 시작)
-INSERT INTO t_owned_monsters (monster_id, user_id, having_xp, status, created_at, updated_at)
-VALUES ((SELECT monster_id FROM t_monsters WHERE nickname = '타마알'), (SELECT id FROM t_users WHERE nickname = '테스트유저2'), 0, 'OWNED', NOW(), NOW());
 
 -- ==============================================
 -- 몬스터 진화 정책 (KILOMETER 기준, multiplier = km당 XP 배율)

@@ -5,4 +5,5 @@ import tamago.server.core.monster.domain.vo.MonsterId
 
 interface MonsterPersistencePort {
     fun findById(id: MonsterId): Monster?
+    fun findAllByPreviousMonsterIdIsNull(): List<Monster>
 }

@@ -5,4 +5,5 @@ import tamago.server.core.monster.domain.vo.OwnedMonsterId
 
 interface OwnedMonsterPersistencePort {
     fun findById(id: OwnedMonsterId): OwnedMonster?
+    fun save(ownedMonster: OwnedMonster): OwnedMonster
 }
