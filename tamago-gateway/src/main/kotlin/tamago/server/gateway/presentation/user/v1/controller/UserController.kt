@@ -11,6 +11,7 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.presentation.user.v1.api.UserApi
 import tamago.server.gateway.presentation.user.v1.request.GoalKiloRequest
 import tamago.server.gateway.presentation.user.v1.request.NicknameRequest
+import tamago.server.gateway.presentation.user.v1.response.MeResponse
 import tamago.server.gateway.presentation.user.v1.response.RunningDataResponse
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.common.annotation.CurrentUser
@@ -21,6 +22,12 @@ import java.time.temporal.ChronoUnit
 class UserController(
     private val userCommandUseCase: UserCommandUseCase,
 ) : UserApi {
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/api/v1/users/me")
+    override fun me(
+        @CurrentUser user: User
+    ): CustomResponse<MeResponse> = CustomResponse.ok(MeResponse.from(user))
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/api/v1/users/nickname")

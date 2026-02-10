@@ -13,7 +13,7 @@ object OwnedMonsterMapper {
             id = ownedMonster.id?.value,
             monster = monster,
             userId = ownedMonster.userId.value,
-            earnedXp = ownedMonster.earnedXp,
+            havingXp = ownedMonster.havingXp,
             status = ownedMonster.status,
         )
     }
@@ -25,7 +25,7 @@ object OwnedMonsterMapper {
             id = entity.id?.let { OwnedMonsterId(it) },
             monsterId = MonsterId(entity.monster.id!!),
             userId = UserId(entity.userId),
-            earnedXp = entity.earnedXp,
+            havingXp = entity.havingXp,
             status = entity.status,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,

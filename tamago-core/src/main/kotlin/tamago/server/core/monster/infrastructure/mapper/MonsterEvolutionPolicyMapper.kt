@@ -12,7 +12,7 @@ object MonsterEvolutionPolicyMapper {
             id = domain.id?.value,
             monster = monster,
             ruleType = domain.ruleType,
-            ruleValue = domain.ruleValue,
+            multiplier = domain.multiplier,
         )
     }
 
@@ -23,7 +23,7 @@ object MonsterEvolutionPolicyMapper {
             id = entity.id?.let { MonsterEvolutionPolicyId(it) },
             monsterId = MonsterId(entity.monster.id!!),
             ruleType = entity.ruleType,
-            ruleValue = entity.ruleValue,
+            multiplier = entity.multiplier,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,

@@ -8,7 +8,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 @Entity
 @Table(name = "t_running")
@@ -18,18 +17,26 @@ class RunningEntity(
     @Column(name = "running_id")
     val id: Long? = null,
 
+    @Column(name = "user_id", nullable = false)
+    val userId: Long,
+
+    @Column(name = "owned_monster_id", nullable = false)
+    val ownedMonsterId: Long,
+
     val pace: Double? = null,
 
-    val time: LocalTime? = null,
+    val cadence: Int? = null,
 
-    val kcal: Int? = null,
+    val calories: Int? = null,
 
-    val kilometre: Double? = null,
+    val distance: Double? = null,
+
+    @Column(name = "elevation_gain")
+    val elevationGain: Double? = null,
+
+    val heartbeat: Int? = null,
 
     val startedAt: LocalDateTime? = null,
 
     val finishedAt: LocalDateTime? = null,
-
-    @Column(name = "user_id", nullable = false)
-    val userId: Long,
 ) : BaseTimeEntity()

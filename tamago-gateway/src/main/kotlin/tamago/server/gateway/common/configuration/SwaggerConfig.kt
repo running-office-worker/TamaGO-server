@@ -33,6 +33,12 @@ class SwaggerConfig(
             .components(components())
 
     @Bean
+    fun tagSortCustomizer(): OpenApiCustomizer =
+        OpenApiCustomizer { openApi ->
+            openApi.tags?.sortBy { it.name }
+        }
+
+    @Bean
     fun remove4xxContentCustomizer(): OpenApiCustomizer =
         OpenApiCustomizer { openApi ->
             openApi
