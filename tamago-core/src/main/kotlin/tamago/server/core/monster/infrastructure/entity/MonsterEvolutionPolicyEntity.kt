@@ -11,7 +11,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
 import tamago.server.core.monster.domain.enum.MonsterRuleType
@@ -24,7 +24,7 @@ class MonsterEvolutionPolicyEntity(
     @Column(name = "monster_evolution_policy_id")
     val id: Long? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "monster_id",
         nullable = false,

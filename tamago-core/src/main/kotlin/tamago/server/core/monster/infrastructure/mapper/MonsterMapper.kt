@@ -24,6 +24,7 @@ object MonsterMapper {
             nextMonsterId = entity.nextMonster?.id?.let { MonsterId(it) },
             nickname = entity.nickname,
             evolutionXp = entity.evolutionXp,
+            evolutionPolicy = MonsterEvolutionPolicyMapper.toDomain(entity.evolutionPolicy),
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,

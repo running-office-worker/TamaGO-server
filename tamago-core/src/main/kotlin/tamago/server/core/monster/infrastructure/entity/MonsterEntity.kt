@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
 
@@ -37,6 +38,6 @@ class MonsterEntity(
     @OneToMany(mappedBy = "monster", cascade = [CascadeType.ALL], orphanRemoval = true)
     val unlockPolicies: MutableList<MonsterUnlockPolicyEntity> = mutableListOf(),
 
-    @OneToMany(mappedBy = "monster", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val evolutionPolicies: MutableList<MonsterEvolutionPolicyEntity> = mutableListOf(),
+    @OneToOne(mappedBy = "monster", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val evolutionPolicy: MonsterEvolutionPolicyEntity? = null,
 ) : BaseTimeEntity()

@@ -18,6 +18,7 @@ class RunningFacade(
 
         val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
         val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
+        val currentMonster = evolutionChain.first { it.id == ownedMonster.monsterId }
 
         val elapsedSeconds = Duration.between(command.startedAt, command.finishedAt).seconds.toInt()
 
@@ -27,7 +28,7 @@ class RunningFacade(
             elapsedTime = elapsedSeconds,
             totalCalories = running.calories ?: 0,
             originXp = ownedMonster.havingXp ?: 0,
-            earnedXp = running.calories ?: 0,
+            earnedXp = currentMonster.evolutionPolicy?.calculateXp(command.distance) ?: 0, // TODO: earnedXp 저장
             evolutionStages = evolutionChain.mapIndexed { index, monster ->
                 RunningFinishQueryDto.EvolutionStageDto(
                     stage = index + 1,
