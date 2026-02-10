@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 data class MeResponse(
     @field:Schema(description = "유저 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    val id: Long?,
+    val id: Long,
 
     @field:Schema(description = "닉네임", example = "타마고")
     val nickname: String?,
@@ -53,7 +53,7 @@ data class MeResponse(
 
     companion object {
         fun from(user: User): MeResponse = MeResponse(
-            id = user.id?.value,
+            id = user.id!!.value,
             nickname = user.nickname,
             role = user.role,
             weight = user.weight,

@@ -9,4 +9,5 @@ interface MonsterQueryUseCase {
     fun get(id: MonsterId): Monster
     fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster
     fun getEvolutionChain(monsterId: MonsterId): List<Monster>
+    fun getRandomFirstStageMonster(): Monster
 }

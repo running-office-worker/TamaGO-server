@@ -15,7 +15,7 @@ data class RunningRequest(
     val elevationGain: Double,
 
     @field:Schema(description = "평균 심박수 (bpm)", example = "145", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    val heartbeat: Int,
+    val heartbeat: Int?,
 
     @field:Schema(description = "러닝 시작 시간", example = "2025-01-15T08:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
     val startedAt: LocalDateTime,

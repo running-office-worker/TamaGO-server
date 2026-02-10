@@ -5,21 +5,17 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
-import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
+import tamago.server.core.monster.domain.vo.MonsterId
 
 @Service
 class MonsterCommandService(
-    private val monsterPersistencePort: MonsterPersistencePort,
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
 ) : MonsterCommandUseCase {
 
-    override fun initRandomMonster(userId: UserId): OwnedMonster {
-        val firstStageMonsters = monsterPersistencePort.findAllByPreviousMonsterIdIsNull()
-        val selected = firstStageMonsters.random()
-
+    override fun initMonster(userId: UserId, monsterId: MonsterId): OwnedMonster {
         val ownedMonster = OwnedMonster.create(
-            monsterId = selected.id!!,
+            monsterId = monsterId,
             userId = userId,
             havingXp = 0,
             status = OwnedMonsterStatus.OWNED,

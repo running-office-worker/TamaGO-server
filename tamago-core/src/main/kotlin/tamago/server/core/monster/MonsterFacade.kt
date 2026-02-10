@@ -12,8 +12,8 @@ class MonsterFacade(
 ) {
     @Transactional
     fun initRandomMonster(userId: UserId): InitMonsterQueryDto {
-        val ownedMonster = monsterCommandUseCase.initRandomMonster(userId)
-        val monster = monsterQueryUseCase.get(ownedMonster.monsterId)
+        val monster = monsterQueryUseCase.getRandomFirstStageMonster()
+        val ownedMonster = monsterCommandUseCase.initMonster(userId, monster.id!!)
 
         return InitMonsterQueryDto(
             ownedMonsterId = ownedMonster.id!!.value,

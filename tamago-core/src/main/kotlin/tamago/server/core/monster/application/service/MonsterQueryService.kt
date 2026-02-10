@@ -46,4 +46,10 @@ class MonsterQueryService(
 
         return previousChain.reversed() + current + nextChain
     }
+
+    override fun getRandomFirstStageMonster(): Monster {
+        val firstStageMonsters = monsterPersistencePort.findAllByPreviousMonsterIdIsNull()
+        if (firstStageMonsters.isEmpty()) throw MonsterNotFoundException()
+        return firstStageMonsters.random()
+    }
 }
