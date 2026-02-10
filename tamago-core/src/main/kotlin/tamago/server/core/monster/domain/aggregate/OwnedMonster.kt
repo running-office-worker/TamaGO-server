@@ -10,7 +10,7 @@ class OwnedMonster(
     val id: OwnedMonsterId? = null,
     val monsterId: MonsterId,
     val userId: UserId,
-    val earnedXp: Int? = null,
+    val havingXp: Int? = null,
     val status: OwnedMonsterStatus? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -20,13 +20,13 @@ class OwnedMonster(
         fun create(
             monsterId: MonsterId,
             userId: UserId,
-            earnedXp: Int? = null,
+            havingXp: Int? = null,
             status: OwnedMonsterStatus? = null,
         ): OwnedMonster {
             return OwnedMonster(
                 monsterId = monsterId,
                 userId = userId,
-                earnedXp = earnedXp,
+                havingXp = havingXp,
                 status = status,
             )
         }

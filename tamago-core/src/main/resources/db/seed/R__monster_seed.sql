@@ -1,39 +1,75 @@
 -- ==============================================
--- Monster 시드 데이터 (4단계 진화 체인 1세트)
+-- 테스트 시드 데이터 (유저, 몬스터, 소유 몬스터, 진화 정책)
 -- Repeatable migration: 내용 변경 시 자동 재실행
 -- ==============================================
 
-DELETE FROM t_monster_evolution_policy WHERE monster_id IN (1, 2, 3, 4);
-DELETE FROM t_monsters WHERE monster_id IN (1, 2, 3, 4);
-
--- 1단계: 알 → 2단계로 진화
-INSERT INTO t_monsters (monster_id, previous_monster_id, next_monster_id, nickname, evolution_xp, created_at, updated_at)
-VALUES (1, NULL, 2, '타마알', 100, NOW(), NOW());
-
--- 2단계: 아기 → 3단계로 진화
-INSERT INTO t_monsters (monster_id, previous_monster_id, next_monster_id, nickname, evolution_xp, created_at, updated_at)
-VALUES (2, 1, 3, '타마베이비', 300, NOW(), NOW());
-
--- 3단계: 성장기 → 4단계로 진화
-INSERT INTO t_monsters (monster_id, previous_monster_id, next_monster_id, nickname, evolution_xp, created_at, updated_at)
-VALUES (3, 2, 4, '타마러너', 700, NOW(), NOW());
-
--- 4단계: 최종 진화 (next 없음)
-INSERT INTO t_monsters (monster_id, previous_monster_id, next_monster_id, nickname, evolution_xp, created_at, updated_at)
-VALUES (4, 3, NULL, '타마히어로', NULL, NOW(), NOW());
+-- 기존 시드 데이터 정리
+DELETE FROM t_monster_evolution_policy WHERE monster_id IN (SELECT monster_id FROM t_monsters WHERE nickname IN ('타마알', '타마베이비', '타마러너', '타마히어로'));
+DELETE FROM t_owned_monsters WHERE user_id IN (SELECT id FROM t_users WHERE nickname IN ('테스트유저1', '테스트유저2'));
+DELETE FROM t_user_auth WHERE user_id IN (SELECT id FROM t_users WHERE nickname IN ('테스트유저1', '테스트유저2'));
+DELETE FROM t_monsters WHERE nickname IN ('타마알', '타마베이비', '타마러너', '타마히어로');
+DELETE FROM t_users WHERE nickname IN ('테스트유저1', '테스트유저2');
 
 -- ==============================================
--- Monster 진화 정책 (KILOMETER 기준)
+-- 테스트 유저
 -- ==============================================
 
--- 1단계 → 2단계: 누적 10km 달성 시 진화
-INSERT INTO t_monster_evolution_policy (monster_id, rule_type, multiplier, created_at, updated_at)
-VALUES (1, 'KILOMETER', 10, NOW(), NOW());
+INSERT INTO t_users (nickname, role, goal_kilo, total_kilo, weight, created_at, updated_at)
+VALUES ('테스트유저1', 'USER', 10, 25.5, 65.0, NOW(), NOW());
 
--- 2단계 → 3단계: 누적 50km 달성 시 진화
-INSERT INTO t_monster_evolution_policy (monster_id, rule_type, multiplier, created_at, updated_at)
-VALUES (2, 'KILOMETER', 50, NOW(), NOW());
+INSERT INTO t_users (nickname, role, goal_kilo, total_kilo, weight, created_at, updated_at)
+VALUES ('테스트유저2', 'USER', 5, 0.0, 70.0, NOW(), NOW());
 
--- 3단계 → 4단계: 누적 150km 달성 시 진화
+-- 유저 인증 정보 (카카오 OAuth)
+INSERT INTO t_user_auth (user_id, email, provider, external_id)
+VALUES ((SELECT id FROM t_users WHERE nickname = '테스트유저1'), 'test1@test.com', 'KAKAO', 'kakao_test_001');
+
+INSERT INTO t_user_auth (user_id, email, provider, external_id)
+VALUES ((SELECT id FROM t_users WHERE nickname = '테스트유저2'), 'test2@test.com', 'KAKAO', 'kakao_test_002');
+
+-- ==============================================
+-- 몬스터 (4단계 진화 체인)
+-- ==============================================
+
+INSERT INTO t_monsters (nickname, evolution_xp, created_at, updated_at)
+VALUES ('타마알', 100, NOW(), NOW());
+
+INSERT INTO t_monsters (nickname, evolution_xp, created_at, updated_at)
+VALUES ('타마베이비', 300, NOW(), NOW());
+
+INSERT INTO t_monsters (nickname, evolution_xp, created_at, updated_at)
+VALUES ('타마러너', 700, NOW(), NOW());
+
+INSERT INTO t_monsters (nickname, evolution_xp, created_at, updated_at)
+VALUES ('타마히어로', NULL, NOW(), NOW());
+
+-- 진화 체인 연결
+UPDATE t_monsters SET next_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마베이비') m) WHERE nickname = '타마알';
+UPDATE t_monsters SET previous_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마알') m), next_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마러너') m) WHERE nickname = '타마베이비';
+UPDATE t_monsters SET previous_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마베이비') m), next_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마히어로') m) WHERE nickname = '타마러너';
+UPDATE t_monsters SET previous_monster_id = (SELECT m.monster_id FROM (SELECT monster_id FROM t_monsters WHERE nickname = '타마러너') m) WHERE nickname = '타마히어로';
+
+-- ==============================================
+-- 소유 몬스터
+-- ==============================================
+
+-- 유저1: 1단계 몬스터 소유 중 (XP 50 보유, 진화 중)
+INSERT INTO t_owned_monsters (monster_id, user_id, having_xp, status, created_at, updated_at)
+VALUES ((SELECT monster_id FROM t_monsters WHERE nickname = '타마알'), (SELECT id FROM t_users WHERE nickname = '테스트유저1'), 50, 'OWNED', NOW(), NOW());
+
+-- 유저2: 1단계 몬스터 소유 (XP 0, 시작)
+INSERT INTO t_owned_monsters (monster_id, user_id, having_xp, status, created_at, updated_at)
+VALUES ((SELECT monster_id FROM t_monsters WHERE nickname = '타마알'), (SELECT id FROM t_users WHERE nickname = '테스트유저2'), 0, 'OWNED', NOW(), NOW());
+
+-- ==============================================
+-- 몬스터 진화 정책 (KILOMETER 기준, multiplier = km당 XP 배율)
+-- ==============================================
+
 INSERT INTO t_monster_evolution_policy (monster_id, rule_type, multiplier, created_at, updated_at)
-VALUES (3, 'KILOMETER', 150, NOW(), NOW());
+VALUES ((SELECT monster_id FROM t_monsters WHERE nickname = '타마알'), 'KILOMETER', 10, NOW(), NOW());
+
+INSERT INTO t_monster_evolution_policy (monster_id, rule_type, multiplier, created_at, updated_at)
+VALUES ((SELECT monster_id FROM t_monsters WHERE nickname = '타마베이비'), 'KILOMETER', 50, NOW(), NOW());
+
+INSERT INTO t_monster_evolution_policy (monster_id, rule_type, multiplier, created_at, updated_at)
+VALUES ((SELECT monster_id FROM t_monsters WHERE nickname = '타마러너'), 'KILOMETER', 150, NOW(), NOW());

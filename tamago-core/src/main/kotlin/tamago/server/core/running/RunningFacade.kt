@@ -26,7 +26,7 @@ class RunningFacade(
             cadence = running.cadence ?: 0,
             elapsedTime = elapsedSeconds,
             totalCalories = running.calories ?: 0,
-            originXp = ownedMonster.earnedXp ?: 0,
+            originXp = ownedMonster.havingXp ?: 0,
             earnedXp = running.calories ?: 0,
             evolutionStages = evolutionChain.mapIndexed { index, monster ->
                 RunningFinishQueryDto.EvolutionStageDto(

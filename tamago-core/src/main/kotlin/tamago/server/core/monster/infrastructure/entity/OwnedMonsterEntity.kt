@@ -35,8 +35,8 @@ class OwnedMonsterEntity(
     @Column(name = "user_id", nullable = false)
     val userId: Long,
 
-    @Column(name = "earned_xp")
-    val earnedXp: Int? = null,
+    @Column(name = "having_xp")
+    val havingXp: Int? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
