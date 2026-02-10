@@ -48,10 +48,6 @@ flyway {
     locations = arrayOf("filesystem:src/main/resources/db/migration")
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     enabled = false
 }
