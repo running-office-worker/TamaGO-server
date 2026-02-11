@@ -1,4 +1,4 @@
-package tamago.server.aws.s3
+package tamago.server.core.common.image
 
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component

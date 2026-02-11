@@ -2,10 +2,13 @@ package tamago.server.core.monster.application.service
 
 import org.springframework.stereotype.Service
 import tamago.server.core.monster.MonsterQueryUseCase
+import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
 import tamago.server.core.monster.application.exception.MonsterNotFoundException
 import tamago.server.core.monster.application.exception.OwnedMonsterNotFoundException
 import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
+import tamago.server.core.monster.domain.enum.AssetType
+import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
 import tamago.server.core.monster.domain.vo.MonsterId
@@ -15,6 +18,7 @@ import tamago.server.core.monster.domain.vo.OwnedMonsterId
 class MonsterQueryService(
     private val monsterPersistencePort: MonsterPersistencePort,
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
+    private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
 ) : MonsterQueryUseCase {
 
     override fun get(id: MonsterId): Monster =
@@ -51,5 +55,11 @@ class MonsterQueryService(
         val firstStageMonsters = monsterPersistencePort.findAllByPreviousMonsterIdIsNull()
         if (firstStageMonsters.isEmpty()) throw MonsterNotFoundException()
         return firstStageMonsters.random()
+    }
+
+    override fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType) {
+        if (monsterAssetPersistencePort.existsByMonsterIdAndAssetType(monsterId, assetType)) {
+            throw MonsterAssetAlreadyExistsException()
+        }
     }
 }

@@ -2,24 +2,25 @@ package tamago.server.aws.s3
 
 import org.springframework.stereotype.Component
 import tamago.server.aws.AwsProperties
-import tamago.server.core.common.image.ImageS3Caller
-import tamago.server.core.common.image.S3ImageInfo
-import tamago.server.core.common.image.S3ImageUrl
+import tamago.server.core.common.image.ImageFileConstructor
+import tamago.server.core.common.image.ImageProcessor
+import tamago.server.core.common.image.ImageInfo
+import tamago.server.core.common.image.ImageUrl
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Component
-class ImageS3Processor(
+class S3ImageProcessor(
     private val awsS3Client: AwsS3Client,
     private val awsProperties: AwsProperties,
     private val imageFileConstructor: ImageFileConstructor,
-) : ImageS3Caller {
+) : ImageProcessor {
     override fun createUploadUrl(
         userId: Long,
         prefix: String,
         prefixId: Long,
-    ): S3ImageUrl {
+    ): ImageUrl {
         val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
         val imageFileName = imageFileConstructor.imageFileName()
 
@@ -31,7 +32,7 @@ class ImageS3Processor(
                 Duration.ofSeconds(30), // 만료 시간 최소화
             )
 
-        return S3ImageUrl(
+        return ImageUrl(
             presignedUrl,
             generateGetUrl(imageFilePath, imageFileName),
         )
@@ -41,7 +42,7 @@ class ImageS3Processor(
         prefix: String,
         prefixId: Long,
         fileName: String?,
-    ): List<S3ImageInfo> {
+    ): List<ImageInfo> {
         val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
 
         return fileName
@@ -66,7 +67,7 @@ class ImageS3Processor(
         filePath: String,
         fileName: String,
         ttl: Duration = Duration.ofSeconds(30),
-    ): S3ImageInfo {
+    ): ImageInfo {
         val url =
             awsS3Client.generateUrl(
                 bucketName = awsProperties.s3.bucket,
@@ -79,7 +80,7 @@ class ImageS3Processor(
                 bucketName = awsProperties.s3.bucket,
                 key = "$filePath/$fileName",
             )
-        return S3ImageInfo(
+        return ImageInfo(
             url = url,
             uploadedAt = LocalDateTime.ofInstant(lastModified, ZoneId.of("Asia/Seoul")),
         )
@@ -88,7 +89,7 @@ class ImageS3Processor(
     private fun listPresignedGets(
         filePath: String,
         ttl: Duration = Duration.ofSeconds(30),
-    ): List<S3ImageInfo> =
+    ): List<ImageInfo> =
         awsS3Client
             .getBucketListObjects(
                 bucketName = awsProperties.s3.bucket,
@@ -99,7 +100,7 @@ class ImageS3Processor(
             .filterNot { it.key().endsWith("/") }
             .map { s3Object ->
                 val fileName = s3Object.key().substringAfterLast("/")
-                S3ImageInfo(
+                ImageInfo(
                     url =
                         awsS3Client.generateUrl(
                             bucketName = awsProperties.s3.bucket,

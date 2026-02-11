@@ -1,6 +1,6 @@
 package tamago.server.core.common.image
 
-interface ImageS3Caller {
+interface ImageProcessor {
     /**
      * @param userId [Long] 사용자 ID
      * @param prefix [String] 도메인
@@ -10,7 +10,7 @@ interface ImageS3Caller {
         userId: Long,
         prefix: String,
         prefixId: Long,
-    ): S3ImageUrl
+    ): ImageUrl
 
     /**
      * @param prefix [String] 도메인
@@ -21,5 +21,5 @@ interface ImageS3Caller {
         prefix: String,
         prefixId: Long,
         fileName: String?,
-    ): List<S3ImageInfo>
+    ): List<ImageInfo>
 }
