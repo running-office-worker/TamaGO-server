@@ -15,7 +15,7 @@ class ImageFileConstructor(
         private const val FILENAME_LENGTH = 24
     }
 
-    fun imageFileName(): String = "${randomFileName()}.jpeg"
+    fun imageFileName(extension: String = "jpeg"): String = "${randomFileName()}.$extension"
 
     /**
      * @param prefix [String] S3 key prefix: 도메인별 분리

@@ -10,6 +10,8 @@ interface ImageProcessor {
         userId: Long,
         prefix: String,
         prefixId: Long,
+        contentType: String = "image/jpeg",
+        extension: String = "jpeg",
     ): ImageUrl
 
     /**

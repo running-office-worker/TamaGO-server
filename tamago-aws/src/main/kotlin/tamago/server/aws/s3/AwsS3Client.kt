@@ -62,13 +62,14 @@ class AwsS3Client(
         filePath: String,
         fileName: String,
         ttl: Duration,
+        contentType: String = "image/jpeg",
     ): String {
         val putObjectRequest =
             PutObjectRequest
                 .builder()
                 .bucket(bucketName)
                 .key("$filePath/$fileName")
-                .contentType("image/jpeg")
+                .contentType(contentType)
                 .build()
 
         val putObjectPresignedUrlRequest =

@@ -41,6 +41,8 @@ class MonsterFacade(
             userId = 0L,
             prefix = ImagePrefix.MONSTER.value,
             prefixId = monsterId.value,
+            contentType = assetType.contentType,
+            extension = assetType.extension,
         )
 
         monsterCommandUseCase.createMonsterAsset(monsterId, assetType, assetKey)

@@ -20,9 +20,11 @@ class S3ImageProcessor(
         userId: Long,
         prefix: String,
         prefixId: Long,
+        contentType: String,
+        extension: String,
     ): ImageUrl {
         val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
-        val imageFileName = imageFileConstructor.imageFileName()
+        val imageFileName = imageFileConstructor.imageFileName(extension)
 
         val presignedUrl =
             awsS3Client.generateUploadUrl(
@@ -30,6 +32,7 @@ class S3ImageProcessor(
                 imageFilePath,
                 imageFileName,
                 Duration.ofSeconds(30), // 만료 시간 최소화
+                contentType,
             )
 
         return ImageUrl(
