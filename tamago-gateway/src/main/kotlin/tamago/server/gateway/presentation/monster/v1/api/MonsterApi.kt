@@ -1,0 +1,13 @@
+package tamago.server.gateway.presentation.monster.v1.api
+
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import tamago.server.core.user.domain.aggregate.User
+import tamago.server.gateway.common.response.CustomResponse
+import tamago.server.gateway.presentation.monster.v1.response.MonsterDexResponse
+
+@Tag(name = "Monster API", description = "몬스터 도감 API")
+interface MonsterApi {
+    @Operation(summary = "전체 몬스터 도감 조회", description = "전체 몬스터 캐릭터 도감 정보를 조회합니다.")
+    fun getMonsterDex(user: User): CustomResponse<List<MonsterDexResponse>>
+}

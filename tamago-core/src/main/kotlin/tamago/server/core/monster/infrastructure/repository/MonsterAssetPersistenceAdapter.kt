@@ -5,6 +5,7 @@ import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderer
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Repository
+import tamago.server.core.common.jdsl.findAll
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
@@ -44,6 +45,27 @@ class MonsterAssetPersistenceAdapter(
             .setMaxResults(1)
             .resultList
             .isNotEmpty()
+    }
+
+    override fun findAllByMonsterIdsAndAssetType(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> {
+        if (monsterIds.isEmpty()) return emptyList()
+
+        val query = jpql {
+            select(
+                entity(MonsterAssetEntity::class),
+            ).from(
+                entity(MonsterAssetEntity::class),
+                join(MonsterAssetEntity::monster),
+            ).where(
+                and(
+                    path(MonsterAssetEntity::monster)(MonsterEntity::id).`in`(monsterIds.map { it.value }),
+                    path(MonsterAssetEntity::assetType).eq(assetType),
+                ),
+            )
+        }
+
+        return entityManager.findAll<MonsterAssetEntity>(query, jpqlRenderContext)
+            .mapNotNull { MonsterAssetMapper.toDomain(it) }
     }
 
     override fun save(monsterAsset: MonsterAsset): MonsterAsset {

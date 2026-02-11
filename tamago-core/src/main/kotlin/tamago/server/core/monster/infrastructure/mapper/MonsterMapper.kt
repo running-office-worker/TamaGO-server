@@ -25,6 +25,7 @@ object MonsterMapper {
             nickname = entity.nickname,
             evolutionXp = entity.evolutionXp,
             evolutionPolicy = MonsterEvolutionPolicyMapper.toDomain(entity.evolutionPolicy),
+            unlockPolicies = entity.unlockPolicies.mapNotNull { MonsterUnlockPolicyMapper.toDomain(it) },
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,

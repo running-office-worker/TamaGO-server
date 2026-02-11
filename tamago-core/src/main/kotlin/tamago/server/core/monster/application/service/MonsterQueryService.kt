@@ -1,11 +1,13 @@
 package tamago.server.core.monster.application.service
 
 import org.springframework.stereotype.Service
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
 import tamago.server.core.monster.application.exception.MonsterNotFoundException
 import tamago.server.core.monster.application.exception.OwnedMonsterNotFoundException
 import tamago.server.core.monster.domain.aggregate.Monster
+import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
@@ -25,9 +27,21 @@ class MonsterQueryService(
         monsterPersistencePort.findById(id)
             ?: throw MonsterNotFoundException()
 
+    override fun getAllWithUnlockPolicies(): List<Monster> =
+        monsterPersistencePort.findAllWithUnlockPolicies()
+
+    override fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
+        monsterPersistencePort.findAllFirstStageWithUnlockPolicies()
+
     override fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster =
         ownedMonsterPersistencePort.findById(id)
             ?: throw OwnedMonsterNotFoundException()
+
+    override fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
+        ownedMonsterPersistencePort.findAllByUserId(userId)
+
+    override fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
+        monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
 
     override fun getEvolutionChain(monsterId: MonsterId): List<Monster> {
         val current = monsterPersistencePort.findById(monsterId) ?: throw MonsterNotFoundException()

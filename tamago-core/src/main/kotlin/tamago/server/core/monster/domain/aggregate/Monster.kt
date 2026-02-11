@@ -10,6 +10,7 @@ class Monster(
     val nickname: String? = null,
     val evolutionXp: Int? = null,
     val evolutionPolicy: MonsterEvolutionPolicy? = null,
+    val unlockPolicies: List<MonsterUnlockPolicy> = emptyList(),
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,

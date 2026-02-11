@@ -7,7 +7,7 @@ import tamago.server.gateway.presentation.auth.v1.request.SignupRequest
 import tamago.server.gateway.presentation.auth.v1.response.LoginResponse
 import tamago.server.gateway.common.response.CustomResponse
 
-@Tag(name = "\uD83E\uDDEA Test Auth API", description = "테스트용 인증 API (local, dev 환경에서만 사용 가능)")
+@Tag(name = "\uD83E\uDDEA Auth API", description = "테스트용 인증 API (local, dev 환경에서만 사용 가능)")
 interface TestAuthApi {
     @Operation(summary = "테스트 유저 회원가입", description = "이메일과 비밀번호로 테스트 유저를 생성 합니다.")
     fun signup(request: SignupRequest): CustomResponse<Void>
