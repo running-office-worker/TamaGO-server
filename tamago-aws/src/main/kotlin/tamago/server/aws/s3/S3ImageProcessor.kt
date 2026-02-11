@@ -38,7 +38,7 @@ class S3ImageProcessor(
         )
     }
 
-    override suspend fun getImageUrl(
+    override fun getImageUrl(
         prefix: String,
         prefixId: Long,
         fileName: String?,

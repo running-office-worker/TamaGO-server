@@ -17,7 +17,7 @@ interface ImageProcessor {
      * @param prefixId [Long] 도메인 ID
      * @param fileName [String] 파일명 (null일 경우 해당 경로 아래 모든 이미지 조회)
      */
-    suspend fun getImageUrl(
+    fun getImageUrl(
         prefix: String,
         prefixId: Long,
         fileName: String?,
