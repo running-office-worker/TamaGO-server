@@ -2,16 +2,10 @@ package tamago.server.aws.s3
 
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.GetObjectRequest
-import software.amazon.awssdk.services.s3.model.HeadObjectRequest
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response
-import software.amazon.awssdk.services.s3.model.PutObjectRequest
-import software.amazon.awssdk.services.s3.model.S3Object
+import software.amazon.awssdk.services.s3.model.*
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest
-import java.nio.charset.Charset
 import java.time.Duration
 import java.time.Instant
 
@@ -20,12 +14,8 @@ class AwsS3Client(
     private val s3Presigner: S3Presigner,
     private val s3Client: S3Client,
 ) {
-    companion object {
-        private val profile = System.getenv("SPRING_PROFILES_ACTIVE") ?: "dev"
-    }
-
     /**
-     * 파일 URL 생성
+     * S3 presigned GET URL 생성
      *
      * @param bucketName [String] 버킷명
      * @param filePath [String] 파일 경로
@@ -52,11 +42,15 @@ class AwsS3Client(
                 .getObjectRequest(getObjectRequest)
                 .build()
 
-        val presignedGetObject = s3Presigner.presignGetObject(getObjectPresignedUrlRequest)
+        val presignedGetObject =
+            s3Presigner.presignGetObject(getObjectPresignedUrlRequest)
 
         return presignedGetObject.url().toExternalForm()
     }
 
+    /**
+     * S3 presigned PUT URL 생성
+     */
     fun generateUploadUrl(
         bucketName: String,
         filePath: String,
@@ -79,7 +73,9 @@ class AwsS3Client(
                 .signatureDuration(ttl)
                 .build()
 
-        val presignedRequest = s3Presigner.presignPutObject(putObjectPresignedUrlRequest)
+        val presignedRequest =
+            s3Presigner.presignPutObject(putObjectPresignedUrlRequest)
+
         return presignedRequest.url().toExternalForm()
     }
 
@@ -124,20 +120,7 @@ class AwsS3Client(
                 .bucket(bucketName)
                 .key(key)
                 .build()
-        return s3Client.headObject(request).lastModified()
-    }
 
-    fun getObjectAsBytes(
-        bucketName: String,
-        filePath: String,
-        fileName: String,
-    ): String {
-        val request =
-            GetObjectRequest
-                .builder()
-                .bucket(bucketName)
-                .key("$profile/$filePath/$fileName")
-                .build()
-        return s3Client.getObjectAsBytes(request).asString(Charset.defaultCharset())
+        return s3Client.headObject(request).lastModified()
     }
 }

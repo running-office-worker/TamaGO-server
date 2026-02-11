@@ -13,7 +13,9 @@ data class AwsProperties(
 data class CredentialsProperties(
     val accessKey: String,
     val secretKey: String,
-)
+) {
+    override fun toString(): String = ""
+}
 
 data class S3Properties(
     val bucket: String,
