@@ -8,6 +8,6 @@ data class InitMonsterAssetRequest(
     @field:Schema(description = "몬스터 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     val monsterId: Long,
 
-    `@field`:Schema(description = "에셋 타입 (PNG, GIF, LOTTIE 중 하나)", example = "PNG", requiredMode = Schema.RequiredMode.REQUIRED)
+    @field:Schema(description = "에셋 타입 (PNG, GIF, LOTTIE 중 하나)", example = "PNG", requiredMode = Schema.RequiredMode.REQUIRED)
     val assetType: AssetType,
 )

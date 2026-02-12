@@ -37,6 +37,7 @@ class MonsterFacade(
         }
     }
 
+    // TODO: 추후 배치 조회로 전환
     private fun getMonsterPngUrl(monsterId: MonsterId): String? =
         imageProcessor.getImageUrl(
             prefix = ImagePrefix.MONSTER.value,
