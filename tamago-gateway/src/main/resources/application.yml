@@ -9,3 +9,4 @@ spring:
       - swagger.yml
       - oauth.yml
       - modulith.yml
+      - aws.yml
