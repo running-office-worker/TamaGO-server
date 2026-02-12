@@ -17,7 +17,6 @@ class S3ImageProcessor(
     private val imageFileConstructor: ImageFileConstructor,
 ) : ImageProcessor {
     override fun createUploadUrl(
-        userId: Long,
         prefix: String,
         prefixId: Long,
         contentType: String,
@@ -57,7 +56,7 @@ class S3ImageProcessor(
     private fun generateGetUrl(
         filePath: String,
         fileName: String,
-        ttl: Duration = Duration.ofSeconds(30),
+        ttl: Duration = Duration.ofSeconds(60),
     ): String =
         awsS3Client.generateUrl(
             bucketName = awsProperties.s3.bucket,
@@ -69,7 +68,7 @@ class S3ImageProcessor(
     private fun presignedGet(
         filePath: String,
         fileName: String,
-        ttl: Duration = Duration.ofSeconds(30),
+        ttl: Duration = Duration.ofSeconds(60),
     ): ImageInfo {
         val url =
             awsS3Client.generateUrl(

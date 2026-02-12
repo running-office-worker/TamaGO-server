@@ -7,7 +7,6 @@ interface ImageProcessor {
      * @param prefixId [Long] 도메인 ID
      */
     fun createUploadUrl(
-        userId: Long,
         prefix: String,
         prefixId: Long,
         contentType: String = "image/jpeg",

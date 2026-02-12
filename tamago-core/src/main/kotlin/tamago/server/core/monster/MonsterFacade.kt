@@ -67,7 +67,6 @@ class MonsterFacade(
         val assetKey = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
 
         val generatedUrl = imageProcessor.createUploadUrl(
-            userId = 0L,
             prefix = ImagePrefix.MONSTER.value,
             prefixId = monsterId.value,
             contentType = assetType.contentType,
