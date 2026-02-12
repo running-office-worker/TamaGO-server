@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.v3.oas.annotations.media.Schema
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
 
-@Schema(description = "몬스터 도감 응답, NULL 인 필드는 응답에서 제외됩니다.")
-@JsonIgnoreProperties(ignoreUnknown = true)
+`@Schema`(description = "몬스터 도감 응답, NULL 인 필드는 응답에서 제외됩니다.")
+`@JsonInclude`(JsonInclude.Include.NON_NULL)
 data class MonsterDexResponse(
     @field:Schema(description = "몬스터 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     val monsterId: Long,
