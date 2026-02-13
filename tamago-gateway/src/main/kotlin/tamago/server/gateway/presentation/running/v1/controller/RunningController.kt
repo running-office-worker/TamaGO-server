@@ -3,8 +3,10 @@ package tamago.server.gateway.presentation.running.v1.controller
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import tamago.server.core.running.RunningFacade
@@ -14,6 +16,7 @@ import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.running.v1.api.RunningApi
 import tamago.server.gateway.presentation.running.v1.request.RunningRequest
 import tamago.server.gateway.presentation.running.v1.request.toCommand
+import tamago.server.gateway.presentation.running.v1.response.MonthlyRunningResponse
 import tamago.server.gateway.presentation.running.v1.response.RunningFinishResponse
 
 @RestController
@@ -22,7 +25,7 @@ class RunningController(
 ) : RunningApi {
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/api/v1/running")
     override fun saveRunningData(
         @CurrentUser user: User,
@@ -48,5 +51,16 @@ class RunningController(
                 },
             ),
         )
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/api/v1/running/monthly")
+    override fun getMonthlyRunningData(
+        @CurrentUser user: User,
+        @RequestParam year: Int,
+        @RequestParam month: Int,
+    ): CustomResponse<MonthlyRunningResponse> {
+        val result = runningFacade.getMonthlyRunningData(user.id!!, year, month)
+        return CustomResponse.ok(MonthlyRunningResponse.from(result))
     }
 }

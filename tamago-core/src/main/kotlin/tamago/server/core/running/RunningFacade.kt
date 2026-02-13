@@ -2,14 +2,17 @@ package tamago.server.core.running
 
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
+import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
 import java.time.Duration
 
 @Component
 class RunningFacade(
     private val runningCommandUseCase: RunningCommandUseCase,
+    private val runningQueryUseCase: RunningQueryUseCase,
     private val monsterQueryUseCase: MonsterQueryUseCase,
 ) {
     @Transactional
@@ -39,4 +42,54 @@ class RunningFacade(
             },
         )
     }
+
+    @Transactional(readOnly = true)
+    fun getMonthlyRunningData(userId: UserId, year: Int, month: Int): MonthlyRunningQueryDto {
+        val runnings = runningQueryUseCase.getMonthlyRunnings(userId, year, month)
+
+        // ownedMonsterId → monsterId 매핑 (distinct)
+        val ownedMonsterIds = runnings.map { it.ownedMonsterId }.distinct()
+        val ownedMonsterMap = ownedMonsterIds.associateWith { monsterQueryUseCase.getOwnedMonster(it) }
+
+        // monsterId → imageUrl 매핑 (distinct)
+        val monsterIds = ownedMonsterMap.values.map { it.monsterId }.distinct()
+        val monsterImageMap = monsterIds.associateWith { monsterQueryUseCase.getMonsterPngUrl(it) }
+
+        // 날짜별 그룹핑
+        val dailyRunnings = runnings
+            .groupBy { it.startedAt!!.toLocalDate() }
+            .entries
+            .sortedBy { it.key }
+            .map { (date, runs) ->
+                MonthlyRunningQueryDto.DailyRunningDto(
+                    date = date,
+                    runs = runs.map { running ->
+                        val ownedMonster = ownedMonsterMap[running.ownedMonsterId]
+                        val imageUrl = ownedMonster?.let { monsterImageMap[it.monsterId] }
+                        val elapsedTime = Duration.between(running.startedAt, running.finishedAt).seconds.toInt()
+                        MonthlyRunningQueryDto.RunDetailDto(
+                            pace = running.pace?.toInt() ?: 0,
+                            calories = running.calories ?: 0,
+                            elapsedTime = elapsedTime,
+                            monsterImageUrl = imageUrl,
+                        )
+                    },
+                )
+            }
+
+        // 월간 요약
+        val summary = MonthlyRunningQueryDto.MonthlySummaryDto(
+            totalDistance = runnings.sumOf { it.distance ?: 0.0 },
+            runCount = runnings.size,
+            totalTimeMinutes = runnings.sumOf {
+                Duration.between(it.startedAt, it.finishedAt).toMinutes()
+            }.toInt(),
+        )
+
+        return MonthlyRunningQueryDto(
+            dailyRunnings = dailyRunnings,
+            summary = summary,
+        )
+    }
+
 }

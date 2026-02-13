@@ -18,4 +18,5 @@ interface MonsterQueryUseCase {
     fun getEvolutionChain(monsterId: MonsterId): List<Monster>
     fun getRandomFirstStageMonster(): Monster
     fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType)
+    fun getMonsterPngUrl(monsterId: MonsterId): String?
 }

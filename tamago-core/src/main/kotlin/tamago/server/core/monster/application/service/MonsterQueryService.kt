@@ -1,6 +1,8 @@
 package tamago.server.core.monster.application.service
 
 import org.springframework.stereotype.Service
+import tamago.server.core.common.image.ImagePrefix
+import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
@@ -21,6 +23,7 @@ class MonsterQueryService(
     private val monsterPersistencePort: MonsterPersistencePort,
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
+    private val imageProcessor: ImageProcessor,
 ) : MonsterQueryUseCase {
 
     override fun get(id: MonsterId): Monster =
@@ -76,4 +79,14 @@ class MonsterQueryService(
             throw MonsterAssetAlreadyExistsException()
         }
     }
+
+    override fun getMonsterPngUrl(monsterId: MonsterId): String? =
+        imageProcessor.getImageUrl(
+            prefix = ImagePrefix.MONSTER.value,
+            prefixId = monsterId.value,
+            fileName = null,
+        ).firstOrNull { info ->
+            info.url.substringBefore("?")
+                .endsWith(".${AssetType.PNG.extension}")
+        }?.url
 }
