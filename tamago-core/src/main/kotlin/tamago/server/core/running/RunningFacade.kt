@@ -66,29 +66,14 @@ class RunningFacade(
                     runs = runs.map { running ->
                         val ownedMonster = ownedMonsterMap[running.ownedMonsterId]
                         val imageUrl = ownedMonster?.let { monsterImageMap[it.monsterId] }
-                        val elapsedTime = Duration.between(running.startedAt, running.finishedAt).seconds.toInt()
-                        MonthlyRunningQueryDto.RunDetailDto(
-                            pace = running.pace?.toInt() ?: 0,
-                            calories = running.calories ?: 0,
-                            elapsedTime = elapsedTime,
-                            monsterImageUrl = imageUrl,
-                        )
+                        MonthlyRunningQueryDto.RunDetailDto.from(running, imageUrl)
                     },
                 )
             }
 
-        // 월간 요약
-        val summary = MonthlyRunningQueryDto.MonthlySummaryDto(
-            totalDistance = runnings.sumOf { it.distance ?: 0.0 },
-            runCount = runnings.size,
-            totalTimeMinutes = runnings.sumOf {
-                Duration.between(it.startedAt, it.finishedAt).toMinutes()
-            }.toInt(),
-        )
-
         return MonthlyRunningQueryDto(
             dailyRunnings = dailyRunnings,
-            summary = summary,
+            summary = MonthlyRunningQueryDto.MonthlySummaryDto.from(runnings),
         )
     }
 

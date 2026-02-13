@@ -1,5 +1,7 @@
 package tamago.server.core.running.domain.port.inbound.query
 
+import tamago.server.core.running.domain.aggregate.Running
+import java.time.Duration
 import java.time.LocalDate
 
 data class MonthlyRunningQueryDto(
@@ -16,11 +18,32 @@ data class MonthlyRunningQueryDto(
         val calories: Int,
         val elapsedTime: Int,
         val monsterImageUrl: String?,
-    )
+    ) {
+        companion object {
+            fun from(running: Running, monsterImageUrl: String?): RunDetailDto =
+                RunDetailDto(
+                    pace = running.pace?.toInt() ?: 0,
+                    calories = running.calories ?: 0,
+                    elapsedTime = Duration.between(running.startedAt, running.finishedAt).seconds.toInt(),
+                    monsterImageUrl = monsterImageUrl,
+                )
+        }
+    }
 
     data class MonthlySummaryDto(
         val totalDistance: Double,
         val runCount: Int,
         val totalTimeMinutes: Int,
-    )
+    ) {
+        companion object {
+            fun from(runnings: List<Running>): MonthlySummaryDto =
+                MonthlySummaryDto(
+                    totalDistance = runnings.sumOf { it.distance ?: 0.0 },
+                    runCount = runnings.size,
+                    totalTimeMinutes = runnings.sumOf {
+                        Duration.between(it.startedAt, it.finishedAt).toMinutes()
+                    }.toInt(),
+                )
+        }
+    }
 }
