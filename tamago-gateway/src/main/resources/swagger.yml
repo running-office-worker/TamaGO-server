@@ -1,2 +1,4 @@
 springdoc:
   override-with-generic-response: false
+  swagger-ui:
+    doc-expansion: none
