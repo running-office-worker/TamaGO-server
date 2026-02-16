@@ -19,4 +19,5 @@ interface MonsterQueryUseCase {
     fun getRandomFirstStageMonster(): Monster
     fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType)
     fun getMonsterPngUrl(monsterId: MonsterId): String?
+    fun getUnlockedMonsters(userId: UserId): List<OwnedMonster>
 }

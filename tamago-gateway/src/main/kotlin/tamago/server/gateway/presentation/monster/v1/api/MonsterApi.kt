@@ -5,9 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.monster.v1.response.MonsterDexResponse
+import tamago.server.gateway.presentation.monster.v1.response.UnlockedMonsterResponse
 
 @Tag(name = "Monster API", description = "몬스터 도감 API")
 interface MonsterApi {
     @Operation(summary = "전체 몬스터 도감 조회", description = "전체 몬스터 캐릭터 도감 정보를 조회합니다.")
     fun getMonsterDex(user: User): CustomResponse<List<MonsterDexResponse>>
+
+    @Operation(summary = "해금된 몬스터 목록 조회", description = "해금된 몬스터(알) 목록을 조회합니다.")
+    fun getUnlockedMonsters(user: User): CustomResponse<List<UnlockedMonsterResponse>>
 }
