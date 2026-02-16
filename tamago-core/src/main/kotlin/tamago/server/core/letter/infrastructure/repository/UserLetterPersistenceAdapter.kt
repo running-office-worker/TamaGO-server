@@ -50,7 +50,7 @@ class UserLetterPersistenceAdapter(
         UserLetterMapper.toDomain(userLetterJpaRepository.findTopByUserIdOrderByCreatedAtDesc(userId.value))
 
     override fun findByUserIdAndLetterStatus(userId: UserId, letterStatus: LetterStatus): UserLetter? =
-        UserLetterMapper.toDomain(userLetterJpaRepository.findByUserIdAndLetterStatus(userId.value, letterStatus))
+        UserLetterMapper.toDomain(userLetterJpaRepository.findFirstByUserIdAndLetterStatusOrderByCreatedAtDesc(userId.value, letterStatus))
 
     override fun findLatestDistinctByUser(): List<UserLetter> =
         userLetterJpaRepository.findAll {

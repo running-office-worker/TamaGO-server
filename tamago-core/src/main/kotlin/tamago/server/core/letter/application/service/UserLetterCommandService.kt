@@ -18,6 +18,7 @@ class UserLetterCommandService(
         userLetterPersistencePort.save(userLetter)
     }
 
+    @Transactional
     fun scheduleNextLetter(userId: UserId, letterId: LetterId, prevScheduledAt: LocalDateTime) {
         val nextLetter = UserLetter.repeat(
             userId = userId,
