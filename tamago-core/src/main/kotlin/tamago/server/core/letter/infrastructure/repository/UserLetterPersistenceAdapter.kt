@@ -52,13 +52,11 @@ class UserLetterPersistenceAdapter(
     override fun findByUserIdAndLetterStatus(userId: UserId, letterStatus: LetterStatus): UserLetter? =
         UserLetterMapper.toDomain(userLetterJpaRepository.findByUserIdAndLetterStatus(userId.value, letterStatus))
 
-    override fun findLatestNotScheduledDistinctByUser(): List<UserLetter> =
+    override fun findLatestDistinctByUser(): List<UserLetter> =
         userLetterJpaRepository.findAll {
             select(entity(UserLetterEntity::class))
                 .from(entity(UserLetterEntity::class))
-                .where(
-                    path(UserLetterEntity::letterStatus).ne(LetterStatus.SCHEDULED),
-                ).orderBy(
+                .orderBy(
                     path(UserLetterEntity::userId).asc(),
                     path(UserLetterEntity::createdAt).desc(),
                 )
