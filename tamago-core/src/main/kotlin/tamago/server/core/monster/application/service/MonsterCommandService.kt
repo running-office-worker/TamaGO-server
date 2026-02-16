@@ -6,6 +6,7 @@ import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
+import tamago.server.core.monster.application.exception.MonsterAlreadyOwnedException
 import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
@@ -41,6 +42,14 @@ class MonsterCommandService(
     override fun addEarnedXp(ownedMonster: OwnedMonster, xp: Int): OwnedMonster {
         val updated = ownedMonster.addXp(xp)
         return ownedMonsterPersistencePort.save(updated)
+    }
+
+    override fun ownMonster(ownedMonster: OwnedMonster): OwnedMonster {
+        if (ownedMonster.status != OwnedMonsterStatus.UNLOCKED) {
+            throw MonsterAlreadyOwnedException()
+        }
+        val owned = ownedMonster.own()
+        return ownedMonsterPersistencePort.save(owned)
     }
 
     fun unlockMonster(monsterId: MonsterId, userId: UserId): OwnedMonster {

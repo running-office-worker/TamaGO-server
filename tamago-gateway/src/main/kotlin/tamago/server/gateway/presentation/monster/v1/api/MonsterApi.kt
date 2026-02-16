@@ -14,4 +14,7 @@ interface MonsterApi {
 
     @Operation(summary = "해금된 몬스터 목록 조회", description = "해금된 몬스터(알) 목록을 조회합니다.")
     fun getUnlockedMonsters(user: User): CustomResponse<List<UnlockedMonsterResponse>>
+
+    @Operation(summary = "해금된 몬스터 소유", description = "해금된 몬스터를 소유 상태로 변경합니다.")
+    fun ownMonster(user: User, ownedMonsterId: Long): CustomResponse<Unit>
 }

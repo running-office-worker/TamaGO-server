@@ -11,6 +11,7 @@ import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQu
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
 import tamago.server.core.monster.domain.vo.MonsterId
+import tamago.server.core.monster.domain.vo.OwnedMonsterId
 
 @Component
 class MonsterFacade(
@@ -70,5 +71,11 @@ class MonsterFacade(
             previewUrl = generatedUrl.previewUrl,
             assetKey = assetKey,
         )
+    }
+
+    @Transactional
+    fun ownMonster(ownedMonsterId: OwnedMonsterId) {
+        val ownedMonster = monsterQueryUseCase.getOwnedMonster(ownedMonsterId)
+        monsterCommandUseCase.ownMonster(ownedMonster)
     }
 }

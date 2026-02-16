@@ -16,6 +16,19 @@ class OwnedMonster(
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
+    fun own(): OwnedMonster {
+        return OwnedMonster(
+            id = id,
+            monsterId = monsterId,
+            userId = userId,
+            havingXp = havingXp,
+            status = OwnedMonsterStatus.OWNED,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            deletedAt = deletedAt,
+        )
+    }
+
     fun addXp(xp: Int): OwnedMonster {
         return OwnedMonster(
             id = id,

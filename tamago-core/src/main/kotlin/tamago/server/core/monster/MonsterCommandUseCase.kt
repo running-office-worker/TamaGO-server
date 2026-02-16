@@ -10,4 +10,5 @@ interface MonsterCommandUseCase {
     fun initMonster(userId: UserId, monsterId: MonsterId): OwnedMonster
     fun createMonsterAsset(monsterId: MonsterId, assetType: AssetType, assetKey: String): MonsterAsset
     fun addEarnedXp(ownedMonster: OwnedMonster, xp: Int): OwnedMonster
+    fun ownMonster(ownedMonster: OwnedMonster): OwnedMonster
 }
