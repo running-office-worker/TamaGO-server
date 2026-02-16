@@ -10,36 +10,25 @@ class OwnedMonster(
     val id: OwnedMonsterId? = null,
     val monsterId: MonsterId,
     val userId: UserId,
-    val havingXp: Int? = null,
-    val status: OwnedMonsterStatus? = null,
+    havingXp: Int? = null,
+    status: OwnedMonsterStatus? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
-    fun own(): OwnedMonster {
-        return OwnedMonster(
-            id = id,
-            monsterId = monsterId,
-            userId = userId,
-            havingXp = havingXp,
-            status = OwnedMonsterStatus.OWNED,
-            createdAt = createdAt,
-            updatedAt = updatedAt,
-            deletedAt = deletedAt,
-        )
+    var havingXp: Int? = havingXp
+        private set
+
+    var status: OwnedMonsterStatus? = status
+        private set
+
+    fun own() {
+        status = OwnedMonsterStatus.OWNED
+        havingXp = 0
     }
 
-    fun addXp(xp: Int): OwnedMonster {
-        return OwnedMonster(
-            id = id,
-            monsterId = monsterId,
-            userId = userId,
-            havingXp = (havingXp ?: 0) + xp,
-            status = status,
-            createdAt = createdAt,
-            updatedAt = updatedAt,
-            deletedAt = deletedAt,
-        )
+    fun addXp(xp: Int) {
+        havingXp = (havingXp ?: 0) + xp
     }
 
     companion object {

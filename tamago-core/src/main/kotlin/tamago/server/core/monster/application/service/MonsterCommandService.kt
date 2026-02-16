@@ -40,16 +40,16 @@ class MonsterCommandService(
     }
 
     override fun addEarnedXp(ownedMonster: OwnedMonster, xp: Int): OwnedMonster {
-        val updated = ownedMonster.addXp(xp)
-        return ownedMonsterPersistencePort.save(updated)
+        ownedMonster.addXp(xp)
+        return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
     override fun ownMonster(ownedMonster: OwnedMonster): OwnedMonster {
         if (ownedMonster.status != OwnedMonsterStatus.UNLOCKED) {
             throw MonsterAlreadyOwnedException()
         }
-        val owned = ownedMonster.own()
-        return ownedMonsterPersistencePort.save(owned)
+        ownedMonster.own()
+        return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
     fun unlockMonster(monsterId: MonsterId, userId: UserId): OwnedMonster {
