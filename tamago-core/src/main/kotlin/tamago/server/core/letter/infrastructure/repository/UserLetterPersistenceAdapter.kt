@@ -8,6 +8,7 @@ import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.port.outbound.UserLetterPersistencePort
 import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.UserLetterId
+import tamago.server.core.letter.infrastructure.entity.UserLetterEntity
 import tamago.server.core.letter.infrastructure.mapper.UserLetterMapper
 import java.time.LocalDateTime
 
@@ -48,10 +49,20 @@ class UserLetterPersistenceAdapter(
     override fun findLatestByUserId(userId: UserId): UserLetter? =
         UserLetterMapper.toDomain(userLetterJpaRepository.findTopByUserIdOrderByCreatedAtDesc(userId.value))
 
-    override fun findScheduledLettersDue(now: LocalDateTime): List<UserLetter> =
-        userLetterJpaRepository.findAllByLetterStatusAndScheduledAtLessThanEqual(LetterStatus.SCHEDULED, now)
-            .mapNotNull { UserLetterMapper.toDomain(it) }
-
     override fun findByUserIdAndLetterStatus(userId: UserId, letterStatus: LetterStatus): UserLetter? =
         UserLetterMapper.toDomain(userLetterJpaRepository.findByUserIdAndLetterStatus(userId.value, letterStatus))
+
+    override fun findLatestNotScheduledDistinctByUser(): List<UserLetter> =
+        userLetterJpaRepository.findAll {
+            select(entity(UserLetterEntity::class))
+                .from(entity(UserLetterEntity::class))
+                .where(
+                    path(UserLetterEntity::letterStatus).ne(LetterStatus.SCHEDULED),
+                ).orderBy(
+                    path(UserLetterEntity::userId).asc(),
+                    path(UserLetterEntity::createdAt).desc(),
+                )
+        }.filterNotNull()
+            .distinctBy { it.userId }
+            .mapNotNull { UserLetterMapper.toDomain(it) }
 }

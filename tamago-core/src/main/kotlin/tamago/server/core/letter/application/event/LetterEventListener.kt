@@ -4,15 +4,15 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.running.domain.event.RunningCompletedEvent
+import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
-import tamago.server.core.letter.domain.port.outbound.LetterPersistencePort
 import tamago.server.core.letter.domain.port.outbound.UserLetterPersistencePort
 import java.time.LocalDateTime
 
 @Component
 class LetterEventListener(
-    private val letterPersistencePort: LetterPersistencePort,
+    private val letterQueryService: LetterQueryService,
     private val userLetterPersistencePort: UserLetterPersistencePort,
 ) {
     @Transactional
@@ -24,8 +24,7 @@ class LetterEventListener(
             return
         }
 
-        val templates = letterPersistencePort.findAllActive()
-        val selectedLetter = templates.random()
+        val selectedLetter = letterQueryService.getRandomTemplate()
 
         val createdLetter = UserLetter.new(
             userId = event.userId,

@@ -14,6 +14,6 @@ interface UserLetterPersistencePort {
     fun findByUserId(userId: UserId): List<UserLetter>
     fun findByUserIdAndLetterId(userId: UserId, letterId: LetterId): UserLetter?
     fun findLatestByUserId(userId: UserId): UserLetter?
-    fun findScheduledLettersDue(now: LocalDateTime): List<UserLetter>
     fun findByUserIdAndLetterStatus(userId: UserId, letterStatus: LetterStatus): UserLetter?
+    fun findLatestNotScheduledDistinctByUser(): List<UserLetter>
 }

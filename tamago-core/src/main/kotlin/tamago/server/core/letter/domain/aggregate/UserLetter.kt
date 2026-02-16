@@ -22,7 +22,7 @@ class UserLetter(
     var scheduledAt: LocalDateTime? = scheduledAt
         private set
 
-    fun deliver() {
+    fun send() {
         this.letterStatus = LetterStatus.UNREAD
     }
 
@@ -49,17 +49,13 @@ class UserLetter(
             )
         }
 
-        fun createNextScheduled(userId: UserId, letterId: LetterId, previousScheduledAt: LocalDateTime): UserLetter {
+        fun repeat(userId: UserId, letterId: LetterId, prevScheduledAt: LocalDateTime): UserLetter {
             return UserLetter(
                 userId = userId,
                 letterId = letterId,
                 letterStatus = LetterStatus.SCHEDULED,
-                scheduledAt = previousScheduledAt.plusHours(REPEAT_INTERVAL_HOURS),
+                scheduledAt = prevScheduledAt.plusHours(REPEAT_INTERVAL_HOURS),
             )
-        }
-
-        fun new(userId: UserId, letterId: LetterId): UserLetter {
-            return UserLetter(userId = userId, letterId = letterId)
         }
     }
 }
