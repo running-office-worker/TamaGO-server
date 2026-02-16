@@ -16,7 +16,7 @@ class RunningCommandService(
 ) : RunningCommandUseCase {
 
     override fun save(command: SaveRunningCommandDto): Running {
-        if (command.distance <= 0 || !command.finishedAt.isAfter(command.startedAt)) {
+        if (command.distance < 0 || !command.finishedAt.isAfter(command.startedAt)) {
             throw InvalidRunningDataException()
         }
 
