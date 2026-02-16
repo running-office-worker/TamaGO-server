@@ -24,7 +24,7 @@ class OwnedMonster(
 
     fun own() {
         status = OwnedMonsterStatus.OWNED
-        havingXp = 0
+        havingXp = havingXp ?: 0
     }
 
     fun addXp(xp: Int) {
