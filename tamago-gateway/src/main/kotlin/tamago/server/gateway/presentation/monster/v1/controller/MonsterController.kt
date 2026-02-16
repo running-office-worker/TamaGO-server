@@ -45,7 +45,7 @@ class MonsterController(
         @CurrentUser user: User,
         @PathVariable ownedMonsterId: Long,
     ): CustomResponse<Unit> {
-        monsterFacade.ownMonster(OwnedMonsterId(ownedMonsterId))
+        monsterFacade.ownMonster(OwnedMonsterId(ownedMonsterId), user.id!!)
         return CustomResponse.ok()
     }
 }

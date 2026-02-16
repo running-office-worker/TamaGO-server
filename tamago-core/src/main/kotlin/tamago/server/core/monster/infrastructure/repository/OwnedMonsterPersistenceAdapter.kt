@@ -18,7 +18,8 @@ class OwnedMonsterPersistenceAdapter(
         OwnedMonsterMapper.toDomain(ownedMonsterJpaRepository.findById(id.value).orElse(null))
 
     override fun findAllByUserId(userId: UserId): List<OwnedMonster> =
-        ownedMonsterJpaRepository.findAllByUserId(userId.value).mapNotNull { OwnedMonsterMapper.toDomain(it) }
+        ownedMonsterJpaRepository.findAllByUserIdAndDeletedAtIsNull(userId.value)
+            .mapNotNull { OwnedMonsterMapper.toDomain(it) }
 
     override fun findAllByUserIdAndStatus(userId: UserId, status: OwnedMonsterStatus): List<OwnedMonster> =
         ownedMonsterJpaRepository.findAllByUserIdAndStatusAndDeletedAtIsNull(userId.value, status)

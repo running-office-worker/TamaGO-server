@@ -10,6 +10,7 @@ import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
+import tamago.server.core.monster.application.exception.MonsterAccessDeniedException
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
 import tamago.server.core.monster.domain.vo.MonsterId
@@ -76,8 +77,11 @@ class MonsterFacade(
     }
 
     @Transactional
-    fun ownMonster(ownedMonsterId: OwnedMonsterId) {
+    fun ownMonster(ownedMonsterId: OwnedMonsterId, ownerId: UserId) {
         val ownedMonster = monsterQueryService.getOwnedMonster(ownedMonsterId)
+        if (ownedMonster.userId != ownerId) {
+            throw MonsterAccessDeniedException()
+        }
         monsterCommandService.ownMonster(ownedMonster)
     }
 }
