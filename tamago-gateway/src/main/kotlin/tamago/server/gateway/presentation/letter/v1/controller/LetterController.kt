@@ -6,12 +6,12 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import tamago.server.core.letter.LetterFacade
 import tamago.server.core.letter.LetterQueryUseCase
-import tamago.server.core.letter.domain.vo.ReceivedLetterId
+import tamago.server.core.letter.domain.vo.UserLetterId
 import tamago.server.core.user.domain.aggregate.User
+import tamago.server.gateway.common.annotation.CurrentUser
+import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.letter.v1.api.LetterApi
 import tamago.server.gateway.presentation.letter.v1.response.LetterResponse
-import tamago.server.gateway.common.response.CustomResponse
-import tamago.server.gateway.common.annotation.CurrentUser
 
 @RestController
 class LetterController(
@@ -29,7 +29,7 @@ class LetterController(
             LetterResponse(
                 letterId = result.id.value,
                 content = result.content,
-                readStatus = result.readStatus,
+                letterStatus = result.letterStatus,
             ),
         )
     }
@@ -39,10 +39,9 @@ class LetterController(
     @PatchMapping("/api/v1/letters/read")
     override fun markAsReadLetter(
         @CurrentUser user: User,
-        @RequestParam @Parameter(required = true) letterId: ReceivedLetterId,
+        @RequestParam @Parameter(required = true) letterId: UserLetterId,
     ): CustomResponse<Void> {
         letterFacade.markAsRead(user.id!!, letterId)
         return CustomResponse.noContent()
     }
-
 }

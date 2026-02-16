@@ -14,14 +14,15 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import tamago.server.core.common.entity.BaseTimeEntity
-import tamago.server.core.letter.domain.enum.ReadStatus
+import tamago.server.core.letter.domain.enum.LetterStatus
+import java.time.LocalDateTime
 
 @Entity
-@Table(name = "t_received_letters")
-class ReceivedLetterEntity(
+@Table(name = "t_user_letters")
+class UserLetterEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "received_letter_id")
+    @Column(name = "user_letter_id")
     val id: Long? = null,
 
     @Column(name = "user_id", nullable = false)
@@ -36,6 +37,9 @@ class ReceivedLetterEntity(
     val letter: LetterEntity,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "read_status")
-    var readStatus: ReadStatus = ReadStatus.UNREAD,
+    @Column(name = "letter_status")
+    var letterStatus: LetterStatus = LetterStatus.UNREAD,
+
+    @Column(name = "scheduled_at")
+    val scheduledAt: LocalDateTime? = null,
 ) : BaseTimeEntity()
