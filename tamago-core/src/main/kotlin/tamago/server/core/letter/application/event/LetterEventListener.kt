@@ -3,7 +3,7 @@ package tamago.server.core.letter.application.event
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
-import tamago.server.core.common.event.RunningCompletedEvent
+import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.port.outbound.LetterPersistencePort

@@ -3,7 +3,7 @@ package tamago.server.core.running
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import tamago.server.core.common.event.RunningCompletedEvent
+import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
