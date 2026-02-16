@@ -26,9 +26,8 @@ data class RunningFinishQueryDto(
         fun of(
             running: Running,
             ownedMonster: OwnedMonster,
-            currentMonster: Monster,
             evolutionChain: List<Monster>,
-            distance: Double,
+            earnedXp: Int,
             startedAt: LocalDateTime,
             finishedAt: LocalDateTime,
         ): RunningFinishQueryDto {
@@ -40,7 +39,7 @@ data class RunningFinishQueryDto(
                 elapsedTime = elapsedSeconds,
                 totalCalories = running.calories ?: 0,
                 originXp = ownedMonster.havingXp ?: 0,
-                earnedXp = currentMonster.evolutionPolicy?.calculateXp(distance) ?: 0, // TODO: earnedXp 저장
+                earnedXp = earnedXp,
                 evolutionStages = evolutionChain.mapIndexed { index, monster ->
                     EvolutionStageDto(
                         stage = index + 1,

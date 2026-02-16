@@ -37,4 +37,9 @@ class MonsterCommandService(
 
         return monsterAssetPersistencePort.save(monsterAsset)
     }
+
+    override fun addEarnedXp(ownedMonster: OwnedMonster, xp: Int): OwnedMonster {
+        val updated = ownedMonster.addXp(xp)
+        return ownedMonsterPersistencePort.save(updated)
+    }
 }

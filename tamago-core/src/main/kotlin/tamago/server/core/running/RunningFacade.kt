@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
@@ -16,6 +17,7 @@ import tamago.server.core.running.application.service.RunningQueryService
 class RunningFacade(
     private val runningCommandService: RunningCommandService,
     private val runningQueryService: RunningQueryService,
+    private val monsterCommandUseCase: MonsterCommandUseCase,
     private val monsterQueryUseCase: MonsterQueryUseCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
@@ -25,17 +27,20 @@ class RunningFacade(
 
         publishRunningCompletedEvent(command)
 
-        // 같이 뛴 몬스터의 진화 체인 조회하고 현재 몬스터 추출
+        // 같이 뛴 몬스터의 진화 체인 조회
         val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
         val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
-        val currentMonster = evolutionChain.first { it.id == ownedMonster.monsterId }
+
+        // 획득한 경험치 계산 및 저장
+        val earnedXp = evolutionChain.first { it.id == ownedMonster.monsterId }
+            .evolutionPolicy?.calculateXp(command.distance) ?: 0
+        monsterCommandUseCase.addEarnedXp(ownedMonster, earnedXp)
 
         return RunningFinishQueryDto.of(
             running = running,
             ownedMonster = ownedMonster,
-            currentMonster = currentMonster,
             evolutionChain = evolutionChain,
-            distance = command.distance,
+            earnedXp = earnedXp,
             startedAt = command.startedAt,
             finishedAt = command.finishedAt,
         )
