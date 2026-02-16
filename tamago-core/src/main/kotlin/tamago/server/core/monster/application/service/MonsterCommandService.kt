@@ -42,4 +42,14 @@ class MonsterCommandService(
         val updated = ownedMonster.addXp(xp)
         return ownedMonsterPersistencePort.save(updated)
     }
+
+    fun unlockMonster(monsterId: MonsterId, userId: UserId): OwnedMonster {
+        val ownedMonster = OwnedMonster.create(
+            monsterId = monsterId,
+            userId = userId,
+            havingXp = 0,
+            status = OwnedMonsterStatus.UNLOCKED,
+        )
+        return ownedMonsterPersistencePort.save(ownedMonster)
+    }
 }

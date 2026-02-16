@@ -15,3 +15,14 @@ inline fun <reified T : Any> EntityManager.findAll(
         .apply { rendered.params.forEach { (key, value) -> setParameter(key, value) } }
         .resultList
 }
+
+@Suppress("SqlSourceToSinkFlow")
+inline fun <reified T : Any> EntityManager.findOne(
+    query: JpqlQuery<*>,
+    context: JpqlRenderContext,
+): T? {
+    val rendered = JpqlRenderer().render(query, context)
+    return createQuery(rendered.query, T::class.java)
+        .apply { rendered.params.forEach { (key, value) -> setParameter(key, value) } }
+        .singleResult
+}

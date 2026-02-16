@@ -13,4 +13,7 @@ class RunningQueryService(
 
     fun getMonthlyRunnings(userId: UserId, year: Int, month: Int): List<Running> =
         runningPersistencePort.findAllByUserIdAndMonth(userId, year, month)
+
+    fun getTotalDistance(userId: UserId): Double =
+        runningPersistencePort.sumDistanceByUserId(userId)
 }
