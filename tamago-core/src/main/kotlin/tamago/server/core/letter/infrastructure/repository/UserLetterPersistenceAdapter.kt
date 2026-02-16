@@ -10,29 +10,22 @@ import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.UserLetterId
 import tamago.server.core.letter.infrastructure.entity.UserLetterEntity
 import tamago.server.core.letter.infrastructure.mapper.UserLetterMapper
-import java.time.LocalDateTime
 
 @Repository
 class UserLetterPersistenceAdapter(
     private val userLetterJpaRepository: UserLetterJpaRepository,
     private val letterJpaRepository: LetterJpaRepository,
 ) : UserLetterPersistencePort {
-    override fun save(userLetter: UserLetter): UserLetter {
-        val letterEntity = letterJpaRepository.findByIdOrNull(userLetter.letterId.value)
-            ?: throw IllegalArgumentException("Letter not found: ${userLetter.letterId}")
-        return UserLetterMapper.toDomain(
-            userLetterJpaRepository.save(UserLetterMapper.toEntity(userLetter, letterEntity)),
-        )!!
+    override fun save(userLetter: UserLetter) {
+        val letterRef = letterJpaRepository.getReferenceById(userLetter.letterId.value)
+        userLetterJpaRepository.save(UserLetterMapper.toEntity(userLetter, letterRef))
     }
 
     override fun saveAll(userLetters: List<UserLetter>): List<UserLetter> {
-        val letterIds = userLetters.map { it.letterId.value }.distinct()
-        val letterMap = letterJpaRepository.findAllById(letterIds).associateBy { it.id }
         return userLetterJpaRepository.saveAll(
             userLetters.map { ul ->
-                val letterEntity = letterMap[ul.letterId.value]
-                    ?: throw IllegalArgumentException("Letter not found: ${ul.letterId}")
-                UserLetterMapper.toEntity(ul, letterEntity)
+                val letterRef = letterJpaRepository.getReferenceById(ul.letterId.value)
+                UserLetterMapper.toEntity(ul, letterRef)
             },
         ).mapNotNull { UserLetterMapper.toDomain(it) }
     }

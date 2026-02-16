@@ -5,10 +5,9 @@ import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.UserLetterId
-import java.time.LocalDateTime
 
 interface UserLetterPersistencePort {
-    fun save(userLetter: UserLetter): UserLetter
+    fun save(userLetter: UserLetter)
     fun saveAll(userLetters: List<UserLetter>): List<UserLetter>
     fun findById(id: UserLetterId): UserLetter?
     fun findByUserId(userId: UserId): List<UserLetter>
