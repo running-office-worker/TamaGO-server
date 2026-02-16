@@ -12,7 +12,7 @@ class FcmTokenPersistenceAdapter(
 ) : FcmTokenPersistencePort {
 
     override fun findAllByUserId(userId: UserId): List<FcmToken> {
-        return fcmTokenJpaRepository.findAllByUserId(userId.value)
+        return fcmTokenJpaRepository.findAllByUserIdAndDeletedAtIsNull(userId.value)
             .mapNotNull { FcmTokenMapper.toDomain(it) }
     }
 
