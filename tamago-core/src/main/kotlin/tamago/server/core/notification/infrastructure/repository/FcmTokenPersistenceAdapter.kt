@@ -15,4 +15,15 @@ class FcmTokenPersistenceAdapter(
         return fcmTokenJpaRepository.findAllByUserId(userId.value)
             .mapNotNull { FcmTokenMapper.toDomain(it) }
     }
+
+    override fun findByUserId(userId: UserId): FcmToken? {
+        return fcmTokenJpaRepository.findByUserIdAndDeletedAtIsNull(userId.value)
+            ?.let { FcmTokenMapper.toDomain(it) }
+    }
+
+    override fun save(fcmToken: FcmToken): FcmToken {
+        val entity = FcmTokenMapper.toEntity(fcmToken)
+        val saved = fcmTokenJpaRepository.save(entity)
+        return FcmTokenMapper.toDomain(saved)!!
+    }
 }

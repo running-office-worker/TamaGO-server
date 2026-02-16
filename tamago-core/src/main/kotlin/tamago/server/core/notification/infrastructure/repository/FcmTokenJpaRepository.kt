@@ -5,4 +5,5 @@ import tamago.server.core.notification.infrastructure.entity.FcmTokenEntity
 
 interface FcmTokenJpaRepository : JpaRepository<FcmTokenEntity, Long> {
     fun findAllByUserId(userId: Long): List<FcmTokenEntity>
+    fun findByUserIdAndDeletedAtIsNull(userId: Long): FcmTokenEntity?
 }
