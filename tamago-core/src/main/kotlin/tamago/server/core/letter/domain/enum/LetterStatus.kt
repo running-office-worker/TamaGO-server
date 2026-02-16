@@ -1,6 +1,7 @@
 package tamago.server.core.letter.domain.enum
 
-enum class ReadStatus {
+enum class LetterStatus {
+    SCHEDULED,
     UNREAD,
     READ,
 }

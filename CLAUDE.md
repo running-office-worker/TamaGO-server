@@ -76,7 +76,8 @@ module/
 ### Key Patterns
 
 - **Domain models are separate from JPA entities.** Mappers convert between them. Domain aggregates have no persistence annotations.
-- **Facade pattern:** Controllers call Facades, which orchestrate UseCase interfaces. Never call services directly from controllers.
+- **Facade pattern:** Facades depend directly on Services within the same domain, but depend on UseCase interfaces for cross-domain access. Controllers always depend on UseCase interfaces, never on Services directly.
+- **Commands never query:** CommandUseCase/Service must not perform read operations. When a command needs data, the Facade queries first and passes the resulting object into the command.
 - **Port/Adapter:** Persistence ports are interfaces in `domain/port/outbound/`; adapters in `infrastructure/repository/` implement them.
 - **CQRS-lite:** Separate `CommandUseCase` (writes) and `QueryUseCase` (reads) interfaces per module.
 - **Spring Modulith:** Each module declares `@ApplicationModule(allowedDependencies = [...])`. Only `common` is universally allowed. The `user` module may also depend on `refreshtoken`. Module boundaries are verified by `CoreModularityTests`.
@@ -114,7 +115,7 @@ module/
 
 ## Working Rules
 
-- **Always `git add` new files:** Immediately run `git add <file_path>` after creating any new file.
+- **Always `git add` new files:** You MUST run `git add <file_path>` immediately after creating every new file, without exception. Do not batch or defer — add each file right after it is written.
 - **Never modify existing Flyway migrations:** Never edit previously created migration files (V1–VN). Always create a new version file for any schema changes.
 - **Proceed with code changes without asking:** Unless explicitly told otherwise, implement code changes directly without requesting confirmation first.
 

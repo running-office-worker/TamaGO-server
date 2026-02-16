@@ -31,22 +31,11 @@ class MonsterFacade(
             // 내가 소유한 몬스터인지 확인
             val ownedMonster = ownedMonsterMap[monster.id]
             // 몬스터의 PNG 이미지만 조회
-            val imageUrl = ownedMonster?.let { getMonsterPngUrl(monster.id!!) }
+            val imageUrl = ownedMonster?.let { monsterQueryUseCase.getMonsterPngUrl(monster.id!!) }
 
             MonsterDexQueryDto.of(monster, ownedMonster, imageUrl)
         }
     }
-
-    // TODO: 추후 배치 조회로 전환
-    private fun getMonsterPngUrl(monsterId: MonsterId): String? =
-        imageProcessor.getImageUrl(
-            prefix = ImagePrefix.MONSTER.value,
-            prefixId = monsterId.value,
-            fileName = null,
-        ).firstOrNull { info ->
-            info.url.substringBefore("?")
-                .endsWith(".${AssetType.PNG.extension}")
-        }?.url
 
     @Transactional
     fun initRandomMonster(userId: UserId): InitMonsterQueryDto {

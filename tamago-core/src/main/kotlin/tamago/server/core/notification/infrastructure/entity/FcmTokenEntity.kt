@@ -26,8 +26,8 @@ class FcmTokenEntity(
     var token: String? = null,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "device_type")
-    val deviceType: DeviceType? = null,
+    @Column(name = "device_type", nullable = false)
+    val deviceType: DeviceType,
 
     var lastUsedAt: LocalDateTime? = null,
 ) : BaseTimeEntity()

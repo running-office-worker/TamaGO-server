@@ -1,7 +1,7 @@
 package tamago.server.gateway.presentation.letter.v1.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import tamago.server.core.letter.domain.enum.ReadStatus
+import tamago.server.core.letter.domain.enum.LetterStatus
 
 data class LetterResponse(
     @field:Schema(description = "편지 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -11,5 +11,5 @@ data class LetterResponse(
     val content: String,
 
     @field:Schema(description = "읽음 상태", example = "UNREAD", requiredMode = Schema.RequiredMode.REQUIRED)
-    val readStatus: ReadStatus,
+    val letterStatus: LetterStatus,
 )

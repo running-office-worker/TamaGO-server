@@ -28,6 +28,8 @@ dependencies {
 
     implementation("io.jsonwebtoken:jjwt:0.12.6")
 
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
+
     testImplementation("org.springframework.modulith:spring-modulith-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

@@ -9,7 +9,7 @@ class FcmToken(
     val id: FcmTokenId? = null,
     val userId: UserId,
     token: String? = null,
-    val deviceType: DeviceType? = null,
+    val deviceType: DeviceType,
     lastUsedAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
