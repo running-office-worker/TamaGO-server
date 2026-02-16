@@ -15,7 +15,7 @@ class RunningCommandService(
     private val runningPersistencePort: RunningPersistencePort,
 ) : RunningCommandUseCase {
 
-    override fun save(command: SaveRunningCommandDto): Running {
+    fun save(command: SaveRunningCommandDto): Running {
         if (command.distance < 0 || !command.finishedAt.isAfter(command.startedAt)) {
             throw InvalidRunningDataException()
         }

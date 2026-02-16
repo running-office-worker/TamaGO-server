@@ -9,16 +9,19 @@ import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
+import tamago.server.core.running.application.service.RunningCommandService
+import tamago.server.core.running.application.service.RunningQueryService
+
 @Component
 class RunningFacade(
-    private val runningCommandUseCase: RunningCommandUseCase,
-    private val runningQueryUseCase: RunningQueryUseCase,
+    private val runningCommandService: RunningCommandService,
+    private val runningQueryService: RunningQueryService,
     private val monsterQueryUseCase: MonsterQueryUseCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
     fun saveRunningData(command: SaveRunningCommandDto): RunningFinishQueryDto {
-        val running = runningCommandUseCase.save(command)
+        val running = runningCommandService.save(command)
 
         publishRunningCompletedEvent(command)
 
@@ -48,7 +51,7 @@ class RunningFacade(
 
     @Transactional(readOnly = true)
     fun getMonthlyRunningData(userId: UserId, year: Int, month: Int): MonthlyRunningQueryDto {
-        val runnings = runningQueryUseCase.getMonthlyRunnings(userId, year, month)
+        val runnings = runningQueryService.getMonthlyRunnings(userId, year, month)
 
         // ownedMonsterId → monsterId 매핑 (distinct)
         val ownedMonsterIds = runnings.map { it.ownedMonsterId }.distinct()
