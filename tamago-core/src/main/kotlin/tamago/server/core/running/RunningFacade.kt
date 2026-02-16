@@ -25,6 +25,7 @@ class RunningFacade(
 
         publishRunningCompletedEvent(command)
 
+        // 같이 뛴 몬스터의 진화 체인 조회하고 현재 몬스터 추출
         val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
         val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
         val currentMonster = evolutionChain.first { it.id == ownedMonster.monsterId }

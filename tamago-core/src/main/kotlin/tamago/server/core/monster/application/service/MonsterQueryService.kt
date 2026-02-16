@@ -49,6 +49,7 @@ class MonsterQueryService(
     override fun getEvolutionChain(monsterId: MonsterId): List<Monster> {
         val current = monsterPersistencePort.findById(monsterId) ?: throw MonsterNotFoundException()
 
+        // 이전 진화 단계 몬스터들을 역순으로 수집
         val previousChain = mutableListOf<Monster>()
         var prevId: MonsterId? = current.previousMonsterId
         while (prevId != null) {
@@ -57,6 +58,7 @@ class MonsterQueryService(
             prevId = monster.previousMonsterId
         }
 
+        // 다음 진화 단계 몬스터들을 순서대로 수집
         val nextChain = mutableListOf<Monster>()
         var nextId: MonsterId? = current.nextMonsterId
         while (nextId != null) {
@@ -65,6 +67,7 @@ class MonsterQueryService(
             nextId = monster.nextMonsterId
         }
 
+        // 이전 단계 몬스터들 + 현재 몬스터 + 다음 단계 몬스터들 합치기
         return previousChain.reversed() + current + nextChain
     }
 
