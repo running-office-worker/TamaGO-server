@@ -15,19 +15,9 @@ class MonsterUnlockPolicy(
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
-    companion object {
-        fun create(
-            monsterId: MonsterId,
-            ruleType: MonsterRuleType? = null,
-            ruleValue: Int? = null,
-            description: String? = null,
-        ): MonsterUnlockPolicy {
-            return MonsterUnlockPolicy(
-                monsterId = monsterId,
-                ruleType = ruleType,
-                ruleValue = ruleValue,
-                description = description,
-            )
+    fun isSatisfiedBy(totalDistance: Double): Boolean =
+        when (ruleType) {
+            MonsterRuleType.KILOMETER -> (ruleValue ?: Int.MAX_VALUE) <= totalDistance
+            null -> false
         }
-    }
 }

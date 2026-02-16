@@ -10,12 +10,27 @@ class OwnedMonster(
     val id: OwnedMonsterId? = null,
     val monsterId: MonsterId,
     val userId: UserId,
-    val havingXp: Int? = null,
-    val status: OwnedMonsterStatus? = null,
+    havingXp: Int? = null,
+    status: OwnedMonsterStatus? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
+    var havingXp: Int? = havingXp
+        private set
+
+    var status: OwnedMonsterStatus? = status
+        private set
+
+    fun own() {
+        status = OwnedMonsterStatus.OWNED
+        havingXp = havingXp ?: 0
+    }
+
+    fun addXp(xp: Int) {
+        havingXp = (havingXp ?: 0) + xp
+    }
+
     companion object {
         fun create(
             monsterId: MonsterId,

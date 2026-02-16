@@ -5,57 +5,61 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
-import java.time.Duration
+import tamago.server.core.running.application.service.RunningCommandService
+import tamago.server.core.running.application.service.RunningQueryService
 
 @Component
 class RunningFacade(
-    private val runningCommandUseCase: RunningCommandUseCase,
-    private val runningQueryUseCase: RunningQueryUseCase,
+    private val runningCommandService: RunningCommandService,
+    private val runningQueryService: RunningQueryService,
+    private val monsterCommandUseCase: MonsterCommandUseCase,
     private val monsterQueryUseCase: MonsterQueryUseCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
     fun saveRunningData(command: SaveRunningCommandDto): RunningFinishQueryDto {
-        val running = runningCommandUseCase.save(command)
+        val running = runningCommandService.save(command)
+        val totalDistance = runningQueryService.getTotalDistance(command.userId)
 
+        publishRunningCompletedEvent(command, totalDistance)
+
+        // 같이 뛴 몬스터의 진화 체인 조회
+        val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
+        val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
+
+        // 획득한 경험치 계산 및 저장
+        val earnedXp = evolutionChain.first { it.id == ownedMonster.monsterId }
+            .evolutionPolicy?.calculateXp(command.distance) ?: 0
+        monsterCommandUseCase.addEarnedXp(ownedMonster, earnedXp)
+
+        return RunningFinishQueryDto.of(
+            running = running,
+            ownedMonster = ownedMonster,
+            evolutionChain = evolutionChain,
+            earnedXp = earnedXp,
+            startedAt = command.startedAt,
+            finishedAt = command.finishedAt,
+        )
+    }
+
+    private fun publishRunningCompletedEvent(command: SaveRunningCommandDto, totalDistance: Double) {
         applicationEventPublisher.publishEvent(
             RunningCompletedEvent(
                 userId = command.userId,
                 startedAt = command.startedAt,
+                totalDistance = totalDistance,
             ),
-        )
-
-        val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
-        val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
-        val currentMonster = evolutionChain.first { it.id == ownedMonster.monsterId }
-
-        val elapsedSeconds = Duration.between(command.startedAt, command.finishedAt).seconds.toInt()
-
-        return RunningFinishQueryDto(
-            pace = running.pace?.toInt() ?: 0,
-            cadence = running.cadence ?: 0,
-            elapsedTime = elapsedSeconds,
-            totalCalories = running.calories ?: 0,
-            originXp = ownedMonster.havingXp ?: 0,
-            earnedXp = currentMonster.evolutionPolicy?.calculateXp(command.distance) ?: 0, // TODO: earnedXp 저장
-            evolutionStages = evolutionChain.mapIndexed { index, monster ->
-                RunningFinishQueryDto.EvolutionStageDto(
-                    stage = index + 1,
-                    monsterId = monster.id!!.value,
-                    evolutionXp = monster.evolutionXp,
-                    current = monster.id == ownedMonster.monsterId,
-                )
-            },
         )
     }
 
     @Transactional(readOnly = true)
     fun getMonthlyRunningData(userId: UserId, year: Int, month: Int): MonthlyRunningQueryDto {
-        val runnings = runningQueryUseCase.getMonthlyRunnings(userId, year, month)
+        val runnings = runningQueryService.getMonthlyRunnings(userId, year, month)
 
         // ownedMonsterId → monsterId 매핑 (distinct)
         val ownedMonsterIds = runnings.map { it.ownedMonsterId }.distinct()

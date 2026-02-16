@@ -12,6 +12,7 @@ import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
+import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
@@ -26,29 +27,30 @@ class MonsterQueryService(
     private val imageProcessor: ImageProcessor,
 ) : MonsterQueryUseCase {
 
-    override fun get(id: MonsterId): Monster =
+    fun get(id: MonsterId): Monster =
         monsterPersistencePort.findById(id)
             ?: throw MonsterNotFoundException()
 
-    override fun getAllWithUnlockPolicies(): List<Monster> =
+    fun getAllWithUnlockPolicies(): List<Monster> =
         monsterPersistencePort.findAllWithUnlockPolicies()
 
-    override fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
+    fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
         monsterPersistencePort.findAllFirstStageWithUnlockPolicies()
 
     override fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster =
         ownedMonsterPersistencePort.findById(id)
             ?: throw OwnedMonsterNotFoundException()
 
-    override fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
+    fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserId(userId)
 
-    override fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
+    fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
         monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
 
     override fun getEvolutionChain(monsterId: MonsterId): List<Monster> {
         val current = monsterPersistencePort.findById(monsterId) ?: throw MonsterNotFoundException()
 
+        // 이전 진화 단계 몬스터들을 역순으로 수집
         val previousChain = mutableListOf<Monster>()
         var prevId: MonsterId? = current.previousMonsterId
         while (prevId != null) {
@@ -57,6 +59,7 @@ class MonsterQueryService(
             prevId = monster.previousMonsterId
         }
 
+        // 다음 진화 단계 몬스터들을 순서대로 수집
         val nextChain = mutableListOf<Monster>()
         var nextId: MonsterId? = current.nextMonsterId
         while (nextId != null) {
@@ -65,20 +68,24 @@ class MonsterQueryService(
             nextId = monster.nextMonsterId
         }
 
+        // 이전 단계 몬스터들 + 현재 몬스터 + 다음 단계 몬스터들 합치기
         return previousChain.reversed() + current + nextChain
     }
 
-    override fun getRandomFirstStageMonster(): Monster {
+    fun getRandomFirstStageMonster(): Monster {
         val firstStageMonsters = monsterPersistencePort.findAllByPreviousMonsterIdIsNull()
         if (firstStageMonsters.isEmpty()) throw MonsterNotFoundException()
         return firstStageMonsters.random()
     }
 
-    override fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType) {
+    fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType) {
         if (monsterAssetPersistencePort.existsByMonsterIdAndAssetType(monsterId, assetType)) {
             throw MonsterAssetAlreadyExistsException()
         }
     }
+
+    override fun getUnlockedMonsters(userId: UserId): List<OwnedMonster> =
+        ownedMonsterPersistencePort.findAllByUserIdAndStatus(userId, OwnedMonsterStatus.UNLOCKED)
 
     override fun getMonsterPngUrl(monsterId: MonsterId): String? =
         imageProcessor.getImageUrl(
