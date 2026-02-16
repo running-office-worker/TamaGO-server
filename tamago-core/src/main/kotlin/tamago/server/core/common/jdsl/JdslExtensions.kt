@@ -24,5 +24,6 @@ inline fun <reified T : Any> EntityManager.findOne(
     val rendered = JpqlRenderer().render(query, context)
     return createQuery(rendered.query, T::class.java)
         .apply { rendered.params.forEach { (key, value) -> setParameter(key, value) } }
-        .singleResult
+        .resultList
+        .firstOrNull()
 }
