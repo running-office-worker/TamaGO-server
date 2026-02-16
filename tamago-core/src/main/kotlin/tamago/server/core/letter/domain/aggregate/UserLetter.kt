@@ -11,12 +11,15 @@ class UserLetter(
     val userId: UserId,
     val letterId: LetterId,
     letterStatus: LetterStatus = LetterStatus.UNREAD,
-    val scheduledAt: LocalDateTime? = null,
+    scheduledAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
     var letterStatus: LetterStatus = letterStatus
+        private set
+
+    var scheduledAt: LocalDateTime? = scheduledAt
         private set
 
     fun deliver() {
@@ -27,13 +30,17 @@ class UserLetter(
         this.letterStatus = LetterStatus.READ
     }
 
+    fun reschedule(baseTime: LocalDateTime) {
+        this.scheduledAt = baseTime.plusHours(INITIAL_DELAY_HOURS)
+    }
+
     fun isOwnedBy(userId: UserId): Boolean = this.userId == userId
 
     companion object {
         private const val INITIAL_DELAY_HOURS = 23L
         private const val REPEAT_INTERVAL_HOURS = 24L
 
-        fun createScheduled(userId: UserId, letterId: LetterId, startedAt: LocalDateTime): UserLetter {
+        fun new(userId: UserId, letterId: LetterId, startedAt: LocalDateTime): UserLetter {
             return UserLetter(
                 userId = userId,
                 letterId = letterId,
@@ -51,7 +58,7 @@ class UserLetter(
             )
         }
 
-        fun create(userId: UserId, letterId: LetterId): UserLetter {
+        fun new(userId: UserId, letterId: LetterId): UserLetter {
             return UserLetter(userId = userId, letterId = letterId)
         }
     }

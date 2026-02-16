@@ -22,8 +22,8 @@ class LetterPersistenceAdapter(
     override fun findById(id: LetterId): Letter? =
         LetterMapper.toDomain(letterJpaRepository.findById(id.value).orElse(null))
 
-    override fun findAll(): List<Letter> =
-        letterJpaRepository.findAll().mapNotNull { LetterMapper.toDomain(it) }
+    override fun findAllActive(): List<Letter> =
+        letterJpaRepository.findAllByDeletedAtIsNull().mapNotNull { LetterMapper.toDomain(it) }
 
     override fun findTopUserLetterByUserId(userId: UserId): LetterInboxQueryModel? {
         return letterJpaRepository.findPage(PageRequest.of(0, 1)) {
