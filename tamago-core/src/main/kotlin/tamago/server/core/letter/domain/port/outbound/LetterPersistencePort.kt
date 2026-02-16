@@ -9,5 +9,5 @@ interface LetterPersistencePort {
     fun save(letter: Letter): Letter
     fun findById(id: LetterId): Letter?
     fun findAllActive(): List<Letter>
-    fun findTopUserLetterByUserId(userId: UserId): LetterInboxQueryModel?
+    fun findLatestByUserId(userId: UserId): LetterInboxQueryModel?
 }

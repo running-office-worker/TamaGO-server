@@ -12,8 +12,8 @@ class LetterQueryService(
     private val letterPersistencePort: LetterPersistencePort,
 ) : LetterQueryUseCase {
 
-    override fun getLatestReceivedLetter(userId: UserId): LetterInboxDto? {
-        val query = letterPersistencePort.findTopUserLetterByUserId(userId)
+    override fun getLatestLetter(userId: UserId): LetterInboxDto? {
+        val query = letterPersistencePort.findLatestByUserId(userId)
 
         return query?.let {
             LetterInboxDto(

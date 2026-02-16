@@ -22,7 +22,7 @@ class LetterController(
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/api/v1/letters")
     override fun readLetterInbox(@CurrentUser user: User): CustomResponse<LetterResponse> {
-        val result = letterQueryUseCase.getLatestReceivedLetter(user.id!!)
+        val result = letterQueryUseCase.getLatestLetter(user.id!!)
             ?: return CustomResponse.ok(null)
 
         return CustomResponse.ok(
