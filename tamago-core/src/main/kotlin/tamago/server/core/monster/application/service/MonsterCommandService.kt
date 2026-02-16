@@ -18,7 +18,7 @@ class MonsterCommandService(
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
 ) : MonsterCommandUseCase {
 
-    override fun initMonster(userId: UserId, monsterId: MonsterId): OwnedMonster {
+    fun initMonster(userId: UserId, monsterId: MonsterId): OwnedMonster {
         val ownedMonster = OwnedMonster.create(
             monsterId = monsterId,
             userId = userId,
@@ -29,7 +29,7 @@ class MonsterCommandService(
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    override fun createMonsterAsset(monsterId: MonsterId, assetType: AssetType, assetKey: String): MonsterAsset {
+    fun createMonsterAsset(monsterId: MonsterId, assetType: AssetType, assetKey: String): MonsterAsset {
         val monsterAsset = MonsterAsset.create(
             monsterId = monsterId,
             assetKey = assetKey,
@@ -44,7 +44,7 @@ class MonsterCommandService(
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    override fun ownMonster(ownedMonster: OwnedMonster): OwnedMonster {
+    fun ownMonster(ownedMonster: OwnedMonster): OwnedMonster {
         if (ownedMonster.status != OwnedMonsterStatus.UNLOCKED) {
             throw MonsterAlreadyOwnedException()
         }

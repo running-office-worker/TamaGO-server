@@ -10,29 +10,31 @@ import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
+import tamago.server.core.monster.application.service.MonsterCommandService
+import tamago.server.core.monster.application.service.MonsterQueryService
 import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 
 @Component
 class MonsterFacade(
-    private val monsterCommandUseCase: MonsterCommandUseCase,
-    private val monsterQueryUseCase: MonsterQueryUseCase,
+    private val monsterCommandService: MonsterCommandService,
+    private val monsterQueryService: MonsterQueryService,
     private val imageProcessor: ImageProcessor,
     private val imageFileConstructor: ImageFileConstructor,
 ) {
     @Transactional(readOnly = true)
     fun getMonsterDex(userId: UserId): List<MonsterDexQueryDto> {
         // 1단계 몬스터와 해금 조건 함께 조회
-        val monsters = monsterQueryUseCase.getAllFirstStageWithUnlockPolicies()
+        val monsters = monsterQueryService.getAllFirstStageWithUnlockPolicies()
         // 내가 소유한 몬스터 조회
-        val ownedMonsterMap = monsterQueryUseCase.getOwnedMonstersByUserId(userId)
+        val ownedMonsterMap = monsterQueryService.getOwnedMonstersByUserId(userId)
             .associateBy { it.monsterId }
 
         return monsters.map { monster ->
             // 내가 소유한 몬스터인지 확인
             val ownedMonster = ownedMonsterMap[monster.id]
             // 몬스터의 PNG 이미지만 조회
-            val imageUrl = ownedMonster?.let { monsterQueryUseCase.getMonsterPngUrl(monster.id!!) }
+            val imageUrl = ownedMonster?.let { monsterQueryService.getMonsterPngUrl(monster.id!!) }
 
             MonsterDexQueryDto.of(monster, ownedMonster, imageUrl)
         }
@@ -40,8 +42,8 @@ class MonsterFacade(
 
     @Transactional
     fun initRandomMonster(userId: UserId): InitMonsterQueryDto {
-        val monster = monsterQueryUseCase.getRandomFirstStageMonster()
-        val ownedMonster = monsterCommandUseCase.initMonster(userId, monster.id!!)
+        val monster = monsterQueryService.getRandomFirstStageMonster()
+        val ownedMonster = monsterCommandService.initMonster(userId, monster.id!!)
 
         return InitMonsterQueryDto(
             ownedMonsterId = ownedMonster.id!!.value,
@@ -53,7 +55,7 @@ class MonsterFacade(
 
     @Transactional
     fun createMonsterAssetUploadUrl(monsterId: MonsterId, assetType: AssetType): CreateMonsterAssetQueryDto {
-        monsterQueryUseCase.checkMonsterAssetNotExists(monsterId, assetType)
+        monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
 
         val assetKey = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
 
@@ -64,7 +66,7 @@ class MonsterFacade(
             extension = assetType.extension,
         )
 
-        monsterCommandUseCase.createMonsterAsset(monsterId, assetType, assetKey)
+        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey)
 
         return CreateMonsterAssetQueryDto(
             uploadUrl = generatedUrl.uploadUrl,
@@ -75,7 +77,7 @@ class MonsterFacade(
 
     @Transactional
     fun ownMonster(ownedMonsterId: OwnedMonsterId) {
-        val ownedMonster = monsterQueryUseCase.getOwnedMonster(ownedMonsterId)
-        monsterCommandUseCase.ownMonster(ownedMonster)
+        val ownedMonster = monsterQueryService.getOwnedMonster(ownedMonsterId)
+        monsterCommandService.ownMonster(ownedMonster)
     }
 }

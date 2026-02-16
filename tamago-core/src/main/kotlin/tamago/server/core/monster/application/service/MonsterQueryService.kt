@@ -27,24 +27,24 @@ class MonsterQueryService(
     private val imageProcessor: ImageProcessor,
 ) : MonsterQueryUseCase {
 
-    override fun get(id: MonsterId): Monster =
+    fun get(id: MonsterId): Monster =
         monsterPersistencePort.findById(id)
             ?: throw MonsterNotFoundException()
 
-    override fun getAllWithUnlockPolicies(): List<Monster> =
+    fun getAllWithUnlockPolicies(): List<Monster> =
         monsterPersistencePort.findAllWithUnlockPolicies()
 
-    override fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
+    fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
         monsterPersistencePort.findAllFirstStageWithUnlockPolicies()
 
     override fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster =
         ownedMonsterPersistencePort.findById(id)
             ?: throw OwnedMonsterNotFoundException()
 
-    override fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
+    fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserId(userId)
 
-    override fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
+    fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
         monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
 
     override fun getEvolutionChain(monsterId: MonsterId): List<Monster> {
@@ -72,13 +72,13 @@ class MonsterQueryService(
         return previousChain.reversed() + current + nextChain
     }
 
-    override fun getRandomFirstStageMonster(): Monster {
+    fun getRandomFirstStageMonster(): Monster {
         val firstStageMonsters = monsterPersistencePort.findAllByPreviousMonsterIdIsNull()
         if (firstStageMonsters.isEmpty()) throw MonsterNotFoundException()
         return firstStageMonsters.random()
     }
 
-    override fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType) {
+    fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType) {
         if (monsterAssetPersistencePort.existsByMonsterIdAndAssetType(monsterId, assetType)) {
             throw MonsterAssetAlreadyExistsException()
         }
