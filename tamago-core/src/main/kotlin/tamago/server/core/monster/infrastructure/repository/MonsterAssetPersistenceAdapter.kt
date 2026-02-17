@@ -13,6 +13,7 @@ import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.infrastructure.entity.MonsterAssetEntity
 import tamago.server.core.monster.infrastructure.entity.MonsterEntity
 import tamago.server.core.monster.infrastructure.mapper.MonsterAssetMapper
+import java.time.LocalDateTime
 
 @Repository
 class MonsterAssetPersistenceAdapter(
@@ -67,6 +68,9 @@ class MonsterAssetPersistenceAdapter(
         return entityManager.findAll<MonsterAssetEntity>(query, jpqlRenderContext)
             .mapNotNull { MonsterAssetMapper.toDomain(it) }
     }
+
+    override fun existsByUpdatedAtAfter(since: LocalDateTime): Boolean =
+        monsterAssetJpaRepository.existsByUpdatedAtAfter(since)
 
     override fun findAll(): List<MonsterAsset> =
         monsterAssetJpaRepository.findAll().mapNotNull { MonsterAssetMapper.toDomain(it) }

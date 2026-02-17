@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetBundleResponse
+import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetUpdateCheckResponse
 import tamago.server.gateway.presentation.monster.v1.response.MonsterDexResponse
 import tamago.server.gateway.presentation.monster.v1.response.UnlockedMonsterResponse
 
@@ -21,4 +22,7 @@ interface MonsterApi {
 
     @Operation(summary = "전체 몬스터 에셋 조회", description = "모든 몬스터의 에셋(PNG, GIF, LOTTIE) Presigned URL을 조회합니다.")
     fun getAllMonsterAssets(): CustomResponse<List<MonsterAssetBundleResponse>>
+
+    @Operation(summary = "몬스터 에셋 변경 여부 확인", description = "마지막 로그인 이후 몬스터 에셋이 변경되었는지 확인합니다.")
+    fun checkMonsterAssetUpdates(user: User): CustomResponse<MonsterAssetUpdateCheckResponse>
 }

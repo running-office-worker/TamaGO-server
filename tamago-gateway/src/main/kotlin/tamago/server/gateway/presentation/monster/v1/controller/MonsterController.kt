@@ -13,6 +13,7 @@ import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.monster.v1.api.MonsterApi
 import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetBundleResponse
+import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetUpdateCheckResponse
 import tamago.server.gateway.presentation.monster.v1.response.MonsterDexResponse
 import tamago.server.gateway.presentation.monster.v1.response.UnlockedMonsterResponse
 
@@ -54,5 +55,14 @@ class MonsterController(
     override fun getAllMonsterAssets(): CustomResponse<List<MonsterAssetBundleResponse>> {
         val result = monsterFacade.getAllMonsterAssetBundles()
         return CustomResponse.ok(result.map { MonsterAssetBundleResponse.from(it) })
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/api/v1/monsters/assets/check-updates")
+    override fun checkMonsterAssetUpdates(
+        @CurrentUser user: User,
+    ): CustomResponse<MonsterAssetUpdateCheckResponse> {
+        val hasUpdates = monsterQueryUseCase.hasMonsterAssetUpdates(user.lastLoginAt)
+        return CustomResponse.ok(MonsterAssetUpdateCheckResponse(hasUpdates))
     }
 }
