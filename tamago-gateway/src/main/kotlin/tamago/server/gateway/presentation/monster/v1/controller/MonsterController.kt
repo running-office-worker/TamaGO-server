@@ -44,7 +44,7 @@ class MonsterController(
     override fun ownMonster(
         @CurrentUser user: User,
         @PathVariable ownedMonsterId: Long,
-    ): CustomResponse<Unit> {
+    ): CustomResponse<Void> {
         monsterFacade.ownMonster(OwnedMonsterId(ownedMonsterId), user.id!!)
         return CustomResponse.ok()
     }
