@@ -51,7 +51,16 @@ jobs:
               --name tamago-server \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=dev \
-              -e JAVA_TOOL_OPTIONS="-Xms320m -Xmx512m -XX:MaxMetaspaceSize=128m" \
+              -e JAVA_TOOL_OPTIONS="
+              -Xms384m
+              -Xmx512m
+              -XX:MaxMetaspaceSize=96m
+              -XX:MaxDirectMemorySize=32m
+              -XX:ReservedCodeCacheSize=48m
+              -XX:+UseSerialGC
+              -Xss512k
+              -Xshare:on
+              "
               -p 8080:8080 \
               --network tamago \
               --cpus="0.5" \
