@@ -54,7 +54,6 @@ class LetterController(
         return CustomResponse.noContent()
     }
 
-    @Profile("local", "dev")
     @Operation(summary = "\uD83E\uDDEA 편지 템플릿 데이터 삽입", description = "편지 템플릿에 데이터를 삽입하여 편지 내용을 생성합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")

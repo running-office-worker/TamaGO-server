@@ -71,7 +71,6 @@ class AuthController(
         )
     }
 
-    @Profile("local", "dev")
     @Operation(summary = "\uD83E\uDDEA 테스트 유저 회원가입", description = "이메일과 비밀번호로 테스트 유저를 생성 합니다.")
     @PostMapping("/signup")
     fun signup(@RequestBody @Valid request: SignupRequest): CustomResponse<Void> {
@@ -85,7 +84,6 @@ class AuthController(
         return CustomResponse.ok()
     }
 
-    @Profile("local", "dev")
     @Operation(summary = "\uD83E\uDDEA 테스트 유저 로그인", description = "이메일과 비밀번호로 테스트 계정에 로그인 합니다.")
     @PostMapping("/login")
     fun login(@RequestBody @Valid request: LoginRequest): CustomResponse<LoginResponse> {
