@@ -36,6 +36,9 @@ class RunningEntity(
 
     val heartbeat: Int? = null,
 
+    @Column(name = "elapsed_time")
+    val elapsedTime: Int? = null,
+
     val startedAt: LocalDateTime? = null,
 
     val finishedAt: LocalDateTime? = null,

@@ -47,14 +47,15 @@ class RunningPersistenceAdapter(
     }
 
     override fun sumDurationMinutesByUserId(userId: UserId): Long {
-        val sql = """
-            SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE, started_at, finished_at)), 0)
-            FROM t_running
-            WHERE user_id = :userId AND deleted_at IS NULL
-        """.trimIndent()
-        val result = entityManager.createNativeQuery(sql)
-            .setParameter("userId", userId.value)
-            .singleResult
-        return (result as Number).toLong()
+        val query = jpql {
+            select(coalesce(sum(path(RunningEntity::elapsedTime)), 0))
+                .from(entity(RunningEntity::class))
+                .where(
+                    path(RunningEntity::userId).equal(userId.value)
+                        .and(path(RunningEntity::deletedAt).isNull()),
+                )
+        }
+        val totalSeconds = entityManager.findOne<Long>(query, jpqlRenderContext) ?: 0L
+        return totalSeconds / 60
     }
 }

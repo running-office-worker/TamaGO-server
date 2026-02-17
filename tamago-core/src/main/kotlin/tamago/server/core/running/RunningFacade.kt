@@ -43,8 +43,6 @@ class RunningFacade(
             ownedMonster = ownedMonster,
             evolutionChain = evolutionChain,
             earnedXp = earnedXp,
-            startedAt = command.startedAt,
-            finishedAt = command.finishedAt,
         )
     }
 

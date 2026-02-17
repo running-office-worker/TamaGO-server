@@ -3,8 +3,6 @@ package tamago.server.core.running.domain.port.inbound.query
 import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.running.domain.aggregate.Running
-import java.time.Duration
-import java.time.LocalDateTime
 
 data class RunningFinishQueryDto(
     val pace: Int,
@@ -28,15 +26,11 @@ data class RunningFinishQueryDto(
             ownedMonster: OwnedMonster,
             evolutionChain: List<Monster>,
             earnedXp: Int,
-            startedAt: LocalDateTime,
-            finishedAt: LocalDateTime,
         ): RunningFinishQueryDto {
-            val elapsedSeconds = Duration.between(startedAt, finishedAt).seconds.toInt()
-
             return RunningFinishQueryDto(
                 pace = running.pace?.toInt() ?: 0,
                 cadence = running.cadence ?: 0,
-                elapsedTime = elapsedSeconds,
+                elapsedTime = running.elapsedTime ?: 0,
                 totalCalories = running.calories ?: 0,
                 originXp = ownedMonster.havingXp ?: 0,
                 earnedXp = earnedXp,

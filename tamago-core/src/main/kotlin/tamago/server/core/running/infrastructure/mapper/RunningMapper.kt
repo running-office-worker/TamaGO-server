@@ -18,6 +18,7 @@ object RunningMapper {
             distance = running.distance,
             elevationGain = running.elevationGain,
             heartbeat = running.heartbeat,
+            elapsedTime = running.elapsedTime,
             startedAt = running.startedAt,
             finishedAt = running.finishedAt,
         )
@@ -36,6 +37,7 @@ object RunningMapper {
             distance = entity.distance,
             elevationGain = entity.elevationGain,
             heartbeat = entity.heartbeat,
+            elapsedTime = entity.elapsedTime,
             startedAt = entity.startedAt,
             finishedAt = entity.finishedAt,
             createdAt = entity.createdAt,
