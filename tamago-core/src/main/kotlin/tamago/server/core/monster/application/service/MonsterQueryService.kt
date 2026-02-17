@@ -18,6 +18,7 @@ import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
 import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
+import java.time.LocalDateTime
 
 @Service
 class MonsterQueryService(
@@ -46,6 +47,12 @@ class MonsterQueryService(
 
     fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
         monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
+
+    fun getAllMonsterAssets(): List<MonsterAsset> =
+        monsterAssetPersistencePort.findAll()
+
+    override fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean =
+        lastLoginAt?.let { monsterAssetPersistencePort.existsByUpdatedAtAfter(it) } ?: true
 
     override fun getEvolutionChain(monsterId: MonsterId): List<Monster> {
         val current = monsterPersistencePort.findById(monsterId) ?: throw MonsterNotFoundException()

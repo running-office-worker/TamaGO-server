@@ -16,7 +16,8 @@ class MonsterEvolutionPolicy(
 ) {
     fun calculateXp(distance: Double): Int {
         return when (ruleType) {
-            MonsterRuleType.KILOMETER -> (distance * (multiplier ?: 0)).toInt()
+            MonsterRuleType.MONSTER_KILOMETER -> (distance * (multiplier ?: 0)).toInt()
+            MonsterRuleType.TOTAL_KILOMETER, MonsterRuleType.TOTAL_DURATION -> 0
             null -> 0
         }
     }

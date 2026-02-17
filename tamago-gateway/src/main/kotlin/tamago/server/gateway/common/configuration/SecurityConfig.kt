@@ -89,6 +89,7 @@ class SecurityConfig(
                 "/v1/auth/social-login/kakao",
                 "/api/v1/auth/**",
                 "/error",
+                "/api/v1/monsters/assets"
             )
     }
 }

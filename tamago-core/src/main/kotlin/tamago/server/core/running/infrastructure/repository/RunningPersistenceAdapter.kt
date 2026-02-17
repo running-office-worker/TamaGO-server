@@ -45,4 +45,17 @@ class RunningPersistenceAdapter(
         }
         return entityManager.findOne<Double>(query, jpqlRenderContext) ?: 0.0
     }
+
+    override fun sumDurationMinutesByUserId(userId: UserId): Long {
+        val query = jpql {
+            select(coalesce(sum(path(RunningEntity::elapsedTime)), 0))
+                .from(entity(RunningEntity::class))
+                .where(
+                    path(RunningEntity::userId).equal(userId.value)
+                        .and(path(RunningEntity::deletedAt).isNull()),
+                )
+        }
+        val totalSeconds = entityManager.findOne<Long>(query, jpqlRenderContext) ?: 0L
+        return totalSeconds / 60
+    }
 }

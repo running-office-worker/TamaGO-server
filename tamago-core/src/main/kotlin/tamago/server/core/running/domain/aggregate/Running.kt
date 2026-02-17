@@ -15,6 +15,7 @@ class Running(
     val distance: Double? = null,
     val elevationGain: Double? = null,
     val heartbeat: Int? = null,
+    val elapsedTime: Int? = null,
     val startedAt: LocalDateTime? = null,
     val finishedAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
@@ -31,6 +32,7 @@ class Running(
             distance: Double,
             elevationGain: Double,
             heartbeat: Int?,
+            elapsedTime: Int,
             startedAt: LocalDateTime,
             finishedAt: LocalDateTime,
         ): Running {
@@ -43,6 +45,7 @@ class Running(
                 distance = distance,
                 elevationGain = elevationGain,
                 heartbeat = heartbeat,
+                elapsedTime = elapsedTime,
                 startedAt = startedAt,
                 finishedAt = finishedAt,
             )

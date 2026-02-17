@@ -13,6 +13,7 @@ import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.infrastructure.entity.MonsterAssetEntity
 import tamago.server.core.monster.infrastructure.entity.MonsterEntity
 import tamago.server.core.monster.infrastructure.mapper.MonsterAssetMapper
+import java.time.LocalDateTime
 
 @Repository
 class MonsterAssetPersistenceAdapter(
@@ -34,6 +35,7 @@ class MonsterAssetPersistenceAdapter(
                 and(
                     path(MonsterAssetEntity::monster)(MonsterEntity::id).eq(monsterId.value),
                     path(MonsterAssetEntity::assetType).eq(assetType),
+                    path(MonsterAssetEntity::deletedAt).isNull(),
                 ),
             )
         }
@@ -60,6 +62,7 @@ class MonsterAssetPersistenceAdapter(
                 and(
                     path(MonsterAssetEntity::monster)(MonsterEntity::id).`in`(monsterIds.map { it.value }),
                     path(MonsterAssetEntity::assetType).eq(assetType),
+                    path(MonsterAssetEntity::deletedAt).isNull(),
                 ),
             )
         }
@@ -67,6 +70,12 @@ class MonsterAssetPersistenceAdapter(
         return entityManager.findAll<MonsterAssetEntity>(query, jpqlRenderContext)
             .mapNotNull { MonsterAssetMapper.toDomain(it) }
     }
+
+    override fun existsByUpdatedAtAfter(since: LocalDateTime): Boolean =
+        monsterAssetJpaRepository.existsByUpdatedAtAfterAndDeletedAtIsNull(since)
+
+    override fun findAll(): List<MonsterAsset> =
+        monsterAssetJpaRepository.findAllByDeletedAtIsNull().mapNotNull { MonsterAssetMapper.toDomain(it) }
 
     override fun save(monsterAsset: MonsterAsset): MonsterAsset {
         val monsterEntity = monsterJpaRepository.findById(monsterAsset.monsterId.value).orElseThrow()

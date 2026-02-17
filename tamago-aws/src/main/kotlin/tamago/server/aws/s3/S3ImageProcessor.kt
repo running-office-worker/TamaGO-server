@@ -35,8 +35,9 @@ class S3ImageProcessor(
             )
 
         return ImageUrl(
-            presignedUrl,
-            generateGetUrl(imageFilePath, imageFileName),
+            uploadUrl = presignedUrl,
+            previewUrl = generateGetUrl(imageFilePath, imageFileName),
+            fileName = imageFileName,
         )
     }
 

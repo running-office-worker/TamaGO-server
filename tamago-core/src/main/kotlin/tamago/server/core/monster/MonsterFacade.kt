@@ -9,6 +9,7 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
+import tamago.server.core.monster.domain.port.inbound.query.MonsterAssetBundleQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
 import tamago.server.core.monster.application.exception.MonsterAccessDeniedException
 import tamago.server.core.monster.application.service.MonsterCommandService
@@ -34,10 +35,8 @@ class MonsterFacade(
         return monsters.map { monster ->
             // 내가 소유한 몬스터인지 확인
             val ownedMonster = ownedMonsterMap[monster.id]
-            // 몬스터의 PNG 이미지만 조회
-            val imageUrl = ownedMonster?.let { monsterQueryService.getMonsterPngUrl(monster.id!!) }
 
-            MonsterDexQueryDto.of(monster, ownedMonster, imageUrl)
+            MonsterDexQueryDto.of(monster, ownedMonster)
         }
     }
 
@@ -56,10 +55,13 @@ class MonsterFacade(
 
     @Transactional
     fun createMonsterAssetUploadUrl(monsterId: MonsterId, assetType: AssetType): CreateMonsterAssetQueryDto {
+        // 특정 몬스터에 이미 해당 타입의 에셋이 존재하는지 확인하고 존재하면 예외 처리
         monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
 
-        val assetKey = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
+        // 이미지 파일 경로 생성
+        val imageFilePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
 
+        // 랜덤한 assetName 생성하고 presigned upload URL 생성
         val generatedUrl = imageProcessor.createUploadUrl(
             prefix = ImagePrefix.MONSTER.value,
             prefixId = monsterId.value,
@@ -67,13 +69,41 @@ class MonsterFacade(
             extension = assetType.extension,
         )
 
-        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey)
+        val assetKey = "$imageFilePath/${generatedUrl.fileName}"
+
+        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey, generatedUrl.fileName)
 
         return CreateMonsterAssetQueryDto(
             uploadUrl = generatedUrl.uploadUrl,
             previewUrl = generatedUrl.previewUrl,
             assetKey = assetKey,
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getAllMonsterAssetBundles(): List<MonsterAssetBundleQueryDto> {
+        val allAssets = monsterQueryService.getAllMonsterAssets()
+
+        return allAssets
+            .filter { it.assetName != null && it.assetType != null }
+            .groupBy { it.monsterId }
+            .map { (monsterId, assets) ->
+                val assetList = assets.map { asset ->
+                    MonsterAssetBundleQueryDto.AssetDetail(
+                        assetType = asset.assetType!!.name.lowercase(),
+                        url = imageProcessor.getImageUrl(
+                            prefix = ImagePrefix.MONSTER.value,
+                            prefixId = monsterId.value,
+                            fileName = asset.assetName,
+                        ).firstOrNull()?.url.orEmpty(),
+                        lastModifiedAt = asset.updatedAt!!,
+                    )
+                }
+                MonsterAssetBundleQueryDto(
+                    monsterId = monsterId.value,
+                    assets = assetList,
+                )
+            }
     }
 
     @Transactional

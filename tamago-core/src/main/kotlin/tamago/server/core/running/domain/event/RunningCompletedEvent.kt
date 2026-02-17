@@ -7,4 +7,5 @@ data class RunningCompletedEvent(
     val userId: UserId,
     val startedAt: LocalDateTime,
     val totalDistance: Double,
+    val totalDurationMinutes: Long,
 )

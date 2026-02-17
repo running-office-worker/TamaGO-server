@@ -9,6 +9,7 @@ class MonsterAsset(
     val id: MonsterAssetId? = null,
     val monsterId: MonsterId,
     val assetKey: String? = null,
+    val assetName: String? = null,
     val assetType: AssetType? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -18,11 +19,13 @@ class MonsterAsset(
         fun create(
             monsterId: MonsterId,
             assetKey: String? = null,
+            assetName: String? = null,
             assetType: AssetType? = null,
         ): MonsterAsset {
             return MonsterAsset(
                 monsterId = monsterId,
                 assetKey = assetKey,
+                assetName = assetName,
                 assetType = assetType,
             )
         }

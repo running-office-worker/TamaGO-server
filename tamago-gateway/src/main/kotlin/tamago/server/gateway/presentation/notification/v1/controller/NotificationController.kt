@@ -1,5 +1,7 @@
 package tamago.server.gateway.presentation.notification.v1.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,17 +13,18 @@ import tamago.server.core.notification.domain.port.inbound.command.RegisterFcmTo
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
-import tamago.server.gateway.presentation.notification.v1.api.NotificationApi
 import tamago.server.gateway.presentation.notification.v1.request.FcmTokenRequest
 
+@Tag(name = "Notification API", description = "푸시 알림 관련 API")
 @RestController
 class NotificationController(
     private val notificationFacade: NotificationFacade,
-) : NotificationApi {
+) {
 
+    @Operation(summary = "FCM 토큰 등록/갱신", description = "FCM 푸시 알림 토큰을 등록하거나 갱신합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/api/v1/fcm/token")
-    override fun registerFcmToken(
+    fun registerFcmToken(
         @CurrentUser user: User,
         @Valid @RequestBody request: FcmTokenRequest,
     ): CustomResponse<Void> {

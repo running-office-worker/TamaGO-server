@@ -9,6 +9,7 @@ import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
 import tamago.server.core.running.domain.util.RunningCalculator.calculateCadence
 import tamago.server.core.running.domain.util.RunningCalculator.calculateCalories
 import tamago.server.core.running.domain.util.RunningCalculator.calculatePace
+import java.time.Duration
 
 @Service
 class RunningCommandService(
@@ -23,6 +24,7 @@ class RunningCommandService(
         val pace = calculatePace(command.distance, command.startedAt, command.finishedAt)
         val cadence = calculateCadence(command.distance, command.startedAt, command.finishedAt)
         val calories = calculateCalories(command.distance, command.weight, command.startedAt, command.finishedAt)
+        val elapsedTime = Duration.between(command.startedAt, command.finishedAt).seconds.toInt()
 
         val running = Running.create(
             userId = command.userId,
@@ -33,6 +35,7 @@ class RunningCommandService(
             distance = command.distance,
             elevationGain = command.elevationGain,
             heartbeat = command.heartbeat,
+            elapsedTime = elapsedTime,
             startedAt = command.startedAt,
             finishedAt = command.finishedAt,
         )

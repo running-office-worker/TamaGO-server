@@ -16,4 +16,7 @@ class RunningQueryService(
 
     fun getTotalDistance(userId: UserId): Double =
         runningPersistencePort.sumDistanceByUserId(userId)
+
+    fun getTotalDurationMinutes(userId: UserId): Long =
+        runningPersistencePort.sumDurationMinutesByUserId(userId)
 }

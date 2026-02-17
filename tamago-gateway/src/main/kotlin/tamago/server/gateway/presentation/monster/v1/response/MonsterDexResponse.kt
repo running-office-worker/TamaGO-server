@@ -10,6 +10,9 @@ data class MonsterDexResponse(
     @field:Schema(description = "몬스터 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     val monsterId: Long,
 
+    @field:Schema(description = "몬스터 닉네임", example = "타마알", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    val nickname: String?,
+
     @field:Schema(
         description = "해금 조건 설명",
         example = "10km를 달리면 해금됩니다",
@@ -28,12 +31,6 @@ data class MonsterDexResponse(
         @field:Schema(description = "소유 몬스터 ID", example = "5", requiredMode = Schema.RequiredMode.REQUIRED)
         val ownedMonsterId: Long,
 
-        @field:Schema(description = "몬스터 닉네임", example = "타마알", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-        val nickname: String?,
-
-        @field:Schema(description = "몬스터 PNG 이미지 URL", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-        val imageUrl: String?,
-
         @field:Schema(description = "보유 경험치", example = "100", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         val havingXp: Int?,
 
@@ -48,8 +45,6 @@ data class MonsterDexResponse(
             fun from(dto: MonsterDexQueryDto.OwnedMonsterInfo): OwnedMonsterInfo =
                 OwnedMonsterInfo(
                     ownedMonsterId = dto.ownedMonsterId,
-                    nickname = dto.nickname,
-                    imageUrl = dto.imageUrl,
                     havingXp = dto.havingXp,
                     status = dto.status,
                 )
@@ -60,6 +55,7 @@ data class MonsterDexResponse(
         fun from(dto: MonsterDexQueryDto): MonsterDexResponse =
             MonsterDexResponse(
                 monsterId = dto.monsterId,
+                nickname = dto.nickname,
                 unlockDescription = dto.unlockDescription,
                 owned = dto.owned,
                 ownedMonster = dto.ownedMonster?.let { OwnedMonsterInfo.from(it) },
