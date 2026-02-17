@@ -1,0 +1,9 @@
+spring:
+  main:
+    lazy-initialization: true
+
+server:
+  tomcat:
+    threads:
+      max: 10
+      min-spare: 2
