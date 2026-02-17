@@ -9,6 +9,7 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
+import tamago.server.core.monster.domain.port.inbound.query.MonsterAssetBundleQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
 import tamago.server.core.monster.application.exception.MonsterAccessDeniedException
 import tamago.server.core.monster.application.service.MonsterCommandService
@@ -79,6 +80,32 @@ class MonsterFacade(
             previewUrl = generatedUrl.previewUrl,
             assetKey = assetKey,
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getAllMonsterAssetBundles(): List<MonsterAssetBundleQueryDto> {
+        val allAssets = monsterQueryService.getAllMonsterAssets()
+
+        return allAssets
+            .filter { it.assetName != null && it.assetType != null }
+            .groupBy { it.monsterId }
+            .map { (monsterId, assets) ->
+                val assetList = assets.map { asset ->
+                    MonsterAssetBundleQueryDto.AssetDetail(
+                        assetType = asset.assetType!!.name.lowercase(),
+                        url = imageProcessor.getImageUrl(
+                            prefix = ImagePrefix.MONSTER.value,
+                            prefixId = monsterId.value,
+                            fileName = asset.assetName,
+                        ).firstOrNull()?.url.orEmpty(),
+                        lastModifiedAt = asset.updatedAt,
+                    )
+                }
+                MonsterAssetBundleQueryDto(
+                    monsterId = monsterId.value,
+                    assets = assetList,
+                )
+            }
     }
 
     @Transactional

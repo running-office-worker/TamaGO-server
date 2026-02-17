@@ -7,5 +7,6 @@ import tamago.server.core.monster.domain.vo.MonsterId
 interface MonsterAssetPersistencePort {
     fun existsByMonsterIdAndAssetType(monsterId: MonsterId, assetType: AssetType): Boolean
     fun findAllByMonsterIdsAndAssetType(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset>
+    fun findAll(): List<MonsterAsset>
     fun save(monsterAsset: MonsterAsset): MonsterAsset
 }

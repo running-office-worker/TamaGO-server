@@ -47,6 +47,9 @@ class MonsterQueryService(
     fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
         monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
 
+    fun getAllMonsterAssets(): List<MonsterAsset> =
+        monsterAssetPersistencePort.findAll()
+
     override fun getEvolutionChain(monsterId: MonsterId): List<Monster> {
         val current = monsterPersistencePort.findById(monsterId) ?: throw MonsterNotFoundException()
 

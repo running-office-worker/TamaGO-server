@@ -68,6 +68,9 @@ class MonsterAssetPersistenceAdapter(
             .mapNotNull { MonsterAssetMapper.toDomain(it) }
     }
 
+    override fun findAll(): List<MonsterAsset> =
+        monsterAssetJpaRepository.findAll().mapNotNull { MonsterAssetMapper.toDomain(it) }
+
     override fun save(monsterAsset: MonsterAsset): MonsterAsset {
         val monsterEntity = monsterJpaRepository.findById(monsterAsset.monsterId.value).orElseThrow()
         val entity = MonsterAssetMapper.toEntity(monsterAsset, monsterEntity)

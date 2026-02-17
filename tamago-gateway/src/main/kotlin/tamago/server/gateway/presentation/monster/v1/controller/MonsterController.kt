@@ -12,6 +12,7 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.monster.v1.api.MonsterApi
+import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetBundleResponse
 import tamago.server.gateway.presentation.monster.v1.response.MonsterDexResponse
 import tamago.server.gateway.presentation.monster.v1.response.UnlockedMonsterResponse
 
@@ -47,5 +48,11 @@ class MonsterController(
     ): CustomResponse<Void> {
         monsterFacade.ownMonster(OwnedMonsterId(ownedMonsterId), user.id!!)
         return CustomResponse.ok()
+    }
+
+    @GetMapping("/api/v1/monsters/assets")
+    override fun getAllMonsterAssets(): CustomResponse<List<MonsterAssetBundleResponse>> {
+        val result = monsterFacade.getAllMonsterAssetBundles()
+        return CustomResponse.ok(result.map { MonsterAssetBundleResponse.from(it) })
     }
 }
