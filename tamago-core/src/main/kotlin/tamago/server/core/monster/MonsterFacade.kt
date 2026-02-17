@@ -56,10 +56,13 @@ class MonsterFacade(
 
     @Transactional
     fun createMonsterAssetUploadUrl(monsterId: MonsterId, assetType: AssetType): CreateMonsterAssetQueryDto {
+        // 특정 몬스터에 이미 해당 타입의 에셋이 존재하는지 확인하고 존재하면 예외 처리
         monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
 
-        val assetKey = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
+        // 이미지 파일 경로 생성
+        val imageFilePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
 
+        // 랜덤한 assetName 생성하고 presigned upload URL 생성
         val generatedUrl = imageProcessor.createUploadUrl(
             prefix = ImagePrefix.MONSTER.value,
             prefixId = monsterId.value,
@@ -67,7 +70,9 @@ class MonsterFacade(
             extension = assetType.extension,
         )
 
-        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey)
+        val assetKey = "$imageFilePath/${generatedUrl.fileName}"
+
+        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey, generatedUrl.fileName)
 
         return CreateMonsterAssetQueryDto(
             uploadUrl = generatedUrl.uploadUrl,

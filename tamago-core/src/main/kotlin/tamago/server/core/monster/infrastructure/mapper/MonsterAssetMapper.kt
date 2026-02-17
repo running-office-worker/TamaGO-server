@@ -12,6 +12,7 @@ object MonsterAssetMapper {
             id = domain.id?.value,
             monster = monster,
             assetKey = domain.assetKey,
+            assetName = domain.assetName,
             assetType = domain.assetType,
         )
     }
@@ -23,6 +24,7 @@ object MonsterAssetMapper {
             id = entity.id?.let { MonsterAssetId(it) },
             monsterId = MonsterId(entity.monster.id!!),
             assetKey = entity.assetKey,
+            assetName = entity.assetName,
             assetType = entity.assetType,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,

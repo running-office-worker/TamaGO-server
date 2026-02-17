@@ -35,6 +35,9 @@ class MonsterAssetEntity(
     @Column(name = "asset_key")
     val assetKey: String? = null,
 
+    @Column(name = "asset_name")
+    val assetName: String? = null,
+
     @Enumerated(EnumType.STRING)
     @Column(name = "asset_type")
     val assetType: AssetType? = null,

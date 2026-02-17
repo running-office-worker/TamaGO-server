@@ -29,10 +29,11 @@ class MonsterCommandService(
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    fun createMonsterAsset(monsterId: MonsterId, assetType: AssetType, assetKey: String): MonsterAsset {
+    fun createMonsterAsset(monsterId: MonsterId, assetType: AssetType, assetKey: String, assetName: String): MonsterAsset {
         val monsterAsset = MonsterAsset.create(
             monsterId = monsterId,
             assetKey = assetKey,
+            assetName = assetName,
             assetType = assetType,
         )
 
