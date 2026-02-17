@@ -59,8 +59,7 @@ jobs:
               -XX:ReservedCodeCacheSize=48m
               -XX:+UseSerialGC
               -Xss512k
-              -Xshare:on
-              "
+              " \
               -p 8080:8080 \
               --network tamago \
               --cpus="0.5" \
