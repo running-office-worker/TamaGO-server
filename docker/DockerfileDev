@@ -5,25 +5,16 @@ WORKDIR /workspace
 COPY . .
 RUN ./gradlew :tamago-gateway:bootJar -x test --no-daemon
 
-# ---------- CDS training stage ----------
-FROM eclipse-temurin:21-jre-alpine AS cds
-WORKDIR /app
-
-COPY --from=build /workspace/tamago-gateway/build/libs/*.jar app.jar
-RUN java -XX:ArchiveClassesAtExit=app.jsa \
-    -Dspring.context.exit=onRefresh \
-    -jar app.jar
-
 # ---------- runtime stage ----------
-FROM eclipse-temurin:21-jre-alpine AS runtime
+FROM eclipse-temurin:21-jre-jammy AS runtime
 
 RUN addgroup --system app && adduser --system --ingroup app app
 USER app
 WORKDIR /app
 
-COPY --from=cds /app/app.jar app.jar
-COPY --from=cds /app/app.jsa app.jsa
+COPY --from=build /workspace/tamago-gateway/build/libs/*.jar app.jar
 
 EXPOSE 8080
+ENV JAVA_OPTS="-XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom"
 
-ENTRYPOINT ["sh","-c","java $JAVA_OPTS -XX:SharedArchiveFile=/app/app.jsa -jar /app/app.jar"]
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
