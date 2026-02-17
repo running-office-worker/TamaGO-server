@@ -10,7 +10,7 @@ data class MonsterDexResponse(
     @field:Schema(description = "몬스터 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     val monsterId: Long,
 
-    @field:Schema(description = "몬스터 닉네임", example = "타마알", requiredMode = Schema.RequiredMode.REQUIRED)
+    @field:Schema(description = "몬스터 닉네임", example = "타마알", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     val nickname: String?,
 
     @field:Schema(

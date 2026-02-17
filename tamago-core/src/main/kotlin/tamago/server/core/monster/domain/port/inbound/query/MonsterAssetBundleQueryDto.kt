@@ -9,6 +9,6 @@ data class MonsterAssetBundleQueryDto(
     data class AssetDetail(
         val assetType: String,
         val url: String,
-        val lastModifiedAt: LocalDateTime?,
+        val lastModifiedAt: LocalDateTime,
     )
 }

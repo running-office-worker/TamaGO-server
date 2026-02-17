@@ -35,6 +35,7 @@ class MonsterAssetPersistenceAdapter(
                 and(
                     path(MonsterAssetEntity::monster)(MonsterEntity::id).eq(monsterId.value),
                     path(MonsterAssetEntity::assetType).eq(assetType),
+                    path(MonsterAssetEntity::deletedAt).isNull(),
                 ),
             )
         }
@@ -61,6 +62,7 @@ class MonsterAssetPersistenceAdapter(
                 and(
                     path(MonsterAssetEntity::monster)(MonsterEntity::id).`in`(monsterIds.map { it.value }),
                     path(MonsterAssetEntity::assetType).eq(assetType),
+                    path(MonsterAssetEntity::deletedAt).isNull(),
                 ),
             )
         }
@@ -70,10 +72,10 @@ class MonsterAssetPersistenceAdapter(
     }
 
     override fun existsByUpdatedAtAfter(since: LocalDateTime): Boolean =
-        monsterAssetJpaRepository.existsByUpdatedAtAfter(since)
+        monsterAssetJpaRepository.existsByUpdatedAtAfterAndDeletedAtIsNull(since)
 
     override fun findAll(): List<MonsterAsset> =
-        monsterAssetJpaRepository.findAll().mapNotNull { MonsterAssetMapper.toDomain(it) }
+        monsterAssetJpaRepository.findAllByDeletedAtIsNull().mapNotNull { MonsterAssetMapper.toDomain(it) }
 
     override fun save(monsterAsset: MonsterAsset): MonsterAsset {
         val monsterEntity = monsterJpaRepository.findById(monsterAsset.monsterId.value).orElseThrow()

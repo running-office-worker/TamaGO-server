@@ -96,7 +96,7 @@ class MonsterFacade(
                             prefixId = monsterId.value,
                             fileName = asset.assetName,
                         ).firstOrNull()?.url.orEmpty(),
-                        lastModifiedAt = asset.updatedAt,
+                        lastModifiedAt = asset.updatedAt!!,
                     )
                 }
                 MonsterAssetBundleQueryDto(

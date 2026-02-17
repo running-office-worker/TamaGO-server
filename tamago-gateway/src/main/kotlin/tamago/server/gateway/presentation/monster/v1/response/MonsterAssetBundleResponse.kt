@@ -21,7 +21,7 @@ data class MonsterAssetBundleResponse(
         val url: String,
 
         @field:Schema(description = "마지막 수정 일시", requiredMode = Schema.RequiredMode.REQUIRED)
-        val lastModifiedAt: LocalDateTime?,
+        val lastModifiedAt: LocalDateTime,
     ) {
         companion object {
             fun from(dto: MonsterAssetBundleQueryDto.AssetDetail): AssetDetailResponse =
