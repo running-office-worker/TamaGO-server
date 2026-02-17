@@ -28,7 +28,7 @@ class MonsterEventListener(
 
             allFirstStageMonsters
                 .filter { monster -> monster.id !in ownedMonsterIds } // 이미 보유한 몬스터는 제외
-                .filter { monster -> monster.unlockPolicies.any { it.isSatisfiedBy(event.totalDistance) } }
+                .filter { monster -> monster.unlockPolicies.any { it.isSatisfiedBy(event.totalDistance, event.totalDurationMinutes) } }
                 .forEach { monster -> monsterCommandService.unlockMonster(monster.id!!, event.userId) }
         } catch (e: Exception) {
             // TODO: Sentry 연동

@@ -25,8 +25,9 @@ class RunningFacade(
     fun saveRunningData(command: SaveRunningCommandDto): RunningFinishQueryDto {
         val running = runningCommandService.save(command)
         val totalDistance = runningQueryService.getTotalDistance(command.userId)
+        val totalDurationMinutes = runningQueryService.getTotalDurationMinutes(command.userId)
 
-        publishRunningCompletedEvent(command, totalDistance)
+        publishRunningCompletedEvent(command, totalDistance, totalDurationMinutes)
 
         // 같이 뛴 몬스터의 진화 체인 조회
         val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
@@ -47,12 +48,13 @@ class RunningFacade(
         )
     }
 
-    private fun publishRunningCompletedEvent(command: SaveRunningCommandDto, totalDistance: Double) {
+    private fun publishRunningCompletedEvent(command: SaveRunningCommandDto, totalDistance: Double, totalDurationMinutes: Long) {
         applicationEventPublisher.publishEvent(
             RunningCompletedEvent(
                 userId = command.userId,
                 startedAt = command.startedAt,
                 totalDistance = totalDistance,
+                totalDurationMinutes = totalDurationMinutes,
             ),
         )
     }

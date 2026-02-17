@@ -15,9 +15,10 @@ class MonsterUnlockPolicy(
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
-    fun isSatisfiedBy(totalDistance: Double): Boolean =
+    fun isSatisfiedBy(totalDistance: Double, totalDurationMinutes: Long): Boolean =
         when (ruleType) {
-            MonsterRuleType.KILOMETER -> (ruleValue ?: Int.MAX_VALUE) <= totalDistance
-            null -> false
+            MonsterRuleType.TOTAL_KILOMETER -> (ruleValue ?: Int.MAX_VALUE) <= totalDistance
+            MonsterRuleType.TOTAL_DURATION -> (ruleValue ?: Int.MAX_VALUE).toLong() <= totalDurationMinutes
+            MonsterRuleType.MONSTER_KILOMETER, null -> false
         }
 }
