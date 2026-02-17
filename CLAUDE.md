@@ -87,7 +87,7 @@ module/
 
 ### Gateway Module
 
-- Controllers implement `*Api` interfaces (for Swagger documentation)
+- Controllers have Swagger annotations (`@Tag`, `@Operation`) directly on the class and methods
 - `@CurrentUser` annotation resolves the authenticated `User` from JWT via `UserIdResolver`
 - `CustomResponse<T>` wraps all API responses with `requestId`, `status`, `message`, `code`, `data`
 - `CustomResponseStatusAspect` sets HTTP status from `CustomResponse.status`
