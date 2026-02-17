@@ -71,7 +71,7 @@ class AuthController(
     }
 
     @Operation(summary = "\uD83E\uDDEA 테스트 유저 회원가입", description = "이메일과 비밀번호로 테스트 유저를 생성 합니다.")
-    @PostMapping("/signup")
+    @PostMapping("/api/v1/auth/signup")
     fun signup(@RequestBody @Valid request: SignupRequest): CustomResponse<Void> {
         userFacade.signUp(
             SignUpCommandDto(
@@ -84,7 +84,7 @@ class AuthController(
     }
 
     @Operation(summary = "\uD83E\uDDEA 테스트 유저 로그인", description = "이메일과 비밀번호로 테스트 계정에 로그인 합니다.")
-    @PostMapping("/login")
+    @PostMapping("/api/v1/auth/login")
     fun login(@RequestBody @Valid request: LoginRequest): CustomResponse<LoginResponse> {
         val token = userFacade.emailLogin(
             TestLoginCommandDto(

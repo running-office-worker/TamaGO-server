@@ -5,6 +5,7 @@ import tamago.server.core.monster.domain.aggregate.OwnedMonster
 
 data class MonsterDexQueryDto(
     val monsterId: Long,
+    val nickname: String?,
     val unlockDescription: String?,
     val owned: Boolean,
     val ownedMonster: OwnedMonsterInfo?,
@@ -13,21 +14,19 @@ data class MonsterDexQueryDto(
         fun of(
             monster: Monster,
             ownedMonster: OwnedMonster?,
-            imageUrl: String?,
         ): MonsterDexQueryDto {
             return MonsterDexQueryDto(
                 monsterId = monster.id!!.value,
+                nickname = monster.nickname,
                 unlockDescription = monster.unlockPolicies.firstOrNull()?.description,
                 owned = ownedMonster != null,
-                ownedMonster = ownedMonster?.let { OwnedMonsterInfo.of(it, monster, imageUrl) },
+                ownedMonster = ownedMonster?.let { OwnedMonsterInfo.of(it, monster) },
             )
         }
     }
 
     data class OwnedMonsterInfo(
         val ownedMonsterId: Long,
-        val nickname: String?,
-        val imageUrl: String?,
         val havingXp: Int?,
         val status: String?,
     ) {
@@ -35,12 +34,9 @@ data class MonsterDexQueryDto(
             fun of(
                 ownedMonster: OwnedMonster,
                 monster: Monster,
-                imageUrl: String?,
             ): OwnedMonsterInfo {
                 return OwnedMonsterInfo(
                     ownedMonsterId = ownedMonster.id!!.value,
-                    nickname = monster.nickname,
-                    imageUrl = imageUrl,
                     havingXp = ownedMonster.havingXp,
                     status = ownedMonster.status?.name,
                 )

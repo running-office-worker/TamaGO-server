@@ -10,6 +10,10 @@ data class InitMonsterAssetResponse(
     @field:Schema(description = "조회용 Presigned URL", requiredMode = Schema.RequiredMode.REQUIRED)
     val previewUrl: String,
 
-    @field:Schema(description = "S3 에셋 경로", example = "dev/monster/1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @field:Schema(
+        description = "S3 에셋 경로",
+        example = "dev/monster/1/randomfilename.png",
+        requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     val assetKey: String,
 )

@@ -35,10 +35,8 @@ class MonsterFacade(
         return monsters.map { monster ->
             // 내가 소유한 몬스터인지 확인
             val ownedMonster = ownedMonsterMap[monster.id]
-            // 몬스터의 PNG 이미지만 조회
-            val imageUrl = ownedMonster?.let { monsterQueryService.getMonsterPngUrl(monster.id!!) }
 
-            MonsterDexQueryDto.of(monster, ownedMonster, imageUrl)
+            MonsterDexQueryDto.of(monster, ownedMonster)
         }
     }
 
