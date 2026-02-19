@@ -3,10 +3,13 @@ package tamago.server.gateway.presentation.monster.v1.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import tamago.server.core.monster.MonsterFacade
 import tamago.server.core.monster.MonsterQueryUseCase
+import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.user.domain.aggregate.User
@@ -53,7 +56,10 @@ class MonsterController(
         return CustomResponse.ok()
     }
 
-    @Operation(summary = "전체 몬스터 에셋 조회", description = "모든 몬스터의 에셋(PNG, GIF, LOTTIE) Presigned URL을 조회합니다.")
+    @Operation(
+        summary = "전체 몬스터 에셋 조회",
+        description = "모든 몬스터의 에셋(SVG, PNG, GIF, LOTTIE) Presigned URL을 조회합니다."
+    )
     @GetMapping("/api/v1/monsters/assets")
     fun getAllMonsterAssets(): CustomResponse<List<MonsterAssetBundleResponse>> {
         val result = monsterFacade.getAllMonsterAssetBundles()
@@ -111,5 +117,18 @@ class MonsterController(
                 assetKey = result.assetKey,
             ),
         )
+    }
+
+    @Operation(summary = "\uD83E\uDDEA 몬스터 에셋 직접 업로드", description = "파일을 서버를 통해 직접 S3에 업로드합니다.")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/api/v1/monsters/{monsterId}/assets", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun uploadMonsterAsset(
+        @PathVariable monsterId: Long,
+        @RequestParam assetType: AssetType,
+        @RequestPart("file") file: MultipartFile,
+    ): CustomResponse<UploadMonsterAssetResponse> {
+        val result = monsterFacade.uploadMonsterAsset(MonsterId(monsterId), assetType, file.bytes)
+        return CustomResponse.created(UploadMonsterAssetResponse(result.previewUrl, result.assetKey))
     }
 }

@@ -11,6 +11,7 @@ import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQu
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterAssetBundleQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
+import tamago.server.core.monster.domain.port.inbound.query.UploadMonsterAssetQueryDto
 import tamago.server.core.monster.application.exception.MonsterAccessDeniedException
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
@@ -80,6 +81,32 @@ class MonsterFacade(
         )
     }
 
+    @Transactional
+    fun uploadMonsterAsset(
+        monsterId: MonsterId,
+        assetType: AssetType,
+        fileBytes: ByteArray,
+    ): UploadMonsterAssetQueryDto {
+        // 특정 몬스터에 이미 해당 타입의 에셋이 존재하는지 확인하고 존재하면 예외 처리
+        monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
+
+        // 이미지 파일 경로 생성
+        val imageFilePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
+
+        val uploaded = imageProcessor.uploadFile(
+            prefix = ImagePrefix.MONSTER.value,
+            prefixId = monsterId.value,
+            contentType = assetType.contentType,
+            extension = assetType.extension,
+            fileBytes = fileBytes,
+        )
+
+        val assetKey = "$imageFilePath/${uploaded.fileName}"
+        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey, uploaded.fileName)
+
+        return UploadMonsterAssetQueryDto(previewUrl = uploaded.previewUrl, assetKey = assetKey)
+    }
+
     @Transactional(readOnly = true)
     fun getAllMonsterAssetBundles(): List<MonsterAssetBundleQueryDto> {
         val allAssets = monsterQueryService.getAllMonsterAssets()
@@ -90,7 +117,7 @@ class MonsterFacade(
             .map { (monsterId, assets) ->
                 val assetList = assets.map { asset ->
                     MonsterAssetBundleQueryDto.AssetDetail(
-                        assetType = asset.assetType!!.name.lowercase(),
+                        assetType = asset.assetType!!.name,
                         url = imageProcessor.getImageUrl(
                             prefix = ImagePrefix.MONSTER.value,
                             prefixId = monsterId.value,

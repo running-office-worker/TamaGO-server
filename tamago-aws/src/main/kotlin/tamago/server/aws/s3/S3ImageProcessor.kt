@@ -3,9 +3,10 @@ package tamago.server.aws.s3
 import org.springframework.stereotype.Component
 import tamago.server.aws.AwsProperties
 import tamago.server.core.common.image.ImageFileConstructor
-import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.image.ImageInfo
+import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.image.ImageUrl
+import tamago.server.core.common.image.UploadedImage
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -52,6 +53,24 @@ class S3ImageProcessor(
             ?.let {
                 listOf(presignedGet(imageFilePath, it)) // fileName이 있으면 특정 이미지 조회
             } ?: listPresignedGets(imageFilePath) // 아니면 해당 경로 아래 모든 이미지 탐색
+    }
+
+    override fun uploadFile(
+        prefix: String,
+        prefixId: Long,
+        contentType: String,
+        extension: String,
+        fileBytes: ByteArray,
+    ): UploadedImage {
+        val filePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+        val fileName = imageFileConstructor.imageFileName(extension)
+
+        awsS3Client.putObject(awsProperties.s3.bucket, filePath, fileName, contentType, fileBytes)
+
+        return UploadedImage(
+            previewUrl = generateGetUrl(filePath, fileName),
+            fileName = fileName
+        )
     }
 
     private fun generateGetUrl(
