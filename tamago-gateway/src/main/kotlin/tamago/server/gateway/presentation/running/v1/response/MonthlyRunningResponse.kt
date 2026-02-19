@@ -39,9 +39,6 @@ data class MonthlyRunningResponse(
 
         @field:Schema(description = "경과 시간 (초)", example = "2700", requiredMode = Schema.RequiredMode.REQUIRED)
         val elapsedTime: Int,
-
-        @field:Schema(description = "몬스터 PNG 이미지 URL", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-        val monsterImageUrl: String?,
     ) {
         companion object {
             fun from(dto: MonthlyRunningQueryDto.RunDetailDto): RunDetailResponse =
@@ -49,7 +46,6 @@ data class MonthlyRunningResponse(
                     pace = dto.pace,
                     calories = dto.calories,
                     elapsedTime = dto.elapsedTime,
-                    monsterImageUrl = dto.monsterImageUrl,
                 )
         }
     }

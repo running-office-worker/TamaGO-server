@@ -61,14 +61,6 @@ class RunningFacade(
     fun getMonthlyRunningData(userId: UserId, year: Int, month: Int): MonthlyRunningQueryDto {
         val runnings = runningQueryService.getMonthlyRunnings(userId, year, month)
 
-        // ownedMonsterId → monsterId 매핑 (distinct)
-        val ownedMonsterIds = runnings.map { it.ownedMonsterId }.distinct()
-        val ownedMonsterMap = ownedMonsterIds.associateWith { monsterQueryUseCase.getOwnedMonster(it) }
-
-        // monsterId → imageUrl 매핑 (distinct)
-        val monsterIds = ownedMonsterMap.values.map { it.monsterId }.distinct()
-        val monsterImageMap = monsterIds.associateWith { monsterQueryUseCase.getMonsterPngUrl(it) }
-
         // 날짜별 그룹핑
         val dailyRunnings = runnings
             .groupBy { it.startedAt!!.toLocalDate() }
@@ -77,11 +69,7 @@ class RunningFacade(
             .map { (date, runs) ->
                 MonthlyRunningQueryDto.DailyRunningDto(
                     date = date,
-                    runs = runs.map { running ->
-                        val ownedMonster = ownedMonsterMap[running.ownedMonsterId]
-                        val imageUrl = ownedMonster?.let { monsterImageMap[it.monsterId] }
-                        MonthlyRunningQueryDto.RunDetailDto.from(running, imageUrl)
-                    },
+                    runs = runs.map { running -> MonthlyRunningQueryDto.RunDetailDto.from(running) },
                 )
             }
 

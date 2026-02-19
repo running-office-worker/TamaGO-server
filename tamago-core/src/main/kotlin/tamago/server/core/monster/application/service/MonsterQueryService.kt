@@ -94,13 +94,4 @@ class MonsterQueryService(
     override fun getUnlockedMonsters(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserIdAndStatus(userId, OwnedMonsterStatus.UNLOCKED)
 
-    override fun getMonsterPngUrl(monsterId: MonsterId): String? =
-        imageProcessor.getImageUrl(
-            prefix = ImagePrefix.MONSTER.value,
-            prefixId = monsterId.value,
-            fileName = null,
-        ).firstOrNull { info ->
-            info.url.substringBefore("?")
-                .endsWith(".${AssetType.PNG.extension}")
-        }?.url
 }
