@@ -9,5 +9,5 @@ enum class AssetType(
 
     M_LOTTIE("application/json", "json"),
     M_SVG("image/svg+xml", "svg"),
-    S_PNG("image/png", "png"),
+    S_SVG("image/svg+xml", "svg"),
 }
