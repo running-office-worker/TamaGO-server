@@ -1,6 +1,7 @@
 package tamago.server.gateway.presentation.running.v1.response
 
 import io.swagger.v3.oas.annotations.media.Schema
+import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
 
 @Schema(description = "러닝 종료 응답")
 data class RunningFinishResponse(
@@ -39,4 +40,23 @@ data class RunningFinishResponse(
         @field:Schema(description = "현재 단계 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
         val current: Boolean,
     )
+
+    companion object {
+        fun from(dto: RunningFinishQueryDto) = RunningFinishResponse(
+            pace = dto.pace,
+            cadence = dto.cadence,
+            elapsedTime = dto.elapsedTime,
+            totalCalories = dto.totalCalories,
+            originXp = dto.originXp,
+            earnedXp = dto.earnedXp,
+            evolutionStages = dto.evolutionStages.map { stage ->
+                EvolutionStageResponse(
+                    stage = stage.stage,
+                    monsterId = stage.monsterId,
+                    evolutionXp = stage.evolutionXp,
+                    current = stage.current,
+                )
+            },
+        )
+    }
 }
