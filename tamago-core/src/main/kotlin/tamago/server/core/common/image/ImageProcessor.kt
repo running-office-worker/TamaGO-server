@@ -31,5 +31,6 @@ interface ImageProcessor {
         contentType: String,
         extension: String,
         fileBytes: ByteArray,
+        fileName: String,
     ): UploadedImage
 }

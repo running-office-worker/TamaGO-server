@@ -90,8 +90,12 @@ class MonsterFacade(
         // 특정 몬스터에 이미 해당 타입의 에셋이 존재하는지 확인하고 존재하면 예외 처리
         monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
 
-        // 이미지 파일 경로 생성
-        val imageFilePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
+        // 이미지 파일 경로와 이름 생성
+        val filePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
+        val fileName = imageFileConstructor.imageFileName(assetType.extension)
+        val assetKey = "$filePath/$fileName"
+
+        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey, fileName)
 
         val uploaded = imageProcessor.uploadFile(
             prefix = ImagePrefix.MONSTER.value,
@@ -99,10 +103,8 @@ class MonsterFacade(
             contentType = assetType.contentType,
             extension = assetType.extension,
             fileBytes = fileBytes,
+            fileName = fileName,
         )
-
-        val assetKey = "$imageFilePath/${uploaded.fileName}"
-        monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey, uploaded.fileName)
 
         return UploadMonsterAssetQueryDto(previewUrl = uploaded.previewUrl, assetKey = assetKey)
     }

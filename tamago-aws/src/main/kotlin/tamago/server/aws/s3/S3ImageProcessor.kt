@@ -71,10 +71,10 @@ class S3ImageProcessor(
         contentType: String,
         extension: String,
         fileBytes: ByteArray,
+        fileName: String,
     ): UploadedImage {
         try {
             val filePath = imageFileConstructor.imageFilePath(prefix, prefixId)
-            val fileName = imageFileConstructor.imageFileName(extension)
 
             awsS3Client.putObject(awsProperties.s3.bucket, filePath, fileName, contentType, fileBytes)
 
