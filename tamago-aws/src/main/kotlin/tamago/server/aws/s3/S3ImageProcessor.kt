@@ -3,7 +3,7 @@ package tamago.server.aws.s3
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.exception.SdkException
 import tamago.server.aws.AwsProperties
-import tamago.server.aws.s3.exception.S3Exception
+import tamago.server.aws.exception.S3Exception
 import tamago.server.core.common.image.ImageFileConstructor
 import tamago.server.core.common.image.ImageInfo
 import tamago.server.core.common.image.ImageProcessor
