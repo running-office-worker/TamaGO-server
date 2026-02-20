@@ -34,6 +34,9 @@ class MonsterQueryService(
     fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
         monsterPersistencePort.findAllFirstStageWithUnlockPolicies()
 
+    fun getDefaultMonsters(): List<Monster> =
+        monsterPersistencePort.findAllDefaultMonsters()
+
     override fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster =
         ownedMonsterPersistencePort.findById(id)
             ?: throw OwnedMonsterNotFoundException()

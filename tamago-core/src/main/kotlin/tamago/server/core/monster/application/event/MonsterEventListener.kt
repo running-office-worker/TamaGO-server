@@ -8,6 +8,7 @@ import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
 import tamago.server.core.running.domain.event.RunningCompletedEvent
+import tamago.server.core.user.domain.event.UserSignedUpEvent
 
 private val logger = KotlinLogging.logger {}
 
@@ -16,6 +17,18 @@ class MonsterEventListener(
     private val monsterQueryService: MonsterQueryService,
     private val monsterCommandService: MonsterCommandService,
 ) {
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun onUserSignedUp(event: UserSignedUpEvent) {
+        try {
+            monsterQueryService.getDefaultMonsters()
+                .forEach { monster -> monsterCommandService.ownMonster(monster.id!!, event.userId) }
+        } catch (e: Exception) {
+            // TODO: Sentry 연동
+            logger.error(e) { "회원 가입 후 기본 몬스터 지급 오류 - userId: ${event.userId}" }
+        }
+    }
+
     @TransactionalEventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {

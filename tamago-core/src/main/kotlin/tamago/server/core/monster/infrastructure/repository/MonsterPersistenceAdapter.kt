@@ -53,4 +53,21 @@ class MonsterPersistenceAdapter(
         return entityManager.findAll<MonsterEntity>(query, jpqlRenderContext)
             .mapNotNull { MonsterMapper.toDomain(it) }
     }
+
+    override fun findAllDefaultMonsters(): List<Monster> {
+        val query = jpql {
+            selectDistinct(
+                entity(MonsterEntity::class),
+            ).from(
+                entity(MonsterEntity::class),
+                leftFetchJoin(MonsterEntity::unlockPolicies),
+            ).where(
+                path(MonsterEntity::previousMonster).isNull(),
+            )
+        }
+
+        return entityManager.findAll<MonsterEntity>(query, jpqlRenderContext)
+            .filter { it.unlockPolicies.isEmpty() }
+            .mapNotNull { MonsterMapper.toDomain(it) }
+    }
 }

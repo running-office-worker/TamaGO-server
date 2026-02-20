@@ -8,4 +8,5 @@ interface MonsterPersistencePort {
     fun findAllByPreviousMonsterIdIsNull(): List<Monster>
     fun findAllWithUnlockPolicies(): List<Monster>
     fun findAllFirstStageWithUnlockPolicies(): List<Monster>
+    fun findAllDefaultMonsters(): List<Monster>
 }
