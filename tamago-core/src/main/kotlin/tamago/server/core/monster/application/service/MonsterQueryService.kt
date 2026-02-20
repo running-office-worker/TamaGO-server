@@ -1,8 +1,6 @@
 package tamago.server.core.monster.application.service
 
 import org.springframework.stereotype.Service
-import tamago.server.core.common.image.ImagePrefix
-import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
@@ -25,7 +23,6 @@ class MonsterQueryService(
     private val monsterPersistencePort: MonsterPersistencePort,
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
-    private val imageProcessor: ImageProcessor,
 ) : MonsterQueryUseCase {
 
     fun get(id: MonsterId): Monster =
@@ -93,5 +90,8 @@ class MonsterQueryService(
 
     override fun getUnlockedMonsters(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserIdAndStatus(userId, OwnedMonsterStatus.UNLOCKED)
+
+    override fun getOwnedMonsterMappings(userId: UserId): List<OwnedMonster> =
+        ownedMonsterPersistencePort.findAllByUserIdAndStatus(userId, OwnedMonsterStatus.OWNED)
 
 }

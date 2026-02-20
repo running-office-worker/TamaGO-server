@@ -45,6 +45,16 @@ class MonsterController(
         return CustomResponse.ok(unlockedMonsters.map { UnlockedMonsterResponse.from(it) })
     }
 
+    @Operation(summary = "소유 몬스터 ID 매핑 조회", description = "소유한 몬스터의 ownedMonsterId, monsterId 매핑 배열을 반환합니다.")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/api/v1/monsters/owned")
+    fun getOwnedMonsterMappings(
+        @CurrentUser user: User,
+    ): CustomResponse<List<OwnedMonsterMappingResponse>> {
+        val result = monsterQueryUseCase.getOwnedMonsterMappings(user.id!!)
+        return CustomResponse.ok(result.map { OwnedMonsterMappingResponse.from(it) })
+    }
+
     @Operation(summary = "해금된 몬스터 소유", description = "해금된 몬스터를 소유 상태로 변경합니다.")
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/api/v1/monsters/unlocked/{ownedMonsterId}")
@@ -58,7 +68,7 @@ class MonsterController(
 
     @Operation(
         summary = "전체 몬스터 에셋 조회",
-        description = "모든 몬스터의 에셋(SVG, PNG, GIF, LOTTIE) Presigned URL을 조회합니다."
+        description = "모든 몬스터의 에셋(SVG, PNG, GIF, LOTTIE) Presigned URL을 조회합니다.",
     )
     @GetMapping("/api/v1/monsters/assets")
     fun getAllMonsterAssets(): CustomResponse<List<MonsterAssetBundleResponse>> {
