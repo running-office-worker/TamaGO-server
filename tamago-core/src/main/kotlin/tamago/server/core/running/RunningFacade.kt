@@ -43,6 +43,7 @@ class RunningFacade(
             ownedMonster = ownedMonster,
             evolutionChain = evolutionChain,
             earnedXp = earnedXp,
+            waypoints = command.waypoints.map { RunningFinishQueryDto.WaypointDto(it.latitude, it.longitude) },
         )
     }
 

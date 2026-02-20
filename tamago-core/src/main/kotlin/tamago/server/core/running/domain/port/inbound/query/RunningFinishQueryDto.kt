@@ -12,6 +12,7 @@ data class RunningFinishQueryDto(
     val originXp: Int,
     val earnedXp: Int,
     val evolutionStages: List<EvolutionStageDto>,
+    val waypoints: List<WaypointDto>,
 ) {
     data class EvolutionStageDto(
         val stage: Int,
@@ -20,12 +21,18 @@ data class RunningFinishQueryDto(
         val current: Boolean,
     )
 
+    data class WaypointDto(
+        val latitude: Double,
+        val longitude: Double,
+    )
+
     companion object {
         fun of(
             running: Running,
             ownedMonster: OwnedMonster,
             evolutionChain: List<Monster>,
             earnedXp: Int,
+            waypoints: List<WaypointDto>,
         ): RunningFinishQueryDto {
             return RunningFinishQueryDto(
                 pace = running.pace?.toInt() ?: 0,
@@ -42,6 +49,7 @@ data class RunningFinishQueryDto(
                         current = monster.id == ownedMonster.monsterId,
                     )
                 },
+                waypoints = waypoints,
             )
         }
     }

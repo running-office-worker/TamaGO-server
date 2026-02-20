@@ -25,7 +25,19 @@ data class RunningFinishResponse(
 
     @field:Schema(description = "진화 단계별 몬스터 정보 (최대 4단계)", requiredMode = Schema.RequiredMode.REQUIRED)
     val evolutionStages: List<EvolutionStageResponse>,
+
+    @field:Schema(description = "러닝 경로 좌표 목록", requiredMode = Schema.RequiredMode.REQUIRED)
+    val waypoints: List<WaypointResponse>,
 ) {
+    @Schema(description = "경로 좌표")
+    data class WaypointResponse(
+        @field:Schema(description = "위도", example = "37.5665", requiredMode = Schema.RequiredMode.REQUIRED)
+        val latitude: Double,
+
+        @field:Schema(description = "경도", example = "126.9780", requiredMode = Schema.RequiredMode.REQUIRED)
+        val longitude: Double,
+    )
+
     @Schema(description = "진화 단계 정보 응답")
     data class EvolutionStageResponse(
         @field:Schema(description = "진화 단계 (1~4)", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -57,6 +69,7 @@ data class RunningFinishResponse(
                     current = stage.current,
                 )
             },
+            waypoints = dto.waypoints.map { WaypointResponse(it.latitude, it.longitude) },
         )
     }
 }
