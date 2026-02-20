@@ -13,4 +13,10 @@ data class SaveRunningCommandDto(
     val startedAt: LocalDateTime,
     val finishedAt: LocalDateTime,
     val ownedMonsterId: OwnedMonsterId,
-)
+    val waypoints: List<WaypointDto> = emptyList(),
+) {
+    data class WaypointDto(
+        val latitude: Double,
+        val longitude: Double,
+    )
+}

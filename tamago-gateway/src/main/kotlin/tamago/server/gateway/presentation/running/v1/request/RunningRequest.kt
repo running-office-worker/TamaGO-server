@@ -25,7 +25,15 @@ data class RunningRequest(
 
     @field:Schema(description = "소유한 몬스터 ID", example = "42", requiredMode = Schema.RequiredMode.REQUIRED)
     val ownedMonsterId: Long,
-)
+
+    @field:Schema(description = "경로 꺾이는 지점 목록", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    val waypoints: List<WaypointRequest> = emptyList(),
+) {
+    data class WaypointRequest(
+        val latitude: Double,
+        val longitude: Double,
+    )
+}
 
 fun RunningRequest.toCommand(userId: UserId, weight: Double) = SaveRunningCommandDto(
     userId = userId,
@@ -36,4 +44,5 @@ fun RunningRequest.toCommand(userId: UserId, weight: Double) = SaveRunningComman
     startedAt = startedAt,
     finishedAt = finishedAt,
     ownedMonsterId = OwnedMonsterId(ownedMonsterId),
+    waypoints = waypoints.map { SaveRunningCommandDto.WaypointDto(it.latitude, it.longitude) },
 )
