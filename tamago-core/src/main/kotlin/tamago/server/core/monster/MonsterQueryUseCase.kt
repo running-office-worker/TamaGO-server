@@ -10,7 +10,6 @@ import java.time.LocalDateTime
 interface MonsterQueryUseCase {
     fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster
     fun getEvolutionChain(monsterId: MonsterId): List<Monster>
-    fun getUnlockedMonsters(userId: UserId): List<OwnedMonster>
     fun getOwnedMonsterMappings(userId: UserId): List<OwnedMonster>
     fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean
 }

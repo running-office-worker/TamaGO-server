@@ -6,8 +6,6 @@ import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
-import tamago.server.core.monster.application.exception.MonsterAlreadyOwnedException
-import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
 import tamago.server.core.monster.domain.vo.MonsterId
@@ -23,7 +21,6 @@ class MonsterCommandService(
             monsterId = monsterId,
             userId = userId,
             havingXp = 0,
-            status = OwnedMonsterStatus.OWNED,
         )
 
         return ownedMonsterPersistencePort.save(ownedMonster)
@@ -45,20 +42,11 @@ class MonsterCommandService(
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    fun ownMonster(ownedMonster: OwnedMonster): OwnedMonster {
-        if (ownedMonster.status != OwnedMonsterStatus.UNLOCKED) {
-            throw MonsterAlreadyOwnedException()
-        }
-        ownedMonster.own()
-        return ownedMonsterPersistencePort.save(ownedMonster)
-    }
-
-    fun unlockMonster(monsterId: MonsterId, userId: UserId): OwnedMonster {
+    fun ownMonster(monsterId: MonsterId, userId: UserId): OwnedMonster {
         val ownedMonster = OwnedMonster.create(
             monsterId = monsterId,
             userId = userId,
             havingXp = 0,
-            status = OwnedMonsterStatus.UNLOCKED,
         )
         return ownedMonsterPersistencePort.save(ownedMonster)
     }

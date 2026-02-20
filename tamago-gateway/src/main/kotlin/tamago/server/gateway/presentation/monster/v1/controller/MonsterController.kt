@@ -11,11 +11,11 @@ import tamago.server.core.monster.MonsterFacade
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.vo.MonsterId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.monster.v1.request.InitMonsterAssetRequest
+import tamago.server.gateway.presentation.monster.v1.request.OwnMonsterRequest
 import tamago.server.gateway.presentation.monster.v1.response.*
 
 @Tag(name = "Monster API", description = "몬스터 도감 API")
@@ -35,16 +35,6 @@ class MonsterController(
         return CustomResponse.ok(result.map { MonsterDexResponse.from(it) })
     }
 
-    @Operation(summary = "해금된 몬스터 목록 조회", description = "해금된 몬스터(알) 목록을 조회합니다.")
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/api/v1/monsters/unlocked")
-    fun getUnlockedMonsters(
-        @CurrentUser user: User,
-    ): CustomResponse<List<UnlockedMonsterResponse>> {
-        val unlockedMonsters = monsterQueryUseCase.getUnlockedMonsters(user.id!!)
-        return CustomResponse.ok(unlockedMonsters.map { UnlockedMonsterResponse.from(it) })
-    }
-
     @Operation(summary = "소유 몬스터 ID 매핑 조회", description = "소유한 몬스터의 ownedMonsterId, monsterId 매핑 배열을 반환합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/api/v1/monsters/owned")
@@ -55,15 +45,16 @@ class MonsterController(
         return CustomResponse.ok(result.map { OwnedMonsterMappingResponse.from(it) })
     }
 
-    @Operation(summary = "해금된 몬스터 소유", description = "해금된 몬스터를 소유 상태로 변경합니다.")
+    @Operation(summary = "몬스터 소유", description = "monsterId로 OwnedMonster를 생성합니다.")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
-    @PatchMapping("/api/v1/monsters/unlocked/{ownedMonsterId}")
-    fun ownMonster(
+    @PostMapping("/api/v1/monsters/owned")
+    fun createOwnedMonster(
         @CurrentUser user: User,
-        @PathVariable ownedMonsterId: Long,
+        @RequestBody request: OwnMonsterRequest,
     ): CustomResponse<Void> {
-        monsterFacade.ownMonster(OwnedMonsterId(ownedMonsterId), user.id!!)
-        return CustomResponse.ok()
+        monsterFacade.createOwnedMonster(MonsterId(request.monsterId), user.id!!)
+        return CustomResponse.created()
     }
 
     @Operation(

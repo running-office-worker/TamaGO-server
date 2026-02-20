@@ -10,7 +10,6 @@ import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
-import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
@@ -88,10 +87,7 @@ class MonsterQueryService(
         }
     }
 
-    override fun getUnlockedMonsters(userId: UserId): List<OwnedMonster> =
-        ownedMonsterPersistencePort.findAllByUserIdAndStatus(userId, OwnedMonsterStatus.UNLOCKED)
-
     override fun getOwnedMonsterMappings(userId: UserId): List<OwnedMonster> =
-        ownedMonsterPersistencePort.findAllByUserIdAndStatus(userId, OwnedMonsterStatus.OWNED)
+        ownedMonsterPersistencePort.findAllByUserId(userId)
 
 }

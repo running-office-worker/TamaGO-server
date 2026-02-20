@@ -22,11 +22,6 @@ class OwnedMonster(
     var status: OwnedMonsterStatus? = status
         private set
 
-    fun own() {
-        status = OwnedMonsterStatus.OWNED
-        havingXp = havingXp ?: 0
-    }
-
     fun addXp(xp: Int) {
         havingXp = (havingXp ?: 0) + xp
     }
@@ -36,13 +31,12 @@ class OwnedMonster(
             monsterId: MonsterId,
             userId: UserId,
             havingXp: Int? = null,
-            status: OwnedMonsterStatus? = null,
         ): OwnedMonster {
             return OwnedMonster(
                 monsterId = monsterId,
                 userId = userId,
                 havingXp = havingXp,
-                status = status,
+                status = OwnedMonsterStatus.OWNED,
             )
         }
     }
