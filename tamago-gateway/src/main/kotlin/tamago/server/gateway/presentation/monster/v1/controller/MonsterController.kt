@@ -45,7 +45,7 @@ class MonsterController(
         return CustomResponse.ok(result.map { OwnedMonsterMappingResponse.from(it) })
     }
 
-    @Operation(summary = "몬스터 소유", description = "monsterId로 OwnedMonster를 생성합니다.")
+    @Operation(summary = "\uD83E\uDDEA 몬스터 소유", description = "monsterId로 OwnedMonster를 생성합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/api/v1/monsters/owned")
