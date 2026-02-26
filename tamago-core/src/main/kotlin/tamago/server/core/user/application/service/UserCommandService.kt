@@ -84,11 +84,11 @@ class UserCommandService(
         val savedUser = userPersistencePort.save(User.create(command.email, command.provider, command.externalId))
         val userId = savedUser.id ?: throw UserSaveErrorException()
 
-        publishUserSinedUpEnvent(userId)
+        publishUserSignedUpEvent(userId)
         return savedUser
     }
 
-    private fun publishUserSinedUpEnvent(userId: UserId) {
+    private fun publishUserSignedUpEvent(userId: UserId) {
         applicationEventPublisher.publishEvent(UserSignedUpEvent(userId))
     }
 }
