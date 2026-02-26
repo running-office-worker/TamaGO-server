@@ -57,7 +57,7 @@ class MonsterPersistenceAdapter(
             .mapNotNull { MonsterMapper.toDomain(it) }
     }
 
-    override fun findAllDefaultMonsters(): List<Monster> {
+    override fun findDefaultMonster(): Monster? {
         val query =
             jpql {
                 selectDistinct(
@@ -72,7 +72,7 @@ class MonsterPersistenceAdapter(
 
         return entityManager
             .findAll<MonsterEntity>(query, jpqlRenderContext)
-            .filter { it.unlockPolicies.isEmpty() }
-            .mapNotNull { MonsterMapper.toDomain(it) }
+            .firstOrNull { it.unlockPolicies.isEmpty() }
+            ?.let { MonsterMapper.toDomain(it) }
     }
 }

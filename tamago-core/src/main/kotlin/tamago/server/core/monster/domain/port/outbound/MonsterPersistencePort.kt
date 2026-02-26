@@ -12,5 +12,5 @@ interface MonsterPersistencePort {
 
     fun findAllFirstStageWithUnlockPolicies(): List<Monster>
 
-    fun findAllDefaultMonsters(): List<Monster>
+    fun findDefaultMonster(): Monster?
 }
