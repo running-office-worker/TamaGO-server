@@ -93,4 +93,9 @@ class MonsterQueryService(
 
     override fun getOwnedMonsterMappings(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserId(userId)
+
+    override fun getOwnedMonstersAfter(
+        userId: UserId,
+        after: LocalDateTime,
+    ): List<OwnedMonster> = ownedMonsterPersistencePort.findAllByUserIdAndCreatedAfter(userId, after)
 }

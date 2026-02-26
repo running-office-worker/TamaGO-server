@@ -12,6 +12,8 @@ interface RunningPersistencePort {
         month: Int,
     ): List<Running>
 
+    fun findLastByUserId(userId: UserId): Running?
+
     fun sumDistanceByUserId(userId: UserId): Double
 
     fun sumDurationMinutesByUserId(userId: UserId): Long

@@ -21,6 +21,11 @@ class RunningPersistenceAdapter(
     override fun save(running: Running): Running =
         RunningMapper.toDomain(runningJpaRepository.save(RunningMapper.toEntity(running)))!!
 
+    override fun findLastByUserId(userId: UserId): Running? =
+        runningJpaRepository
+            .findTopByUserIdAndDeletedAtIsNullOrderByFinishedAtDesc(userId.value)
+            ?.let { RunningMapper.toDomain(it) }
+
     override fun findAllByUserIdAndMonth(
         userId: UserId,
         year: Int,

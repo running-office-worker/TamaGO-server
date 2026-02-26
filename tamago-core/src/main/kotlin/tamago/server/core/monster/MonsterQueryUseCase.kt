@@ -14,5 +14,10 @@ interface MonsterQueryUseCase {
 
     fun getOwnedMonsterMappings(userId: UserId): List<OwnedMonster>
 
+    fun getOwnedMonstersAfter(
+        userId: UserId,
+        after: LocalDateTime,
+    ): List<OwnedMonster>
+
     fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean
 }

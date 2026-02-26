@@ -6,6 +6,7 @@ import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.monster.infrastructure.mapper.OwnedMonsterMapper
+import java.time.LocalDateTime
 
 @Repository
 class OwnedMonsterPersistenceAdapter(
@@ -18,6 +19,14 @@ class OwnedMonsterPersistenceAdapter(
     override fun findAllByUserId(userId: UserId): List<OwnedMonster> =
         ownedMonsterJpaRepository
             .findAllByUserIdAndDeletedAtIsNull(userId.value)
+            .mapNotNull { OwnedMonsterMapper.toDomain(it) }
+
+    override fun findAllByUserIdAndCreatedAfter(
+        userId: UserId,
+        after: LocalDateTime,
+    ): List<OwnedMonster> =
+        ownedMonsterJpaRepository
+            .findAllByUserIdAndCreatedAtAfterAndDeletedAtIsNull(userId.value, after)
             .mapNotNull { OwnedMonsterMapper.toDomain(it) }
 
     override fun save(ownedMonster: OwnedMonster): OwnedMonster {

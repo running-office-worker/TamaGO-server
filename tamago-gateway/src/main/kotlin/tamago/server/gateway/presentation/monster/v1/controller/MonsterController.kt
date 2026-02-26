@@ -18,6 +18,7 @@ import tamago.server.core.monster.MonsterFacade
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.vo.MonsterId
+import tamago.server.core.running.RunningQueryUseCase
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
@@ -29,6 +30,7 @@ import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetBundle
 import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetUpdateCheckResponse
 import tamago.server.gateway.presentation.monster.v1.response.MonsterDexResponse
 import tamago.server.gateway.presentation.monster.v1.response.OwnedMonsterMappingResponse
+import tamago.server.gateway.presentation.monster.v1.response.UnlockedMonsterResponse
 import tamago.server.gateway.presentation.monster.v1.response.UploadMonsterAssetResponse
 
 @Tag(name = "Monster API", description = "몬스터 도감 API")
@@ -36,6 +38,7 @@ import tamago.server.gateway.presentation.monster.v1.response.UploadMonsterAsset
 class MonsterController(
     private val monsterFacade: MonsterFacade,
     private val monsterQueryUseCase: MonsterQueryUseCase,
+    private val runningQueryUseCase: RunningQueryUseCase,
 ) {
     @Operation(summary = "전체 몬스터 도감 조회", description = "전체 몬스터 캐릭터 도감 정보를 조회합니다.")
     @PreAuthorize("isAuthenticated()")
@@ -45,6 +48,22 @@ class MonsterController(
     ): CustomResponse<List<MonsterDexResponse>> {
         val result = monsterFacade.getMonsterDex(user.id!!)
         return CustomResponse.ok(result.map { MonsterDexResponse.from(it) })
+    }
+
+    @Operation(
+        summary = "마지막 러닝 이후 해금된 몬스터 조회",
+        description = "마지막 러닝 데이터 저장 시각 이후에 획득한 몬스터 목록을 조회합니다.",
+    )
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/api/v1/monsters/unlocked")
+    fun getUnlockedMonsters(
+        @CurrentUser user: User,
+    ): CustomResponse<List<UnlockedMonsterResponse>> {
+        val lastFinishedAt =
+            runningQueryUseCase.getLastFinishedAt(user.id!!)
+                ?: return CustomResponse.ok(emptyList())
+        val monsters = monsterQueryUseCase.getOwnedMonstersAfter(user.id!!, lastFinishedAt)
+        return CustomResponse.ok(monsters.map { UnlockedMonsterResponse.from(it) })
     }
 
     @Operation(summary = "소유 몬스터 ID 매핑 조회", description = "소유한 몬스터의 ownedMonsterId, monsterId 매핑 배열을 반환합니다.")
