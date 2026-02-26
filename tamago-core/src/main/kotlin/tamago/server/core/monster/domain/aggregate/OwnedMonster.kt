@@ -1,9 +1,9 @@
 package tamago.server.core.monster.domain.aggregate
 
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
-import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime
 
 class OwnedMonster(
@@ -22,11 +22,6 @@ class OwnedMonster(
     var status: OwnedMonsterStatus? = status
         private set
 
-    fun own() {
-        status = OwnedMonsterStatus.OWNED
-        havingXp = havingXp ?: 0
-    }
-
     fun addXp(xp: Int) {
         havingXp = (havingXp ?: 0) + xp
     }
@@ -36,14 +31,12 @@ class OwnedMonster(
             monsterId: MonsterId,
             userId: UserId,
             havingXp: Int? = null,
-            status: OwnedMonsterStatus? = null,
-        ): OwnedMonster {
-            return OwnedMonster(
+        ): OwnedMonster =
+            OwnedMonster(
                 monsterId = monsterId,
                 userId = userId,
                 havingXp = havingXp,
-                status = status,
+                status = OwnedMonsterStatus.OWNED,
             )
-        }
     }
 }

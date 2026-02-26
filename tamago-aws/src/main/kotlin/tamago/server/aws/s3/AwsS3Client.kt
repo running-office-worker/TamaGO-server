@@ -1,8 +1,14 @@
 package tamago.server.aws.s3
 
 import org.springframework.stereotype.Component
+import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.*
+import software.amazon.awssdk.services.s3.model.GetObjectRequest
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response
+import software.amazon.awssdk.services.s3.model.PutObjectRequest
+import software.amazon.awssdk.services.s3.model.S3Object
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest
@@ -122,5 +128,23 @@ class AwsS3Client(
                 .build()
 
         return s3Client.headObject(request).lastModified()
+    }
+
+    fun putObject(
+        bucketName: String,
+        filePath: String,
+        fileName: String,
+        contentType: String,
+        fileBytes: ByteArray,
+    ) {
+        val request =
+            PutObjectRequest
+                .builder()
+                .bucket(bucketName)
+                .key("$filePath/$fileName")
+                .contentType(contentType)
+                .contentLength(fileBytes.size.toLong())
+                .build()
+        s3Client.putObject(request, RequestBody.fromBytes(fileBytes))
     }
 }

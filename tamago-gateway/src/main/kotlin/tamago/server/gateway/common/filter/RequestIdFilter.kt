@@ -1,18 +1,17 @@
 package tamago.server.gateway.common.filter
 
-import org.slf4j.MDC
-import org.springframework.stereotype.Component
-import java.io.IOException
-import java.util.UUID
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpFilter
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.MDC
+import org.springframework.stereotype.Component
+import java.io.IOException
+import java.util.UUID
 
 @Component
 class RequestIdFilter : HttpFilter() {
-
     companion object {
         private const val REQUEST_ID_KEY = "requestId"
         private const val HEADER_REQUEST_ID = "X-Request-Id"
@@ -22,7 +21,7 @@ class RequestIdFilter : HttpFilter() {
     override fun doFilter(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        chain: FilterChain
+        chain: FilterChain,
     ) {
         val requestId = UUID.randomUUID().toString()
 

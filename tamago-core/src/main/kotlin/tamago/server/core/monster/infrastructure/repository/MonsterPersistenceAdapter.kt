@@ -17,7 +17,6 @@ class MonsterPersistenceAdapter(
     private val entityManager: EntityManager,
     private val jpqlRenderContext: JpqlRenderContext,
 ) : MonsterPersistencePort {
-
     override fun findById(id: MonsterId): Monster? =
         MonsterMapper.toDomain(monsterJpaRepository.findById(id.value).orElse(null))
 
@@ -25,32 +24,55 @@ class MonsterPersistenceAdapter(
         monsterJpaRepository.findAllByPreviousMonsterIsNull().mapNotNull { MonsterMapper.toDomain(it) }
 
     override fun findAllWithUnlockPolicies(): List<Monster> {
-        val query = jpql {
-            selectDistinct(
-                entity(MonsterEntity::class),
-            ).from(
-                entity(MonsterEntity::class),
-                leftFetchJoin(MonsterEntity::unlockPolicies),
-            )
-        }
+        val query =
+            jpql {
+                selectDistinct(
+                    entity(MonsterEntity::class),
+                ).from(
+                    entity(MonsterEntity::class),
+                    leftFetchJoin(MonsterEntity::unlockPolicies),
+                )
+            }
 
-        return entityManager.findAll<MonsterEntity>(query, jpqlRenderContext)
+        return entityManager
+            .findAll<MonsterEntity>(query, jpqlRenderContext)
             .mapNotNull { MonsterMapper.toDomain(it) }
     }
 
     override fun findAllFirstStageWithUnlockPolicies(): List<Monster> {
-        val query = jpql {
-            selectDistinct(
-                entity(MonsterEntity::class),
-            ).from(
-                entity(MonsterEntity::class),
-                leftFetchJoin(MonsterEntity::unlockPolicies),
-            ).where(
-                path(MonsterEntity::previousMonster).isNull(),
-            )
-        }
+        val query =
+            jpql {
+                selectDistinct(
+                    entity(MonsterEntity::class),
+                ).from(
+                    entity(MonsterEntity::class),
+                    leftFetchJoin(MonsterEntity::unlockPolicies),
+                ).where(
+                    path(MonsterEntity::previousMonster).isNull(),
+                )
+            }
 
-        return entityManager.findAll<MonsterEntity>(query, jpqlRenderContext)
+        return entityManager
+            .findAll<MonsterEntity>(query, jpqlRenderContext)
             .mapNotNull { MonsterMapper.toDomain(it) }
+    }
+
+    override fun findDefaultMonster(): Monster? {
+        val query =
+            jpql {
+                selectDistinct(
+                    entity(MonsterEntity::class),
+                ).from(
+                    entity(MonsterEntity::class),
+                    leftFetchJoin(MonsterEntity::unlockPolicies),
+                ).where(
+                    path(MonsterEntity::previousMonster).isNull(),
+                )
+            }
+
+        return entityManager
+            .findAll<MonsterEntity>(query, jpqlRenderContext)
+            .firstOrNull { it.unlockPolicies.isEmpty() }
+            ?.let { MonsterMapper.toDomain(it) }
     }
 }

@@ -6,5 +6,6 @@ import java.time.LocalDateTime
 
 interface MonsterAssetJpaRepository : JpaRepository<MonsterAssetEntity, Long> {
     fun existsByUpdatedAtAfterAndDeletedAtIsNull(since: LocalDateTime): Boolean
+
     fun findAllByDeletedAtIsNull(): List<MonsterAssetEntity>
 }

@@ -6,13 +6,12 @@ import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.infrastructure.entity.LetterEntity
 
 object LetterMapper {
-    fun toEntity(letter: Letter): LetterEntity {
-        return LetterEntity(
+    fun toEntity(letter: Letter): LetterEntity =
+        LetterEntity(
             id = letter.id?.value,
             title = letter.title,
             content = letter.content.value,
         )
-    }
 
     fun toDomain(entity: LetterEntity?): Letter? {
         if (entity == null) return null

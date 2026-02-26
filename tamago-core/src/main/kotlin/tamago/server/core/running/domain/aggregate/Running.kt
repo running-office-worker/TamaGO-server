@@ -35,8 +35,8 @@ class Running(
             elapsedTime: Int,
             startedAt: LocalDateTime,
             finishedAt: LocalDateTime,
-        ): Running {
-            return Running(
+        ): Running =
+            Running(
                 userId = userId,
                 ownedMonsterId = ownedMonsterId,
                 pace = pace,
@@ -49,6 +49,5 @@ class Running(
                 startedAt = startedAt,
                 finishedAt = finishedAt,
             )
-        }
     }
 }

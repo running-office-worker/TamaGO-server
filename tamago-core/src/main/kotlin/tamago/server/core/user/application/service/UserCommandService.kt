@@ -1,13 +1,16 @@
 package tamago.server.core.user.application.service
 
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import tamago.server.core.common.jwt.JwtTokenProvider
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.refreshtoken.RefreshTokenCommandUseCase
 import tamago.server.core.user.UserCommandUseCase
 import tamago.server.core.user.application.exception.UserSaveErrorException
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.user.domain.enum.AuthProvider
+import tamago.server.core.user.domain.event.UserSignedUpEvent
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
 import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
 import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
@@ -19,22 +22,27 @@ class UserCommandService(
     private val refreshTokenCommandUseCase: RefreshTokenCommandUseCase,
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) : UserCommandUseCase {
-
     override fun createUser(command: SignUpCommandDto) {
         val encodedPassword = passwordEncoder.encode(command.password)
-        val user = User.create(
-            command.email,
-            AuthProvider.EMAIL,
-            encodedPassword,
-        )
+        val user =
+            User.create(
+                command.email,
+                AuthProvider.EMAIL,
+                encodedPassword,
+            )
 
-        userPersistencePort.save(user)
+        val savedUser = userPersistencePort.save(user)
+        val userId = savedUser.id ?: throw UserSaveErrorException()
+
+        publishUserSignedUpEvent(userId)
     }
 
     override fun socialLogin(command: LoginCommandDto): TokenQueryDto {
-        val user = userPersistencePort.findByExternalId(command.provider, command.externalId)
-            ?: run { createSocialUser(command) }
+        val user =
+            userPersistencePort.findByExternalId(command.provider, command.externalId)
+                ?: run { createSocialUser(command) }
 
         val userId = user.id ?: throw UserSaveErrorException()
 
@@ -51,12 +59,18 @@ class UserCommandService(
         )
     }
 
-    override fun updateNickname(user: User, nickname: String) {
+    override fun updateNickname(
+        user: User,
+        nickname: String,
+    ) {
         user.updateNickname(nickname)
         userPersistencePort.save(user)
     }
 
-    override fun updateGoalKilo(user: User, goalKilo: Int) {
+    override fun updateGoalKilo(
+        user: User,
+        goalKilo: Int,
+    ) {
         user.updateGoalKilo(goalKilo)
         userPersistencePort.save(user)
     }
@@ -66,6 +80,15 @@ class UserCommandService(
         userPersistencePort.save(user)
     }
 
-    private fun createSocialUser(command: LoginCommandDto): User =
-        userPersistencePort.save(User.create(command.email, command.provider, command.externalId))
+    private fun createSocialUser(command: LoginCommandDto): User {
+        val savedUser = userPersistencePort.save(User.create(command.email, command.provider, command.externalId))
+        val userId = savedUser.id ?: throw UserSaveErrorException()
+
+        publishUserSignedUpEvent(userId)
+        return savedUser
+    }
+
+    private fun publishUserSignedUpEvent(userId: UserId) {
+        applicationEventPublisher.publishEvent(UserSignedUpEvent(userId))
+    }
 }

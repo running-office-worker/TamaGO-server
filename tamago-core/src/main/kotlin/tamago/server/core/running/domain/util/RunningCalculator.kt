@@ -1,12 +1,14 @@
 package tamago.server.core.running.domain.util
 
+import tamago.server.core.running.application.exception.InvalidRunningDataException
 import java.time.Duration
 import java.time.LocalDateTime
-import tamago.server.core.running.application.exception.InvalidRunningDataException
 
 object RunningCalculator {
-
-    private fun elapsedSeconds(startedAt: LocalDateTime, finishedAt: LocalDateTime): Long {
+    private fun elapsedSeconds(
+        startedAt: LocalDateTime,
+        finishedAt: LocalDateTime,
+    ): Long {
         val seconds = Duration.between(startedAt, finishedAt).seconds
         if (seconds <= 0) throw InvalidRunningDataException()
         return seconds
@@ -16,12 +18,20 @@ object RunningCalculator {
         if (distanceKm <= 0) throw InvalidRunningDataException()
     }
 
-    fun calculatePace(distanceKm: Double, startedAt: LocalDateTime, finishedAt: LocalDateTime): Double {
+    fun calculatePace(
+        distanceKm: Double,
+        startedAt: LocalDateTime,
+        finishedAt: LocalDateTime,
+    ): Double {
         validateDistance(distanceKm)
         return elapsedSeconds(startedAt, finishedAt).toDouble() / distanceKm
     }
 
-    fun calculateCadence(distanceKm: Double, startedAt: LocalDateTime, finishedAt: LocalDateTime): Int {
+    fun calculateCadence(
+        distanceKm: Double,
+        startedAt: LocalDateTime,
+        finishedAt: LocalDateTime,
+    ): Int {
         validateDistance(distanceKm)
         val hours = elapsedSeconds(startedAt, finishedAt) / 3600.0
         val speedKmh = distanceKm / hours
@@ -33,16 +43,22 @@ object RunningCalculator {
         }
     }
 
-    fun calculateCalories(distanceKm: Double, weight: Double, startedAt: LocalDateTime, finishedAt: LocalDateTime): Int {
+    fun calculateCalories(
+        distanceKm: Double,
+        weight: Double,
+        startedAt: LocalDateTime,
+        finishedAt: LocalDateTime,
+    ): Int {
         validateDistance(distanceKm)
         val hours = elapsedSeconds(startedAt, finishedAt) / 3600.0
         val speedKmh = distanceKm / hours
-        val met = when {
-            speedKmh < 8.0 -> 8.3
-            speedKmh < 10.0 -> 9.8
-            speedKmh < 12.0 -> 11.0
-            else -> 12.8
-        }
+        val met =
+            when {
+                speedKmh < 8.0 -> 8.3
+                speedKmh < 10.0 -> 9.8
+                speedKmh < 12.0 -> 11.0
+                else -> 12.8
+            }
         return (met * weight * hours).toInt()
     }
 }

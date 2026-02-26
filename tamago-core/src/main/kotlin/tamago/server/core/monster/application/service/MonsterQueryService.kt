@@ -1,8 +1,6 @@
 package tamago.server.core.monster.application.service
 
 import org.springframework.stereotype.Service
-import tamago.server.core.common.image.ImagePrefix
-import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
@@ -12,7 +10,6 @@ import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
-import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
@@ -25,18 +22,17 @@ class MonsterQueryService(
     private val monsterPersistencePort: MonsterPersistencePort,
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
-    private val imageProcessor: ImageProcessor,
 ) : MonsterQueryUseCase {
-
     fun get(id: MonsterId): Monster =
         monsterPersistencePort.findById(id)
             ?: throw MonsterNotFoundException()
 
-    fun getAllWithUnlockPolicies(): List<Monster> =
-        monsterPersistencePort.findAllWithUnlockPolicies()
+    fun getAllWithUnlockPolicies(): List<Monster> = monsterPersistencePort.findAllWithUnlockPolicies()
 
     fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
         monsterPersistencePort.findAllFirstStageWithUnlockPolicies()
+
+    fun getDefaultMonster(): Monster? = monsterPersistencePort.findDefaultMonster()
 
     override fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster =
         ownedMonsterPersistencePort.findById(id)
@@ -45,11 +41,12 @@ class MonsterQueryService(
     fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserId(userId)
 
-    fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
-        monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
+    fun getMonsterAssetsByMonsterIds(
+        monsterIds: List<MonsterId>,
+        assetType: AssetType,
+    ): List<MonsterAsset> = monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
 
-    fun getAllMonsterAssets(): List<MonsterAsset> =
-        monsterAssetPersistencePort.findAll()
+    fun getAllMonsterAssets(): List<MonsterAsset> = monsterAssetPersistencePort.findAll()
 
     override fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean =
         lastLoginAt?.let { monsterAssetPersistencePort.existsByUpdatedAtAfter(it) } ?: true
@@ -85,22 +82,20 @@ class MonsterQueryService(
         return firstStageMonsters.random()
     }
 
-    fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType) {
+    fun checkMonsterAssetNotExists(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ) {
         if (monsterAssetPersistencePort.existsByMonsterIdAndAssetType(monsterId, assetType)) {
             throw MonsterAssetAlreadyExistsException()
         }
     }
 
-    override fun getUnlockedMonsters(userId: UserId): List<OwnedMonster> =
-        ownedMonsterPersistencePort.findAllByUserIdAndStatus(userId, OwnedMonsterStatus.UNLOCKED)
+    override fun getOwnedMonsterMappings(userId: UserId): List<OwnedMonster> =
+        ownedMonsterPersistencePort.findAllByUserId(userId)
 
-    override fun getMonsterPngUrl(monsterId: MonsterId): String? =
-        imageProcessor.getImageUrl(
-            prefix = ImagePrefix.MONSTER.value,
-            prefixId = monsterId.value,
-            fileName = null,
-        ).firstOrNull { info ->
-            info.url.substringBefore("?")
-                .endsWith(".${AssetType.PNG.extension}")
-        }?.url
+    override fun getOwnedMonstersAfter(
+        userId: UserId,
+        after: LocalDateTime,
+    ): List<OwnedMonster> = ownedMonsterPersistencePort.findAllByUserIdAndCreatedAfter(userId, after)
 }

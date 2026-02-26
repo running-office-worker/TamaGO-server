@@ -8,18 +8,19 @@ import java.time.LocalDateTime
 data class MonsterAssetBundleResponse(
     @field:Schema(description = "몬스터 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     val monsterId: Long,
-
     @field:Schema(description = "에셋 목록", requiredMode = Schema.RequiredMode.REQUIRED)
     val assets: List<AssetDetailResponse>,
 ) {
     @Schema(description = "에셋 상세 정보")
     data class AssetDetailResponse(
-        @field:Schema(description = "에셋 타입 (png, gif, lottie)", example = "png", requiredMode = Schema.RequiredMode.REQUIRED)
+        @field:Schema(
+            description = "에셋 타입 (png, gif, lottie)",
+            example = "png",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+        )
         val assetType: String,
-
         @field:Schema(description = "Presigned URL", requiredMode = Schema.RequiredMode.REQUIRED)
         val url: String,
-
         @field:Schema(description = "마지막 수정 일시", requiredMode = Schema.RequiredMode.REQUIRED)
         val lastModifiedAt: LocalDateTime,
     ) {

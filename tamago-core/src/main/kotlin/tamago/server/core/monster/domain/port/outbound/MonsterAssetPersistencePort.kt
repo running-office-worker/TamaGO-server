@@ -6,9 +6,19 @@ import tamago.server.core.monster.domain.vo.MonsterId
 import java.time.LocalDateTime
 
 interface MonsterAssetPersistencePort {
-    fun existsByMonsterIdAndAssetType(monsterId: MonsterId, assetType: AssetType): Boolean
+    fun existsByMonsterIdAndAssetType(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ): Boolean
+
     fun existsByUpdatedAtAfter(since: LocalDateTime): Boolean
-    fun findAllByMonsterIdsAndAssetType(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset>
+
+    fun findAllByMonsterIdsAndAssetType(
+        monsterIds: List<MonsterId>,
+        assetType: AssetType,
+    ): List<MonsterAsset>
+
     fun findAll(): List<MonsterAsset>
+
     fun save(monsterAsset: MonsterAsset): MonsterAsset
 }

@@ -13,13 +13,15 @@ class NotificationFacade(
     private val notificationQueryService: NotificationQueryService,
 ) {
     fun registerFcmToken(command: RegisterFcmTokenCommandDto) {
-        val fcmToken = notificationQueryService.findFcmTokenByUserId(command.userId)
-            ?.apply { updateToken(command.token) }
-            ?: FcmToken.create(
-                userId = command.userId,
-                token = command.token,
-                deviceType = DeviceType.IOS
-            )
+        val fcmToken =
+            notificationQueryService
+                .findFcmTokenByUserId(command.userId)
+                ?.apply { updateToken(command.token) }
+                ?: FcmToken.create(
+                    userId = command.userId,
+                    token = command.token,
+                    deviceType = DeviceType.IOS,
+                )
         notificationCommandService.save(fcmToken)
     }
 }

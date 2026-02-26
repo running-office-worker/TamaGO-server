@@ -19,12 +19,17 @@ class UserLetterCommandService(
     }
 
     @Transactional
-    fun scheduleNextLetter(userId: UserId, letterId: LetterId, prevScheduledAt: LocalDateTime) {
-        val nextLetter = UserLetter.repeat(
-            userId = userId,
-            letterId = letterId,
-            prevScheduledAt = prevScheduledAt,
-        )
+    fun scheduleNextLetter(
+        userId: UserId,
+        letterId: LetterId,
+        prevScheduledAt: LocalDateTime,
+    ) {
+        val nextLetter =
+            UserLetter.repeat(
+                userId = userId,
+                letterId = letterId,
+                prevScheduledAt = prevScheduledAt,
+            )
 
         userLetterPersistencePort.save(nextLetter)
     }

@@ -3,25 +3,43 @@ package tamago.server.gateway.presentation.monster.v1.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RequestPart
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import tamago.server.core.monster.MonsterFacade
 import tamago.server.core.monster.MonsterQueryUseCase
+import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.vo.MonsterId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
+import tamago.server.core.running.RunningQueryUseCase
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.monster.v1.request.InitMonsterAssetRequest
-import tamago.server.gateway.presentation.monster.v1.response.*
+import tamago.server.gateway.presentation.monster.v1.request.OwnMonsterRequest
+import tamago.server.gateway.presentation.monster.v1.response.InitMonsterAssetResponse
+import tamago.server.gateway.presentation.monster.v1.response.InitMonsterResponse
+import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetBundleResponse
+import tamago.server.gateway.presentation.monster.v1.response.MonsterAssetUpdateCheckResponse
+import tamago.server.gateway.presentation.monster.v1.response.MonsterDexResponse
+import tamago.server.gateway.presentation.monster.v1.response.OwnedMonsterMappingResponse
+import tamago.server.gateway.presentation.monster.v1.response.UnlockedMonsterResponse
+import tamago.server.gateway.presentation.monster.v1.response.UploadMonsterAssetResponse
 
 @Tag(name = "Monster API", description = "몬스터 도감 API")
 @RestController
 class MonsterController(
     private val monsterFacade: MonsterFacade,
     private val monsterQueryUseCase: MonsterQueryUseCase,
+    private val runningQueryUseCase: RunningQueryUseCase,
 ) {
-
     @Operation(summary = "전체 몬스터 도감 조회", description = "전체 몬스터 캐릭터 도감 정보를 조회합니다.")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/api/v1/monsters/dex")
@@ -32,28 +50,48 @@ class MonsterController(
         return CustomResponse.ok(result.map { MonsterDexResponse.from(it) })
     }
 
-    @Operation(summary = "해금된 몬스터 목록 조회", description = "해금된 몬스터(알) 목록을 조회합니다.")
-    @PreAuthorize("isAuthenticated()")
+    @Operation(
+        summary = "마지막 러닝 이후 해금된 몬스터 조회",
+        description = "마지막 러닝 데이터 저장 시각 이후에 획득한 몬스터 목록을 조회합니다.",
+    )
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/api/v1/monsters/unlocked")
     fun getUnlockedMonsters(
         @CurrentUser user: User,
     ): CustomResponse<List<UnlockedMonsterResponse>> {
-        val unlockedMonsters = monsterQueryUseCase.getUnlockedMonsters(user.id!!)
-        return CustomResponse.ok(unlockedMonsters.map { UnlockedMonsterResponse.from(it) })
+        val lastFinishedAt =
+            runningQueryUseCase.getLastFinishedAt(user.id!!)
+                ?: return CustomResponse.ok(emptyList())
+        val monsters = monsterQueryUseCase.getOwnedMonstersAfter(user.id!!, lastFinishedAt)
+        return CustomResponse.ok(monsters.map { UnlockedMonsterResponse.from(it) })
     }
 
-    @Operation(summary = "해금된 몬스터 소유", description = "해금된 몬스터를 소유 상태로 변경합니다.")
+    @Operation(summary = "소유 몬스터 ID 매핑 조회", description = "소유한 몬스터의 ownedMonsterId, monsterId 매핑 배열을 반환합니다.")
     @PreAuthorize("isAuthenticated()")
-    @PatchMapping("/api/v1/monsters/unlocked/{ownedMonsterId}")
-    fun ownMonster(
+    @GetMapping("/api/v1/monsters/owned")
+    fun getOwnedMonsterMappings(
         @CurrentUser user: User,
-        @PathVariable ownedMonsterId: Long,
-    ): CustomResponse<Void> {
-        monsterFacade.ownMonster(OwnedMonsterId(ownedMonsterId), user.id!!)
-        return CustomResponse.ok()
+    ): CustomResponse<List<OwnedMonsterMappingResponse>> {
+        val result = monsterQueryUseCase.getOwnedMonsterMappings(user.id!!)
+        return CustomResponse.ok(result.map { OwnedMonsterMappingResponse.from(it) })
     }
 
-    @Operation(summary = "전체 몬스터 에셋 조회", description = "모든 몬스터의 에셋(PNG, GIF, LOTTIE) Presigned URL을 조회합니다.")
+    @Operation(summary = "\uD83E\uDDEA 몬스터 소유", description = "monsterId로 OwnedMonster를 생성합니다.")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/api/v1/monsters/owned")
+    fun createOwnedMonster(
+        @CurrentUser user: User,
+        @RequestBody request: OwnMonsterRequest,
+    ): CustomResponse<Void> {
+        monsterFacade.createOwnedMonster(MonsterId(request.monsterId), user.id!!)
+        return CustomResponse.created()
+    }
+
+    @Operation(
+        summary = "전체 몬스터 에셋 조회",
+        description = "모든 몬스터의 에셋(SVG, PNG, GIF, LOTTIE) Presigned URL을 조회합니다.",
+    )
     @GetMapping("/api/v1/monsters/assets")
     fun getAllMonsterAssets(): CustomResponse<List<MonsterAssetBundleResponse>> {
         val result = monsterFacade.getAllMonsterAssetBundles()
@@ -99,10 +137,11 @@ class MonsterController(
     fun createMonsterAssetUploadUrl(
         @RequestBody request: InitMonsterAssetRequest,
     ): CustomResponse<InitMonsterAssetResponse> {
-        val result = monsterFacade.createMonsterAssetUploadUrl(
-            monsterId = MonsterId(request.monsterId),
-            assetType = request.assetType,
-        )
+        val result =
+            monsterFacade.createMonsterAssetUploadUrl(
+                monsterId = MonsterId(request.monsterId),
+                assetType = request.assetType,
+            )
 
         return CustomResponse.created(
             InitMonsterAssetResponse(
@@ -111,5 +150,18 @@ class MonsterController(
                 assetKey = result.assetKey,
             ),
         )
+    }
+
+    @Operation(summary = "\uD83E\uDDEA 몬스터 에셋 직접 업로드", description = "파일을 서버를 통해 직접 S3에 업로드합니다.")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/api/v1/monsters/{monsterId}/assets", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun uploadMonsterAsset(
+        @PathVariable monsterId: Long,
+        @RequestParam assetType: AssetType,
+        @RequestPart("file") file: MultipartFile,
+    ): CustomResponse<UploadMonsterAssetResponse> {
+        val result = monsterFacade.uploadMonsterAsset(MonsterId(monsterId), assetType, file.bytes)
+        return CustomResponse.created(UploadMonsterAssetResponse(result.previewUrl, result.assetKey))
     }
 }

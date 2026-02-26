@@ -16,7 +16,7 @@ import tamago.server.gateway.common.filter.JwtAuthenticationFilter
 @EnableWebSecurity
 @EnableMethodSecurity
 class SecurityConfig(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
 ) {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -89,7 +89,7 @@ class SecurityConfig(
                 "/v1/auth/social-login/kakao",
                 "/api/v1/auth/**",
                 "/error",
-                "/api/v1/monsters/assets"
+                "/api/v1/monsters/assets",
             )
     }
 }

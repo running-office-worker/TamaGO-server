@@ -12,6 +12,7 @@ data class RunningFinishQueryDto(
     val originXp: Int,
     val earnedXp: Int,
     val evolutionStages: List<EvolutionStageDto>,
+    val waypoints: List<WaypointDto>,
 ) {
     data class EvolutionStageDto(
         val stage: Int,
@@ -20,29 +21,36 @@ data class RunningFinishQueryDto(
         val current: Boolean,
     )
 
+    data class WaypointDto(
+        val latitude: Double,
+        val longitude: Double,
+    )
+
     companion object {
         fun of(
             running: Running,
             ownedMonster: OwnedMonster,
             evolutionChain: List<Monster>,
             earnedXp: Int,
-        ): RunningFinishQueryDto {
-            return RunningFinishQueryDto(
+            waypoints: List<WaypointDto>,
+        ): RunningFinishQueryDto =
+            RunningFinishQueryDto(
                 pace = running.pace?.toInt() ?: 0,
                 cadence = running.cadence ?: 0,
                 elapsedTime = running.elapsedTime ?: 0,
                 totalCalories = running.calories ?: 0,
                 originXp = ownedMonster.havingXp ?: 0,
                 earnedXp = earnedXp,
-                evolutionStages = evolutionChain.mapIndexed { index, monster ->
-                    EvolutionStageDto(
-                        stage = index + 1,
-                        monsterId = monster.id!!.value,
-                        evolutionXp = monster.evolutionXp,
-                        current = monster.id == ownedMonster.monsterId,
-                    )
-                },
+                evolutionStages =
+                    evolutionChain.mapIndexed { index, monster ->
+                        EvolutionStageDto(
+                            stage = index + 1,
+                            monsterId = monster.id!!.value,
+                            evolutionXp = monster.evolutionXp,
+                            current = monster.id == ownedMonster.monsterId,
+                        )
+                    },
+                waypoints = waypoints,
             )
-        }
     }
 }

@@ -5,15 +5,18 @@ import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.infrastructure.entity.MonsterEntity
 
 object MonsterMapper {
-    fun toEntity(monster: Monster, previousMonster: MonsterEntity? = null, nextMonster: MonsterEntity? = null): MonsterEntity {
-        return MonsterEntity(
+    fun toEntity(
+        monster: Monster,
+        previousMonster: MonsterEntity? = null,
+        nextMonster: MonsterEntity? = null,
+    ): MonsterEntity =
+        MonsterEntity(
             id = monster.id?.value,
             previousMonster = previousMonster,
             nextMonster = nextMonster,
             nickname = monster.nickname,
             evolutionXp = monster.evolutionXp,
         )
-    }
 
     fun toDomain(entity: MonsterEntity?): Monster? {
         if (entity == null) return null

@@ -51,21 +51,11 @@ jobs:
               --name tamago-server \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=dev \
-              -e JAVA_TOOL_OPTIONS="
-              -Xms384m
-              -Xmx512m
-              -XX:MaxMetaspaceSize=96m
-              -XX:MaxDirectMemorySize=32m
-              -XX:ReservedCodeCacheSize=48m
-              -XX:+UseSerialGC
-              -Xss512k
-              -Xshare:on
-              "
               -p 8080:8080 \
               --network tamago \
               --cpus="0.5" \
-              --memory="768m" \
-              --memory-swap="768m" \
+              --memory="850m" \
+              --memory-swap="1g" \
               ${{ secrets.DOCKER_USERNAME }}/tamago-server:latest
 
             docker image prune -f

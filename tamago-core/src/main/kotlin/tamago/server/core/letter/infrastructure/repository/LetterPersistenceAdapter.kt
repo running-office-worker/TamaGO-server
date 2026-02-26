@@ -25,24 +25,25 @@ class LetterPersistenceAdapter(
     override fun findAllActive(): List<Letter> =
         letterJpaRepository.findAllByDeletedAtIsNull().mapNotNull { LetterMapper.toDomain(it) }
 
-    override fun findLatestByUserId(userId: UserId): LetterInboxQueryModel? {
-        return letterJpaRepository.findPage(PageRequest.of(0, 1)) {
-            selectNew<LetterInboxQueryModel>(
-                path(UserLetterEntity::id),
-                path(LetterEntity::title),
-                path(LetterEntity::content),
-                path(UserLetterEntity::letterStatus),
-            ).from(
-                entity(UserLetterEntity::class),
-                join(UserLetterEntity::letter),
-            ).where(
-                and(
-                    path(UserLetterEntity::userId).eq(userId.value),
-                    path(UserLetterEntity::letterStatus).ne(LetterStatus.SCHEDULED),
-                ),
-            ).orderBy(
-                path(UserLetterEntity::createdAt).desc(),
-            )
-        }.content.firstOrNull()
-    }
+    override fun findLatestByUserId(userId: UserId): LetterInboxQueryModel? =
+        letterJpaRepository
+            .findPage(PageRequest.of(0, 1)) {
+                selectNew<LetterInboxQueryModel>(
+                    path(UserLetterEntity::id),
+                    path(LetterEntity::title),
+                    path(LetterEntity::content),
+                    path(UserLetterEntity::letterStatus),
+                ).from(
+                    entity(UserLetterEntity::class),
+                    join(UserLetterEntity::letter),
+                ).where(
+                    and(
+                        path(UserLetterEntity::userId).eq(userId.value),
+                        path(UserLetterEntity::letterStatus).ne(LetterStatus.SCHEDULED),
+                    ),
+                ).orderBy(
+                    path(UserLetterEntity::createdAt).desc(),
+                )
+            }.content
+            .firstOrNull()
 }

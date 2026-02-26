@@ -22,13 +22,12 @@ class RunningRoute(
             route: LineString? = null,
             startPoint: Point? = null,
             endPoint: Point? = null,
-        ): RunningRoute {
-            return RunningRoute(
+        ): RunningRoute =
+            RunningRoute(
                 runningId = runningId,
                 route = route,
                 startPoint = startPoint,
                 endPoint = endPoint,
             )
-        }
     }
 }

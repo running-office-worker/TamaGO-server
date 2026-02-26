@@ -7,8 +7,8 @@ import tamago.server.core.running.domain.vo.RunningId
 import tamago.server.core.running.infrastructure.entity.RunningEntity
 
 object RunningMapper {
-    fun toEntity(running: Running): RunningEntity {
-        return RunningEntity(
+    fun toEntity(running: Running): RunningEntity =
+        RunningEntity(
             id = running.id?.value,
             userId = running.userId.value,
             ownedMonsterId = running.ownedMonsterId.value,
@@ -22,7 +22,6 @@ object RunningMapper {
             startedAt = running.startedAt,
             finishedAt = running.finishedAt,
         )
-    }
 
     fun toDomain(entity: RunningEntity?): Running? {
         if (entity == null) return null

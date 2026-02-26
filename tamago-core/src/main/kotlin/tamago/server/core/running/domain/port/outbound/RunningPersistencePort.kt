@@ -5,7 +5,16 @@ import tamago.server.core.running.domain.aggregate.Running
 
 interface RunningPersistencePort {
     fun save(running: Running): Running
-    fun findAllByUserIdAndMonth(userId: UserId, year: Int, month: Int): List<Running>
+
+    fun findAllByUserIdAndMonth(
+        userId: UserId,
+        year: Int,
+        month: Int,
+    ): List<Running>
+
+    fun findLastByUserId(userId: UserId): Running?
+
     fun sumDistanceByUserId(userId: UserId): Double
+
     fun sumDurationMinutesByUserId(userId: UserId): Long
 }

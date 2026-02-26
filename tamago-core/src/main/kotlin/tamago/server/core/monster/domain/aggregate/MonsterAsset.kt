@@ -21,13 +21,12 @@ class MonsterAsset(
             assetKey: String? = null,
             assetName: String? = null,
             assetType: AssetType? = null,
-        ): MonsterAsset {
-            return MonsterAsset(
+        ): MonsterAsset =
+            MonsterAsset(
                 monsterId = monsterId,
                 assetKey = assetKey,
                 assetName = assetName,
                 assetType = assetType,
             )
-        }
     }
 }

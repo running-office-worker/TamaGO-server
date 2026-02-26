@@ -14,9 +14,7 @@ abstract class BaseTimeEntity(
     @CreationTimestamp
     @Column(updatable = false)
     var createdAt: LocalDateTime? = null,
-
     @UpdateTimestamp
     var updatedAt: LocalDateTime? = null,
-
     var deletedAt: LocalDateTime? = null,
 )

@@ -6,15 +6,14 @@ import tamago.server.core.running.domain.vo.RunningRouteId
 import tamago.server.core.running.infrastructure.entity.RunningRouteEntity
 
 object RunningRouteMapper {
-    fun toEntity(domain: RunningRoute): RunningRouteEntity {
-        return RunningRouteEntity(
+    fun toEntity(domain: RunningRoute): RunningRouteEntity =
+        RunningRouteEntity(
             id = domain.id?.value,
             runningId = domain.runningId.value,
             route = domain.route,
             startPoint = domain.startPoint,
             endPoint = domain.endPoint,
         )
-    }
 
     fun toDomain(entity: RunningRouteEntity?): RunningRoute? {
         if (entity == null) return null

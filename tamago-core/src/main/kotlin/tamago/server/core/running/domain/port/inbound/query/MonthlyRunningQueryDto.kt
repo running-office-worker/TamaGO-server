@@ -17,15 +17,13 @@ data class MonthlyRunningQueryDto(
         val pace: Int,
         val calories: Int,
         val elapsedTime: Int,
-        val monsterImageUrl: String?,
     ) {
         companion object {
-            fun from(running: Running, monsterImageUrl: String?): RunDetailDto =
+            fun from(running: Running): RunDetailDto =
                 RunDetailDto(
                     pace = running.pace?.toInt() ?: 0,
                     calories = running.calories ?: 0,
                     elapsedTime = Duration.between(running.startedAt, running.finishedAt).seconds.toInt(),
-                    monsterImageUrl = monsterImageUrl,
                 )
         }
     }
@@ -40,9 +38,11 @@ data class MonthlyRunningQueryDto(
                 MonthlySummaryDto(
                     totalDistance = runnings.sumOf { it.distance ?: 0.0 },
                     runCount = runnings.size,
-                    totalTimeMinutes = runnings.sumOf {
-                        Duration.between(it.startedAt, it.finishedAt).toMinutes()
-                    }.toInt(),
+                    totalTimeMinutes =
+                        runnings
+                            .sumOf {
+                                Duration.between(it.startedAt, it.finishedAt).toMinutes()
+                            }.toInt(),
                 )
         }
     }

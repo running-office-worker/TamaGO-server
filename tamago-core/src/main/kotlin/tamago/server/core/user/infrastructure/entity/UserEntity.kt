@@ -29,7 +29,7 @@ class UserEntity(
         mappedBy = "user",
         fetch = FetchType.LAZY,
         cascade = [CascadeType.ALL],
-        orphanRemoval = true
+        orphanRemoval = true,
     )
     val auths: MutableList<UserAuthEntity> = mutableListOf(),
     var goalKilo: Int? = null,

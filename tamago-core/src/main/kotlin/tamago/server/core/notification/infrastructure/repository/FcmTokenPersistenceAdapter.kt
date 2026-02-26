@@ -10,16 +10,15 @@ import tamago.server.core.notification.infrastructure.mapper.FcmTokenMapper
 class FcmTokenPersistenceAdapter(
     private val fcmTokenJpaRepository: FcmTokenJpaRepository,
 ) : FcmTokenPersistencePort {
-
-    override fun findAllByUserId(userId: UserId): List<FcmToken> {
-        return fcmTokenJpaRepository.findAllByUserIdAndDeletedAtIsNull(userId.value)
+    override fun findAllByUserId(userId: UserId): List<FcmToken> =
+        fcmTokenJpaRepository
+            .findAllByUserIdAndDeletedAtIsNull(userId.value)
             .mapNotNull { FcmTokenMapper.toDomain(it) }
-    }
 
-    override fun findByUserId(userId: UserId): FcmToken? {
-        return fcmTokenJpaRepository.findByUserIdAndDeletedAtIsNull(userId.value)
+    override fun findByUserId(userId: UserId): FcmToken? =
+        fcmTokenJpaRepository
+            .findByUserIdAndDeletedAtIsNull(userId.value)
             ?.let { FcmTokenMapper.toDomain(it) }
-    }
 
     override fun save(fcmToken: FcmToken): FcmToken {
         val entity = FcmTokenMapper.toEntity(fcmToken)

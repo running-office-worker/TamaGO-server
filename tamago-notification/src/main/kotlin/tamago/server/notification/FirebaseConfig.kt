@@ -15,30 +15,33 @@ import java.io.IOException
 class FirebaseConfig(
     private val firebaseProperties: FirebaseProperties,
 ) {
-
     @Bean
     fun firebaseApp(): FirebaseApp {
         if (FirebaseApp.getApps().isNotEmpty()) {
             return FirebaseApp.getInstance()
         }
 
-        val credentials = try {
-            ClassPathResource(firebaseProperties.credentialsPath).inputStream.use {
-                GoogleCredentials.fromStream(it)
+        val credentials =
+            try {
+                ClassPathResource(firebaseProperties.credentialsPath).inputStream.use {
+                    GoogleCredentials.fromStream(it)
+                }
+            } catch (e: IOException) {
+                throw IllegalStateException(
+                    "Firebase credentials file not found: ${firebaseProperties.credentialsPath}",
+                    e,
+                )
             }
-        } catch (e: IOException) {
-            throw IllegalStateException("Firebase credentials file not found: ${firebaseProperties.credentialsPath}", e)
-        }
 
-        val options = FirebaseOptions.builder()
-            .setCredentials(credentials)
-            .build()
+        val options =
+            FirebaseOptions
+                .builder()
+                .setCredentials(credentials)
+                .build()
 
         return FirebaseApp.initializeApp(options)
     }
 
     @Bean
-    fun firebaseMessaging(firebaseApp: FirebaseApp): FirebaseMessaging {
-        return FirebaseMessaging.getInstance(firebaseApp)
-    }
+    fun firebaseMessaging(firebaseApp: FirebaseApp): FirebaseMessaging = FirebaseMessaging.getInstance(firebaseApp)
 }

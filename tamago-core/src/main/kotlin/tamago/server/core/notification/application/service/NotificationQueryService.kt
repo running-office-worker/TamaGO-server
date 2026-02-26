@@ -9,13 +9,10 @@ import tamago.server.core.notification.domain.port.outbound.FcmTokenPersistenceP
 class NotificationQueryService(
     private val fcmTokenPersistencePort: FcmTokenPersistencePort,
 ) {
-
-    fun getFcmTokensByUserId(userId: UserId): List<String> {
-        return fcmTokenPersistencePort.findAllByUserId(userId)
+    fun getFcmTokensByUserId(userId: UserId): List<String> =
+        fcmTokenPersistencePort
+            .findAllByUserId(userId)
             .mapNotNull { it.token }
-    }
 
-    fun findFcmTokenByUserId(userId: UserId): FcmToken? {
-        return fcmTokenPersistencePort.findByUserId(userId)
-    }
+    fun findFcmTokenByUserId(userId: UserId): FcmToken? = fcmTokenPersistencePort.findByUserId(userId)
 }

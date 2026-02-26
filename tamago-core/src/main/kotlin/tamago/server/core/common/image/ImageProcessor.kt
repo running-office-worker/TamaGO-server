@@ -24,4 +24,13 @@ interface ImageProcessor {
         prefixId: Long,
         fileName: String?,
     ): List<ImageInfo>
+
+    fun uploadFile(
+        prefix: String,
+        prefixId: Long,
+        contentType: String,
+        extension: String,
+        fileBytes: ByteArray,
+        fileName: String,
+    ): UploadedImage
 }

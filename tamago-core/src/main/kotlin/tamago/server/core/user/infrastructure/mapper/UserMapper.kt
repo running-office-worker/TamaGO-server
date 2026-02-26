@@ -1,21 +1,22 @@
 package tamago.server.core.user.infrastructure.mapper
 
-import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.user.domain.aggregate.UserRunningData
 import tamago.server.core.user.infrastructure.entity.UserEntity
 
 object UserMapper {
     fun toEntity(user: User): UserEntity {
-        val userEntity = UserEntity(
-            id = user.id?.value,
-            nickname = user.nickname,
-            role = user.role,
-            goalKilo = user.runningData.goalKilo,
-            totalKilo = user.runningData.totalKilo,
-            weight = user.weight,
-            lastLoginAt = user.lastLoginAt,
-        )
+        val userEntity =
+            UserEntity(
+                id = user.id?.value,
+                nickname = user.nickname,
+                role = user.role,
+                goalKilo = user.runningData.goalKilo,
+                totalKilo = user.runningData.totalKilo,
+                weight = user.weight,
+                lastLoginAt = user.lastLoginAt,
+            )
 
         user.auths.forEach { auth ->
             val authEntity = UserAuthMapper.toEntity(auth)
@@ -34,10 +35,11 @@ object UserMapper {
             nickname = entity.nickname,
             role = entity.role,
             auths = UserAuthMapper.toDomain(entity.auths),
-            runningData = UserRunningData(
-                goalKilo = entity.goalKilo,
-                totalKilo = entity.totalKilo,
-            ),
+            runningData =
+                UserRunningData(
+                    goalKilo = entity.goalKilo,
+                    totalKilo = entity.totalKilo,
+                ),
             weight = entity.weight,
             lastLoginAt = entity.lastLoginAt,
             createdAt = entity.createdAt,

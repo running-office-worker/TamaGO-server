@@ -6,8 +6,6 @@ import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
-import tamago.server.core.monster.application.exception.MonsterAlreadyOwnedException
-import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
 import tamago.server.core.monster.domain.vo.MonsterId
@@ -17,49 +15,55 @@ class MonsterCommandService(
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
 ) : MonsterCommandUseCase {
-
-    fun initMonster(userId: UserId, monsterId: MonsterId): OwnedMonster {
-        val ownedMonster = OwnedMonster.create(
-            monsterId = monsterId,
-            userId = userId,
-            havingXp = 0,
-            status = OwnedMonsterStatus.OWNED,
-        )
+    fun initMonster(
+        userId: UserId,
+        monsterId: MonsterId,
+    ): OwnedMonster {
+        val ownedMonster =
+            OwnedMonster.create(
+                monsterId = monsterId,
+                userId = userId,
+                havingXp = 0,
+            )
 
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    fun createMonsterAsset(monsterId: MonsterId, assetType: AssetType, assetKey: String, assetName: String): MonsterAsset {
-        val monsterAsset = MonsterAsset.create(
-            monsterId = monsterId,
-            assetKey = assetKey,
-            assetName = assetName,
-            assetType = assetType,
-        )
+    fun createMonsterAsset(
+        monsterId: MonsterId,
+        assetType: AssetType,
+        assetKey: String,
+        assetName: String,
+    ): MonsterAsset {
+        val monsterAsset =
+            MonsterAsset.create(
+                monsterId = monsterId,
+                assetKey = assetKey,
+                assetName = assetName,
+                assetType = assetType,
+            )
 
         return monsterAssetPersistencePort.save(monsterAsset)
     }
 
-    override fun addEarnedXp(ownedMonster: OwnedMonster, xp: Int): OwnedMonster {
+    override fun addEarnedXp(
+        ownedMonster: OwnedMonster,
+        xp: Int,
+    ): OwnedMonster {
         ownedMonster.addXp(xp)
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    fun ownMonster(ownedMonster: OwnedMonster): OwnedMonster {
-        if (ownedMonster.status != OwnedMonsterStatus.UNLOCKED) {
-            throw MonsterAlreadyOwnedException()
-        }
-        ownedMonster.own()
-        return ownedMonsterPersistencePort.save(ownedMonster)
-    }
-
-    fun unlockMonster(monsterId: MonsterId, userId: UserId): OwnedMonster {
-        val ownedMonster = OwnedMonster.create(
-            monsterId = monsterId,
-            userId = userId,
-            havingXp = 0,
-            status = OwnedMonsterStatus.UNLOCKED,
-        )
+    fun ownMonster(
+        monsterId: MonsterId,
+        userId: UserId,
+    ): OwnedMonster {
+        val ownedMonster =
+            OwnedMonster.create(
+                monsterId = monsterId,
+                userId = userId,
+                havingXp = 0,
+            )
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 }

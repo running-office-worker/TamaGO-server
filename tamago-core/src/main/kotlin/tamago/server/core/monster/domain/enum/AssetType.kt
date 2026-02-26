@@ -6,5 +6,8 @@ enum class AssetType(
 ) {
     PNG("image/png", "png"),
     GIF("image/gif", "gif"),
-    LOTTIE("application/json", "json"),
+
+    M_LOTTIE("application/zip+dotlottie", "lottie"),
+    M_SVG("image/svg+xml", "svg"),
+    S_SVG("image/svg+xml", "svg"),
 }

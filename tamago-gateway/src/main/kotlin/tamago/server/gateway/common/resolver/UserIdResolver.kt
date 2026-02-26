@@ -7,8 +7,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
-import tamago.server.core.user.UserQueryUseCase
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.user.UserQueryUseCase
 import tamago.server.gateway.common.annotation.CurrentUser
 
 @Component

@@ -8,15 +8,17 @@ import tamago.server.core.letter.infrastructure.entity.LetterEntity
 import tamago.server.core.letter.infrastructure.entity.UserLetterEntity
 
 object UserLetterMapper {
-    fun toEntity(userLetter: UserLetter, letter: LetterEntity): UserLetterEntity {
-        return UserLetterEntity(
+    fun toEntity(
+        userLetter: UserLetter,
+        letter: LetterEntity,
+    ): UserLetterEntity =
+        UserLetterEntity(
             id = userLetter.id?.value,
             userId = userLetter.userId.value,
             letter = letter,
             letterStatus = userLetter.letterStatus,
             scheduledAt = userLetter.scheduledAt,
         )
-    }
 
     fun toDomain(entity: UserLetterEntity?): UserLetter? {
         if (entity == null) return null

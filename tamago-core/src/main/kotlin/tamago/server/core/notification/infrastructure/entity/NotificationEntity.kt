@@ -16,17 +16,12 @@ class NotificationEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
     val id: Long? = null,
-
     val title: String? = null,
-
     val content: String? = null,
-
     @Column(name = "is_read")
     var isRead: Boolean = false,
-
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-
     @Column(name = "scheduled_at")
     val scheduledAt: LocalDateTime? = null,
 ) : BaseTimeEntity()

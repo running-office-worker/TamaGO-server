@@ -40,22 +40,28 @@ class UserLetter(
         private const val INITIAL_DELAY_HOURS = 23L
         private const val REPEAT_INTERVAL_HOURS = 24L
 
-        fun new(userId: UserId, letterId: LetterId, startedAt: LocalDateTime): UserLetter {
-            return UserLetter(
+        fun new(
+            userId: UserId,
+            letterId: LetterId,
+            startedAt: LocalDateTime,
+        ): UserLetter =
+            UserLetter(
                 userId = userId,
                 letterId = letterId,
                 letterStatus = LetterStatus.SCHEDULED,
                 scheduledAt = startedAt.plusHours(INITIAL_DELAY_HOURS),
             )
-        }
 
-        fun repeat(userId: UserId, letterId: LetterId, prevScheduledAt: LocalDateTime): UserLetter {
-            return UserLetter(
+        fun repeat(
+            userId: UserId,
+            letterId: LetterId,
+            prevScheduledAt: LocalDateTime,
+        ): UserLetter =
+            UserLetter(
                 userId = userId,
                 letterId = letterId,
                 letterStatus = LetterStatus.SCHEDULED,
                 scheduledAt = prevScheduledAt.plusHours(REPEAT_INTERVAL_HOURS),
             )
-        }
     }
 }

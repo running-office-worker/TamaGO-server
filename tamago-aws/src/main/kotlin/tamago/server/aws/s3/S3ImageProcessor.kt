@@ -1,11 +1,14 @@
 package tamago.server.aws.s3
 
 import org.springframework.stereotype.Component
+import software.amazon.awssdk.core.exception.SdkException
 import tamago.server.aws.AwsProperties
+import tamago.server.aws.exception.S3Exception
 import tamago.server.core.common.image.ImageFileConstructor
-import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.image.ImageInfo
+import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.image.ImageUrl
+import tamago.server.core.common.image.UploadedImage
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -22,23 +25,27 @@ class S3ImageProcessor(
         contentType: String,
         extension: String,
     ): ImageUrl {
-        val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
-        val imageFileName = imageFileConstructor.imageFileName(extension)
+        try {
+            val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+            val imageFileName = imageFileConstructor.imageFileName(extension)
 
-        val presignedUrl =
-            awsS3Client.generateUploadUrl(
-                awsProperties.s3.bucket,
-                imageFilePath,
-                imageFileName,
-                Duration.ofSeconds(30), // 만료 시간 최소화
-                contentType,
+            val presignedUrl =
+                awsS3Client.generateUploadUrl(
+                    awsProperties.s3.bucket,
+                    imageFilePath,
+                    imageFileName,
+                    Duration.ofSeconds(30), // 만료 시간 최소화
+                    contentType,
+                )
+
+            return ImageUrl(
+                uploadUrl = presignedUrl,
+                previewUrl = generateGetUrl(imageFilePath, imageFileName),
+                fileName = imageFileName,
             )
-
-        return ImageUrl(
-            uploadUrl = presignedUrl,
-            previewUrl = generateGetUrl(imageFilePath, imageFileName),
-            fileName = imageFileName,
-        )
+        } catch (e: SdkException) {
+            throw S3Exception(e)
+        }
     }
 
     override fun getImageUrl(
@@ -46,12 +53,38 @@ class S3ImageProcessor(
         prefixId: Long,
         fileName: String?,
     ): List<ImageInfo> {
-        val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+        try {
+            val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
 
-        return fileName
-            ?.let {
-                listOf(presignedGet(imageFilePath, it)) // fileName이 있으면 특정 이미지 조회
-            } ?: listPresignedGets(imageFilePath) // 아니면 해당 경로 아래 모든 이미지 탐색
+            return fileName
+                ?.let {
+                    listOf(presignedGet(imageFilePath, it)) // fileName이 있으면 특정 이미지 조회
+                } ?: listPresignedGets(imageFilePath) // 아니면 해당 경로 아래 모든 이미지 탐색
+        } catch (e: SdkException) {
+            throw S3Exception(e)
+        }
+    }
+
+    override fun uploadFile(
+        prefix: String,
+        prefixId: Long,
+        contentType: String,
+        extension: String,
+        fileBytes: ByteArray,
+        fileName: String,
+    ): UploadedImage {
+        try {
+            val filePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+
+            awsS3Client.putObject(awsProperties.s3.bucket, filePath, fileName, contentType, fileBytes)
+
+            return UploadedImage(
+                previewUrl = generateGetUrl(filePath, fileName),
+                fileName = fileName,
+            )
+        } catch (e: SdkException) {
+            throw S3Exception(e)
+        }
     }
 
     private fun generateGetUrl(

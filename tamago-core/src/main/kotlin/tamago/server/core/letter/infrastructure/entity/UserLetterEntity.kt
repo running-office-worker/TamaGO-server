@@ -24,10 +24,8 @@ class UserLetterEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_letter_id")
     val id: Long? = null,
-
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "letter_id",
@@ -35,11 +33,9 @@ class UserLetterEntity(
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT),
     )
     val letter: LetterEntity,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "letter_status")
     var letterStatus: LetterStatus = LetterStatus.UNREAD,
-
     @Column(name = "scheduled_at")
     val scheduledAt: LocalDateTime? = null,
 ) : BaseTimeEntity()

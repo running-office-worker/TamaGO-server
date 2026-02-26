@@ -8,11 +8,24 @@ import tamago.server.core.letter.domain.vo.UserLetterId
 
 interface UserLetterPersistencePort {
     fun save(userLetter: UserLetter)
+
     fun saveAll(userLetters: List<UserLetter>): List<UserLetter>
+
     fun findById(id: UserLetterId): UserLetter?
+
     fun findByUserId(userId: UserId): List<UserLetter>
-    fun findByUserIdAndLetterId(userId: UserId, letterId: LetterId): UserLetter?
+
+    fun findByUserIdAndLetterId(
+        userId: UserId,
+        letterId: LetterId,
+    ): UserLetter?
+
     fun findLatestByUserId(userId: UserId): UserLetter?
-    fun findByUserIdAndLetterStatus(userId: UserId, letterStatus: LetterStatus): UserLetter?
+
+    fun findByUserIdAndLetterStatus(
+        userId: UserId,
+        letterStatus: LetterStatus,
+    ): UserLetter?
+
     fun findLatestDistinctByUser(): List<UserLetter>
 }

@@ -5,9 +5,20 @@ import org.springframework.data.jpa.repository.JpaRepository
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.infrastructure.entity.UserLetterEntity
 
-interface UserLetterJpaRepository : JpaRepository<UserLetterEntity, Long>, KotlinJdslJpqlExecutor {
+interface UserLetterJpaRepository :
+    JpaRepository<UserLetterEntity, Long>,
+    KotlinJdslJpqlExecutor {
     fun findByUserId(userId: Long): List<UserLetterEntity>
-    fun findByUserIdAndLetterId(userId: Long, letterId: Long): UserLetterEntity?
+
+    fun findByUserIdAndLetterId(
+        userId: Long,
+        letterId: Long,
+    ): UserLetterEntity?
+
     fun findTopByUserIdOrderByCreatedAtDesc(userId: Long): UserLetterEntity?
-    fun findFirstByUserIdAndLetterStatusOrderByCreatedAtDesc(userId: Long, letterStatus: LetterStatus): UserLetterEntity?
+
+    fun findFirstByUserIdAndLetterStatusOrderByCreatedAtDesc(
+        userId: Long,
+        letterStatus: LetterStatus,
+    ): UserLetterEntity?
 }

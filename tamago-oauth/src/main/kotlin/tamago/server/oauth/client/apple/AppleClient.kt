@@ -24,7 +24,7 @@ class AppleClient internal constructor(
             signedJWT = SignedJWT.parse(token)
             jwtClaims = signedJWT.jwtClaimsSet
         } catch (e: ParseException) {
-            throw AuthenticationErrorException();
+            throw AuthenticationErrorException()
         }
 
         return try {
@@ -33,7 +33,7 @@ class AppleClient internal constructor(
                 jwtClaims.getStringClaim("email"),
             )
         } catch (e: ParseException) {
-            throw AuthenticationErrorException();
+            throw AuthenticationErrorException()
         }
     }
 

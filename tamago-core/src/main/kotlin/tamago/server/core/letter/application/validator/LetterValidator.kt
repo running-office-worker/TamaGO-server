@@ -7,7 +7,10 @@ import tamago.server.core.letter.domain.aggregate.UserLetter
 
 @Component
 class LetterValidator {
-    fun validateOwner(userId: UserId, userLetter: UserLetter) {
+    fun validateOwner(
+        userId: UserId,
+        userLetter: UserLetter,
+    ) {
         if (!userLetter.isOwnedBy(userId)) {
             throw LetterAccessDeniedException()
         }

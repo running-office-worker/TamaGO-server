@@ -1,7 +1,7 @@
 package tamago.server.core.notification.domain.aggregate
 
-import tamago.server.core.notification.domain.vo.NotificationId
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.notification.domain.vo.NotificationId
 import java.time.LocalDateTime
 
 class Notification(
@@ -30,14 +30,13 @@ class Notification(
             title: String,
             content: String,
             scheduledAt: LocalDateTime? = null,
-        ): Notification {
-            return Notification(
+        ): Notification =
+            Notification(
                 userId = userId,
                 title = title,
                 content = content,
                 isRead = false,
                 scheduledAt = scheduledAt,
             )
-        }
     }
 }

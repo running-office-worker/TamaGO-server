@@ -14,15 +14,14 @@ data class MonsterDexQueryDto(
         fun of(
             monster: Monster,
             ownedMonster: OwnedMonster?,
-        ): MonsterDexQueryDto {
-            return MonsterDexQueryDto(
+        ): MonsterDexQueryDto =
+            MonsterDexQueryDto(
                 monsterId = monster.id!!.value,
                 nickname = monster.nickname,
                 unlockDescription = monster.unlockPolicies.firstOrNull()?.description,
                 owned = ownedMonster != null,
-                ownedMonster = ownedMonster?.let { OwnedMonsterInfo.of(it, monster) },
+                ownedMonster = ownedMonster?.let { OwnedMonsterInfo.of(it) },
             )
-        }
     }
 
     data class OwnedMonsterInfo(
@@ -31,16 +30,12 @@ data class MonsterDexQueryDto(
         val status: String?,
     ) {
         companion object {
-            fun of(
-                ownedMonster: OwnedMonster,
-                monster: Monster,
-            ): OwnedMonsterInfo {
-                return OwnedMonsterInfo(
+            fun of(ownedMonster: OwnedMonster): OwnedMonsterInfo =
+                OwnedMonsterInfo(
                     ownedMonsterId = ownedMonster.id!!.value,
                     havingXp = ownedMonster.havingXp,
                     status = ownedMonster.status?.name,
                 )
-            }
         }
     }
 }

@@ -8,15 +8,17 @@ import tamago.server.core.monster.infrastructure.entity.MonsterEntity
 import tamago.server.core.monster.infrastructure.entity.OwnedMonsterEntity
 
 object OwnedMonsterMapper {
-    fun toEntity(ownedMonster: OwnedMonster, monster: MonsterEntity): OwnedMonsterEntity {
-        return OwnedMonsterEntity(
+    fun toEntity(
+        ownedMonster: OwnedMonster,
+        monster: MonsterEntity,
+    ): OwnedMonsterEntity =
+        OwnedMonsterEntity(
             id = ownedMonster.id?.value,
             monster = monster,
             userId = ownedMonster.userId.value,
             havingXp = ownedMonster.havingXp,
             status = ownedMonster.status,
         )
-    }
 
     fun toDomain(entity: OwnedMonsterEntity?): OwnedMonster? {
         if (entity == null) return null

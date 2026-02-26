@@ -10,4 +10,6 @@ interface RunningJpaRepository : JpaRepository<RunningEntity, Long> {
         monthStart: LocalDateTime,
         monthEnd: LocalDateTime,
     ): List<RunningEntity>
+
+    fun findTopByUserIdAndDeletedAtIsNullOrderByFinishedAtDesc(userId: Long): RunningEntity?
 }

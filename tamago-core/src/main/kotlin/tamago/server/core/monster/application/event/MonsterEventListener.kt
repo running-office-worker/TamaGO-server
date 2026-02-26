@@ -8,6 +8,7 @@ import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
 import tamago.server.core.running.domain.event.RunningCompletedEvent
+import tamago.server.core.user.domain.event.UserSignedUpEvent
 
 private val logger = KotlinLogging.logger {}
 
@@ -16,6 +17,19 @@ class MonsterEventListener(
     private val monsterQueryService: MonsterQueryService,
     private val monsterCommandService: MonsterCommandService,
 ) {
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun onUserSignedUp(event: UserSignedUpEvent) {
+        try {
+            monsterQueryService
+                .getDefaultMonster()
+                ?.let { monster -> monsterCommandService.ownMonster(monster.id!!, event.userId) }
+        } catch (e: Exception) {
+            // TODO: Sentry 연동
+            logger.error(e) { "회원 가입 후 기본 몬스터 지급 오류 - userId: ${event.userId}" }
+        }
+    }
+
     @TransactionalEventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {
@@ -28,8 +42,14 @@ class MonsterEventListener(
 
             allFirstStageMonsters
                 .filter { monster -> monster.id !in ownedMonsterIds } // 이미 보유한 몬스터는 제외
-                .filter { monster -> monster.unlockPolicies.any { it.isSatisfiedBy(event.totalDistance, event.totalDurationMinutes) } }
-                .forEach { monster -> monsterCommandService.unlockMonster(monster.id!!, event.userId) }
+                .filter { monster ->
+                    monster.unlockPolicies.any {
+                        it.isSatisfiedBy(
+                            event.totalDistance,
+                            event.totalDurationMinutes,
+                        )
+                    }
+                }.forEach { monster -> monsterCommandService.ownMonster(monster.id!!, event.userId) }
         } catch (e: Exception) {
             // TODO: Sentry 연동
             logger.error(e) { "러닝 완료 후 몬스터 해금 처리 오류 - userId: ${event.userId}" }
