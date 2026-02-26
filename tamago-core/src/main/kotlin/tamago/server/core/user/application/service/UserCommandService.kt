@@ -36,7 +36,7 @@ class UserCommandService(
         val savedUser = userPersistencePort.save(user)
         val userId = savedUser.id ?: throw UserSaveErrorException()
 
-        publishUserSinedUpEnvent(userId)
+        publishUserSignedUpEvent(userId)
     }
 
     override fun socialLogin(command: LoginCommandDto): TokenQueryDto {
