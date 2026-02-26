@@ -23,19 +23,16 @@ class MonsterQueryService(
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
 ) : MonsterQueryUseCase {
-
     fun get(id: MonsterId): Monster =
         monsterPersistencePort.findById(id)
             ?: throw MonsterNotFoundException()
 
-    fun getAllWithUnlockPolicies(): List<Monster> =
-        monsterPersistencePort.findAllWithUnlockPolicies()
+    fun getAllWithUnlockPolicies(): List<Monster> = monsterPersistencePort.findAllWithUnlockPolicies()
 
     fun getAllFirstStageWithUnlockPolicies(): List<Monster> =
         monsterPersistencePort.findAllFirstStageWithUnlockPolicies()
 
-    fun getDefaultMonsters(): List<Monster> =
-        monsterPersistencePort.findAllDefaultMonsters()
+    fun getDefaultMonsters(): List<Monster> = monsterPersistencePort.findAllDefaultMonsters()
 
     override fun getOwnedMonster(id: OwnedMonsterId): OwnedMonster =
         ownedMonsterPersistencePort.findById(id)
@@ -44,11 +41,12 @@ class MonsterQueryService(
     fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserId(userId)
 
-    fun getMonsterAssetsByMonsterIds(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> =
-        monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
+    fun getMonsterAssetsByMonsterIds(
+        monsterIds: List<MonsterId>,
+        assetType: AssetType,
+    ): List<MonsterAsset> = monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
 
-    fun getAllMonsterAssets(): List<MonsterAsset> =
-        monsterAssetPersistencePort.findAll()
+    fun getAllMonsterAssets(): List<MonsterAsset> = monsterAssetPersistencePort.findAll()
 
     override fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean =
         lastLoginAt?.let { monsterAssetPersistencePort.existsByUpdatedAtAfter(it) } ?: true
@@ -84,7 +82,10 @@ class MonsterQueryService(
         return firstStageMonsters.random()
     }
 
-    fun checkMonsterAssetNotExists(monsterId: MonsterId, assetType: AssetType) {
+    fun checkMonsterAssetNotExists(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ) {
         if (monsterAssetPersistencePort.existsByMonsterIdAndAssetType(monsterId, assetType)) {
             throw MonsterAssetAlreadyExistsException()
         }
@@ -92,5 +93,4 @@ class MonsterQueryService(
 
     override fun getOwnedMonsterMappings(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserId(userId)
-
 }

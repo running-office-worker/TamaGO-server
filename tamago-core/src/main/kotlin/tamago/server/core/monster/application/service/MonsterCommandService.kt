@@ -15,39 +15,55 @@ class MonsterCommandService(
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
 ) : MonsterCommandUseCase {
-
-    fun initMonster(userId: UserId, monsterId: MonsterId): OwnedMonster {
-        val ownedMonster = OwnedMonster.create(
-            monsterId = monsterId,
-            userId = userId,
-            havingXp = 0,
-        )
+    fun initMonster(
+        userId: UserId,
+        monsterId: MonsterId,
+    ): OwnedMonster {
+        val ownedMonster =
+            OwnedMonster.create(
+                monsterId = monsterId,
+                userId = userId,
+                havingXp = 0,
+            )
 
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    fun createMonsterAsset(monsterId: MonsterId, assetType: AssetType, assetKey: String, assetName: String): MonsterAsset {
-        val monsterAsset = MonsterAsset.create(
-            monsterId = monsterId,
-            assetKey = assetKey,
-            assetName = assetName,
-            assetType = assetType,
-        )
+    fun createMonsterAsset(
+        monsterId: MonsterId,
+        assetType: AssetType,
+        assetKey: String,
+        assetName: String,
+    ): MonsterAsset {
+        val monsterAsset =
+            MonsterAsset.create(
+                monsterId = monsterId,
+                assetKey = assetKey,
+                assetName = assetName,
+                assetType = assetType,
+            )
 
         return monsterAssetPersistencePort.save(monsterAsset)
     }
 
-    override fun addEarnedXp(ownedMonster: OwnedMonster, xp: Int): OwnedMonster {
+    override fun addEarnedXp(
+        ownedMonster: OwnedMonster,
+        xp: Int,
+    ): OwnedMonster {
         ownedMonster.addXp(xp)
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 
-    fun ownMonster(monsterId: MonsterId, userId: UserId): OwnedMonster {
-        val ownedMonster = OwnedMonster.create(
-            monsterId = monsterId,
-            userId = userId,
-            havingXp = 0,
-        )
+    fun ownMonster(
+        monsterId: MonsterId,
+        userId: UserId,
+    ): OwnedMonster {
+        val ownedMonster =
+            OwnedMonster.create(
+                monsterId = monsterId,
+                userId = userId,
+                havingXp = 0,
+            )
         return ownedMonsterPersistencePort.save(ownedMonster)
     }
 }

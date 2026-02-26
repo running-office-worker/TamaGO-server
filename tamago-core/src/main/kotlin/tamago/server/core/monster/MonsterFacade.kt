@@ -6,14 +6,14 @@ import tamago.server.core.common.image.ImageFileConstructor
 import tamago.server.core.common.image.ImagePrefix
 import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.monster.application.service.MonsterCommandService
+import tamago.server.core.monster.application.service.MonsterQueryService
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterAssetBundleQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.UploadMonsterAssetQueryDto
-import tamago.server.core.monster.application.service.MonsterCommandService
-import tamago.server.core.monster.application.service.MonsterQueryService
 import tamago.server.core.monster.domain.vo.MonsterId
 
 @Component
@@ -28,8 +28,10 @@ class MonsterFacade(
         // 1단계 몬스터와 해금 조건 함께 조회
         val monsters = monsterQueryService.getAllFirstStageWithUnlockPolicies()
         // 내가 소유한 몬스터 조회
-        val ownedMonsterMap = monsterQueryService.getOwnedMonstersByUserId(userId)
-            .associateBy { it.monsterId }
+        val ownedMonsterMap =
+            monsterQueryService
+                .getOwnedMonstersByUserId(userId)
+                .associateBy { it.monsterId }
 
         return monsters.map { monster ->
             // 내가 소유한 몬스터인지 확인
@@ -46,14 +48,17 @@ class MonsterFacade(
 
         return InitMonsterQueryDto(
             ownedMonsterId = ownedMonster.id!!.value,
-            monsterId = monster.id!!.value,
+            monsterId = monster.id.value,
             nickname = monster.nickname,
             status = ownedMonster.status!!.name,
         )
     }
 
     @Transactional
-    fun createMonsterAssetUploadUrl(monsterId: MonsterId, assetType: AssetType): CreateMonsterAssetQueryDto {
+    fun createMonsterAssetUploadUrl(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ): CreateMonsterAssetQueryDto {
         // 특정 몬스터에 이미 해당 타입의 에셋이 존재하는지 확인하고 존재하면 예외 처리
         monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
 
@@ -61,12 +66,13 @@ class MonsterFacade(
         val imageFilePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
 
         // 랜덤한 assetName 생성하고 presigned upload URL 생성
-        val generatedUrl = imageProcessor.createUploadUrl(
-            prefix = ImagePrefix.MONSTER.value,
-            prefixId = monsterId.value,
-            contentType = assetType.contentType,
-            extension = assetType.extension,
-        )
+        val generatedUrl =
+            imageProcessor.createUploadUrl(
+                prefix = ImagePrefix.MONSTER.value,
+                prefixId = monsterId.value,
+                contentType = assetType.contentType,
+                extension = assetType.extension,
+            )
 
         val assetKey = "$imageFilePath/${generatedUrl.fileName}"
 
@@ -95,14 +101,15 @@ class MonsterFacade(
 
         monsterCommandService.createMonsterAsset(monsterId, assetType, assetKey, fileName)
 
-        val uploaded = imageProcessor.uploadFile(
-            prefix = ImagePrefix.MONSTER.value,
-            prefixId = monsterId.value,
-            contentType = assetType.contentType,
-            extension = assetType.extension,
-            fileBytes = fileBytes,
-            fileName = fileName,
-        )
+        val uploaded =
+            imageProcessor.uploadFile(
+                prefix = ImagePrefix.MONSTER.value,
+                prefixId = monsterId.value,
+                contentType = assetType.contentType,
+                extension = assetType.extension,
+                fileBytes = fileBytes,
+                fileName = fileName,
+            )
 
         return UploadMonsterAssetQueryDto(previewUrl = uploaded.previewUrl, assetKey = assetKey)
     }
@@ -115,17 +122,22 @@ class MonsterFacade(
             .filter { it.assetName != null && it.assetType != null }
             .groupBy { it.monsterId }
             .map { (monsterId, assets) ->
-                val assetList = assets.map { asset ->
-                    MonsterAssetBundleQueryDto.AssetDetail(
-                        assetType = asset.assetType!!.name,
-                        url = imageProcessor.getImageUrl(
-                            prefix = ImagePrefix.MONSTER.value,
-                            prefixId = monsterId.value,
-                            fileName = asset.assetName,
-                        ).firstOrNull()?.url.orEmpty(),
-                        lastModifiedAt = asset.updatedAt!!,
-                    )
-                }
+                val assetList =
+                    assets.map { asset ->
+                        MonsterAssetBundleQueryDto.AssetDetail(
+                            assetType = asset.assetType!!.name,
+                            url =
+                                imageProcessor
+                                    .getImageUrl(
+                                        prefix = ImagePrefix.MONSTER.value,
+                                        prefixId = monsterId.value,
+                                        fileName = asset.assetName,
+                                    ).firstOrNull()
+                                    ?.url
+                                    .orEmpty(),
+                            lastModifiedAt = asset.updatedAt!!,
+                        )
+                    }
                 MonsterAssetBundleQueryDto(
                     monsterId = monsterId.value,
                     assets = assetList,
@@ -134,7 +146,10 @@ class MonsterFacade(
     }
 
     @Transactional
-    fun createOwnedMonster(monsterId: MonsterId, userId: UserId) {
+    fun createOwnedMonster(
+        monsterId: MonsterId,
+        userId: UserId,
+    ) {
         monsterQueryService.get(monsterId)
         monsterCommandService.ownMonster(monsterId, userId)
     }

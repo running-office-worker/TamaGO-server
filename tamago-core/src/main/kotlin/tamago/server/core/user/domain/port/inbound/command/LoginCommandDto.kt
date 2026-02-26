@@ -5,5 +5,5 @@ import tamago.server.core.user.domain.enum.AuthProvider
 data class LoginCommandDto(
     val externalId: String,
     val email: String,
-    val provider: AuthProvider
+    val provider: AuthProvider,
 )

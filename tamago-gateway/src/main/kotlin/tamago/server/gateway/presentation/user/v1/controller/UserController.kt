@@ -24,12 +24,11 @@ import java.time.temporal.ChronoUnit
 class UserController(
     private val userCommandUseCase: UserCommandUseCase,
 ) {
-
     @Operation(summary = "내 정보 조회", description = "현재 로그인한 유저의 정보를 반환합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/api/v1/users/me")
     fun me(
-        @CurrentUser user: User
+        @CurrentUser user: User,
     ): CustomResponse<MeResponse> = CustomResponse.ok(MeResponse.from(user))
 
     @Operation(summary = "애칭 설정하기", description = "타마고 애칭을 설정합니다.")
@@ -37,7 +36,7 @@ class UserController(
     @PatchMapping("/api/v1/users/nickname")
     fun giveNickname(
         @CurrentUser user: User,
-        @Valid @RequestBody request: NicknameRequest
+        @Valid @RequestBody request: NicknameRequest,
     ): CustomResponse<Void> {
         userCommandUseCase.updateNickname(user, request.nickname)
         return CustomResponse.ok()
@@ -48,7 +47,7 @@ class UserController(
     @PatchMapping("/api/v1/users/running-goal")
     fun setRunningGoal(
         @CurrentUser user: User,
-        @Valid @RequestBody request: GoalKiloRequest
+        @Valid @RequestBody request: GoalKiloRequest,
     ): CustomResponse<Void> {
         userCommandUseCase.updateGoalKilo(user, request.goalKilo)
         return CustomResponse.ok()
@@ -58,15 +57,17 @@ class UserController(
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/api/v1/users/running-data")
     fun getRunningData(
-        @CurrentUser user: User
+        @CurrentUser user: User,
     ): CustomResponse<RunningDataResponse> {
-        val runningDays = user.createdAt?.let {
-            ChronoUnit.DAYS.between(it.toLocalDate(), LocalDate.now()) + 1
-        } ?: 1
-        val response = RunningDataResponse(
-            totalKilo = user.runningData.totalKilo ?: 0.0,
-            runningDays = runningDays,
-        )
+        val runningDays =
+            user.createdAt?.let {
+                ChronoUnit.DAYS.between(it.toLocalDate(), LocalDate.now()) + 1
+            } ?: 1
+        val response =
+            RunningDataResponse(
+                totalKilo = user.runningData.totalKilo ?: 0.0,
+                runningDays = runningDays,
+            )
         return CustomResponse.ok(response)
     }
 }

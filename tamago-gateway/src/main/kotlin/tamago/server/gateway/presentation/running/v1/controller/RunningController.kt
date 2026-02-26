@@ -26,7 +26,6 @@ import tamago.server.gateway.presentation.running.v1.response.RunningFinishRespo
 class RunningController(
     private val runningFacade: RunningFacade,
 ) {
-
     @Operation(summary = "러닝 데이터 저장", description = "사용자의 러닝 데이터를 저장하고, 계산된 러닝 데이터와 몬스터 경험치를 반환합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")

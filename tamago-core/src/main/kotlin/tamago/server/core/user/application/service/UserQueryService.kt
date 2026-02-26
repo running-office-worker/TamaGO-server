@@ -1,6 +1,7 @@
 package tamago.server.core.user.application.service
 
 import org.springframework.stereotype.Service
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.user.UserQueryUseCase
 import tamago.server.core.user.application.exception.InvalidCredentialsException
 import tamago.server.core.user.application.exception.UserNotFoundException
@@ -8,7 +9,6 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.core.user.domain.aggregate.UserAuth
 import tamago.server.core.user.domain.enum.AuthProvider
 import tamago.server.core.user.domain.port.outbound.UserPersistencePort
-import tamago.server.core.common.vo.UserId
 
 @Service
 class UserQueryService(
@@ -23,13 +23,13 @@ class UserQueryService(
             ?: throw InvalidCredentialsException()
 
     override fun getEmailAuth(email: String): UserAuth {
-        val user = userPersistencePort.findByEmail(email)
-            ?: throw InvalidCredentialsException()
+        val user =
+            userPersistencePort.findByEmail(email)
+                ?: throw InvalidCredentialsException()
 
         return user.auths.find { it.provider == AuthProvider.EMAIL }
             ?: throw InvalidCredentialsException()
     }
 
-    override fun exists(email: String): Boolean =
-        userPersistencePort.existsByEmail(email)
+    override fun exists(email: String): Boolean = userPersistencePort.existsByEmail(email)
 }

@@ -21,11 +21,11 @@ class RunningCommandService(
     private val runningPersistencePort: RunningPersistencePort,
     private val runningRoutePersistencePort: RunningRoutePersistencePort,
 ) : RunningCommandUseCase {
-
-    private val geometryFactory = GeometryFactory(
-        PrecisionModel(),
-        4326
-    )
+    private val geometryFactory =
+        GeometryFactory(
+            PrecisionModel(),
+            4326,
+        )
 
     fun save(command: SaveRunningCommandDto): Running {
         if (command.distance < 0 || !command.finishedAt.isAfter(command.startedAt)) {
@@ -37,26 +37,30 @@ class RunningCommandService(
         val calories = calculateCalories(command.distance, command.weight, command.startedAt, command.finishedAt)
         val elapsedTime = Duration.between(command.startedAt, command.finishedAt).seconds.toInt()
 
-        val running = Running.create(
-            userId = command.userId,
-            ownedMonsterId = command.ownedMonsterId,
-            pace = pace,
-            cadence = cadence,
-            calories = calories,
-            distance = command.distance,
-            elevationGain = command.elevationGain,
-            heartbeat = command.heartbeat,
-            elapsedTime = elapsedTime,
-            startedAt = command.startedAt,
-            finishedAt = command.finishedAt,
-        )
+        val running =
+            Running.create(
+                userId = command.userId,
+                ownedMonsterId = command.ownedMonsterId,
+                pace = pace,
+                cadence = cadence,
+                calories = calories,
+                distance = command.distance,
+                elevationGain = command.elevationGain,
+                heartbeat = command.heartbeat,
+                elapsedTime = elapsedTime,
+                startedAt = command.startedAt,
+                finishedAt = command.finishedAt,
+            )
 
         val savedRunning = runningPersistencePort.save(running)
         saveRunningRoute(savedRunning, command)
         return savedRunning
     }
 
-    private fun saveRunningRoute(savedRunning: Running, command: SaveRunningCommandDto) {
+    private fun saveRunningRoute(
+        savedRunning: Running,
+        command: SaveRunningCommandDto,
+    ) {
         // 각 waypoint을 JTS Coordinate로 변환하여 배열 생성
         val waypoints = command.waypoints
         val coordinates = waypoints.map { Coordinate(it.longitude, it.latitude) }.toTypedArray()
@@ -66,12 +70,13 @@ class RunningCommandService(
         val startPoint = coordinates.firstOrNull()?.let { geometryFactory.createPoint(it) }
         val endPoint = coordinates.lastOrNull()?.let { geometryFactory.createPoint(it) }
 
-        val runningRoute = RunningRoute.create(
-            runningId = savedRunning.id!!,
-            route = route,
-            startPoint = startPoint,
-            endPoint = endPoint,
-        )
+        val runningRoute =
+            RunningRoute.create(
+                runningId = savedRunning.id!!,
+                route = route,
+                startPoint = startPoint,
+                endPoint = endPoint,
+            )
         runningRoutePersistencePort.save(runningRoute)
     }
 }

@@ -8,7 +8,6 @@ import java.time.LocalDate
 data class MonthlyRunningResponse(
     @field:Schema(description = "일별 러닝 데이터 목록", requiredMode = Schema.RequiredMode.REQUIRED)
     val dailyRunnings: List<DailyRunningResponse>,
-
     @field:Schema(description = "월간 요약", requiredMode = Schema.RequiredMode.REQUIRED)
     val summary: MonthlySummaryResponse,
 ) {
@@ -16,7 +15,6 @@ data class MonthlyRunningResponse(
     data class DailyRunningResponse(
         @field:Schema(description = "날짜", example = "2025-07-15", requiredMode = Schema.RequiredMode.REQUIRED)
         val date: LocalDate,
-
         @field:Schema(description = "해당 날짜의 러닝 목록", requiredMode = Schema.RequiredMode.REQUIRED)
         val runs: List<RunDetailResponse>,
     ) {
@@ -33,10 +31,8 @@ data class MonthlyRunningResponse(
     data class RunDetailResponse(
         @field:Schema(description = "페이스 (초/km)", example = "360", requiredMode = Schema.RequiredMode.REQUIRED)
         val pace: Int,
-
         @field:Schema(description = "소모 칼로리 (kcal)", example = "350", requiredMode = Schema.RequiredMode.REQUIRED)
         val calories: Int,
-
         @field:Schema(description = "경과 시간 (초)", example = "2700", requiredMode = Schema.RequiredMode.REQUIRED)
         val elapsedTime: Int,
     ) {
@@ -54,10 +50,8 @@ data class MonthlyRunningResponse(
     data class MonthlySummaryResponse(
         @field:Schema(description = "총 거리 (km)", example = "42.5", requiredMode = Schema.RequiredMode.REQUIRED)
         val totalDistance: Double,
-
         @field:Schema(description = "러닝 횟수", example = "12", requiredMode = Schema.RequiredMode.REQUIRED)
         val runCount: Int,
-
         @field:Schema(description = "총 러닝 시간 (분)", example = "450", requiredMode = Schema.RequiredMode.REQUIRED)
         val totalTimeMinutes: Int,
     ) {

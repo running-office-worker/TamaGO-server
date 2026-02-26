@@ -21,23 +21,17 @@ class MonsterEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "monster_id")
     val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "previous_monster_id")
     val previousMonster: MonsterEntity? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_monster_id")
     val nextMonster: MonsterEntity? = null,
-
     val nickname: String? = null,
-
     @Column(name = "evolution_xp")
     val evolutionXp: Int? = null,
-
     @OneToMany(mappedBy = "monster", cascade = [CascadeType.ALL], orphanRemoval = true)
     val unlockPolicies: MutableList<MonsterUnlockPolicyEntity> = mutableListOf(),
-
     @OneToOne(mappedBy = "monster", cascade = [CascadeType.ALL], orphanRemoval = true)
     val evolutionPolicy: MonsterEvolutionPolicyEntity? = null,
 ) : BaseTimeEntity()

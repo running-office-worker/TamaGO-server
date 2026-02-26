@@ -16,19 +16,14 @@ class UserAuthEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-
     @Column(nullable = true)
     val email: String? = null,
-
     @Column(nullable = true)
     val provider: String? = null,
-
     @Column(nullable = true)
     val password: String? = null,
-
     @Column(nullable = true)
     val externalId: String? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     var user: UserEntity? = null,

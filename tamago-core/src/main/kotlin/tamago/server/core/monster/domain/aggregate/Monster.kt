@@ -21,13 +21,12 @@ class Monster(
             nextMonsterId: MonsterId? = null,
             nickname: String? = null,
             evolutionXp: Int? = null,
-        ): Monster {
-            return Monster(
+        ): Monster =
+            Monster(
                 previousMonsterId = previousMonsterId,
                 nextMonsterId = nextMonsterId,
                 nickname = nickname,
                 evolutionXp = evolutionXp,
             )
-        }
     }
 }

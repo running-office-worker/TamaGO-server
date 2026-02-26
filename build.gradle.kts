@@ -17,6 +17,7 @@ val springModulithVersion = "1.4.3"
 
 subprojects {
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     repositories {
         mavenCentral()

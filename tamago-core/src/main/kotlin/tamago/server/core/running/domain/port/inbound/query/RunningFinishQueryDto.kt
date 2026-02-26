@@ -33,24 +33,24 @@ data class RunningFinishQueryDto(
             evolutionChain: List<Monster>,
             earnedXp: Int,
             waypoints: List<WaypointDto>,
-        ): RunningFinishQueryDto {
-            return RunningFinishQueryDto(
+        ): RunningFinishQueryDto =
+            RunningFinishQueryDto(
                 pace = running.pace?.toInt() ?: 0,
                 cadence = running.cadence ?: 0,
                 elapsedTime = running.elapsedTime ?: 0,
                 totalCalories = running.calories ?: 0,
                 originXp = ownedMonster.havingXp ?: 0,
                 earnedXp = earnedXp,
-                evolutionStages = evolutionChain.mapIndexed { index, monster ->
-                    EvolutionStageDto(
-                        stage = index + 1,
-                        monsterId = monster.id!!.value,
-                        evolutionXp = monster.evolutionXp,
-                        current = monster.id == ownedMonster.monsterId,
-                    )
-                },
+                evolutionStages =
+                    evolutionChain.mapIndexed { index, monster ->
+                        EvolutionStageDto(
+                            stage = index + 1,
+                            monsterId = monster.id!!.value,
+                            evolutionXp = monster.evolutionXp,
+                            current = monster.id == ownedMonster.monsterId,
+                        )
+                    },
                 waypoints = waypoints,
             )
-        }
     }
 }

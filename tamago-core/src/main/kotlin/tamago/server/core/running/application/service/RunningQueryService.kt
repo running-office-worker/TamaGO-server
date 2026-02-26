@@ -10,13 +10,13 @@ import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
 class RunningQueryService(
     private val runningPersistencePort: RunningPersistencePort,
 ) : RunningQueryUseCase {
+    fun getMonthlyRunnings(
+        userId: UserId,
+        year: Int,
+        month: Int,
+    ): List<Running> = runningPersistencePort.findAllByUserIdAndMonth(userId, year, month)
 
-    fun getMonthlyRunnings(userId: UserId, year: Int, month: Int): List<Running> =
-        runningPersistencePort.findAllByUserIdAndMonth(userId, year, month)
+    fun getTotalDistance(userId: UserId): Double = runningPersistencePort.sumDistanceByUserId(userId)
 
-    fun getTotalDistance(userId: UserId): Double =
-        runningPersistencePort.sumDistanceByUserId(userId)
-
-    fun getTotalDurationMinutes(userId: UserId): Long =
-        runningPersistencePort.sumDurationMinutesByUserId(userId)
+    fun getTotalDurationMinutes(userId: UserId): Long = runningPersistencePort.sumDurationMinutesByUserId(userId)
 }

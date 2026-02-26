@@ -22,52 +22,61 @@ class MonsterAssetPersistenceAdapter(
     private val entityManager: EntityManager,
     private val jpqlRenderContext: JpqlRenderContext,
 ) : MonsterAssetPersistencePort {
-
     @Suppress("SqlSourceToSinkFlow")
-    override fun existsByMonsterIdAndAssetType(monsterId: MonsterId, assetType: AssetType): Boolean {
-        val query = jpql {
-            select(
-                entity(MonsterAssetEntity::class),
-            ).from(
-                entity(MonsterAssetEntity::class),
-                join(MonsterAssetEntity::monster),
-            ).where(
-                and(
-                    path(MonsterAssetEntity::monster)(MonsterEntity::id).eq(monsterId.value),
-                    path(MonsterAssetEntity::assetType).eq(assetType),
-                    path(MonsterAssetEntity::deletedAt).isNull(),
-                ),
-            )
-        }
+    override fun existsByMonsterIdAndAssetType(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ): Boolean {
+        val query =
+            jpql {
+                select(
+                    entity(MonsterAssetEntity::class),
+                ).from(
+                    entity(MonsterAssetEntity::class),
+                    join(MonsterAssetEntity::monster),
+                ).where(
+                    and(
+                        path(MonsterAssetEntity::monster)(MonsterEntity::id).eq(monsterId.value),
+                        path(MonsterAssetEntity::assetType).eq(assetType),
+                        path(MonsterAssetEntity::deletedAt).isNull(),
+                    ),
+                )
+            }
 
         val rendered = JpqlRenderer().render(query, jpqlRenderContext)
 
-        return entityManager.createQuery(rendered.query, MonsterAssetEntity::class.java)
+        return entityManager
+            .createQuery(rendered.query, MonsterAssetEntity::class.java)
             .apply { rendered.params.forEach { (key, value) -> setParameter(key, value) } }
             .setMaxResults(1)
             .resultList
             .isNotEmpty()
     }
 
-    override fun findAllByMonsterIdsAndAssetType(monsterIds: List<MonsterId>, assetType: AssetType): List<MonsterAsset> {
+    override fun findAllByMonsterIdsAndAssetType(
+        monsterIds: List<MonsterId>,
+        assetType: AssetType,
+    ): List<MonsterAsset> {
         if (monsterIds.isEmpty()) return emptyList()
 
-        val query = jpql {
-            select(
-                entity(MonsterAssetEntity::class),
-            ).from(
-                entity(MonsterAssetEntity::class),
-                join(MonsterAssetEntity::monster),
-            ).where(
-                and(
-                    path(MonsterAssetEntity::monster)(MonsterEntity::id).`in`(monsterIds.map { it.value }),
-                    path(MonsterAssetEntity::assetType).eq(assetType),
-                    path(MonsterAssetEntity::deletedAt).isNull(),
-                ),
-            )
-        }
+        val query =
+            jpql {
+                select(
+                    entity(MonsterAssetEntity::class),
+                ).from(
+                    entity(MonsterAssetEntity::class),
+                    join(MonsterAssetEntity::monster),
+                ).where(
+                    and(
+                        path(MonsterAssetEntity::monster)(MonsterEntity::id).`in`(monsterIds.map { it.value }),
+                        path(MonsterAssetEntity::assetType).eq(assetType),
+                        path(MonsterAssetEntity::deletedAt).isNull(),
+                    ),
+                )
+            }
 
-        return entityManager.findAll<MonsterAssetEntity>(query, jpqlRenderContext)
+        return entityManager
+            .findAll<MonsterAssetEntity>(query, jpqlRenderContext)
             .mapNotNull { MonsterAssetMapper.toDomain(it) }
     }
 

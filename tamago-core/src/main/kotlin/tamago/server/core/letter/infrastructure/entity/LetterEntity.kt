@@ -16,9 +16,7 @@ class LetterEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "letter_id")
     val id: Long? = null,
-
     val title: String,
-
     @Lob
     @Column(columnDefinition = "TEXT")
     val content: String,

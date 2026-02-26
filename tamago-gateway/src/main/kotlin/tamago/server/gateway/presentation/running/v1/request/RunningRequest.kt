@@ -10,22 +10,24 @@ import java.time.LocalDateTime
 data class RunningRequest(
     @field:Schema(description = "러닝 거리 (km)", example = "5.23", requiredMode = Schema.RequiredMode.REQUIRED)
     val distance: Double,
-
     @field:Schema(description = "누적 고도 상승 (m)", example = "120.5", requiredMode = Schema.RequiredMode.REQUIRED)
     val elevationGain: Double,
-
     @field:Schema(description = "평균 심박수 (bpm)", example = "145", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     val heartbeat: Int?,
-
-    @field:Schema(description = "러닝 시작 시간", example = "2025-01-15T08:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+    @field:Schema(
+        description = "러닝 시작 시간",
+        example = "2025-01-15T08:30:00",
+        requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     val startedAt: LocalDateTime,
-
-    @field:Schema(description = "러닝 종료 시간", example = "2025-01-15T09:15:00", requiredMode = Schema.RequiredMode.REQUIRED)
+    @field:Schema(
+        description = "러닝 종료 시간",
+        example = "2025-01-15T09:15:00",
+        requiredMode = Schema.RequiredMode.REQUIRED,
+    )
     val finishedAt: LocalDateTime,
-
     @field:Schema(description = "소유한 몬스터 ID", example = "42", requiredMode = Schema.RequiredMode.REQUIRED)
     val ownedMonsterId: Long,
-
     @field:Schema(description = "경로 꺾이는 지점 목록", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     val waypoints: List<WaypointRequest> = emptyList(),
 ) {
@@ -35,7 +37,10 @@ data class RunningRequest(
     )
 }
 
-fun RunningRequest.toCommand(userId: UserId, weight: Double) = SaveRunningCommandDto(
+fun RunningRequest.toCommand(
+    userId: UserId,
+    weight: Double,
+) = SaveRunningCommandDto(
     userId = userId,
     weight = weight,
     distance = distance,

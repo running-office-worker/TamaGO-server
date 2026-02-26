@@ -21,14 +21,14 @@ indent_size = 2
 indent_size = 4
 max_line_length = 120
 ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
-ij_kotlin_name_count_to_use_star_import = 5
-ij_kotlin_name_count_to_use_star_import_for_members = 3
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true
 
 # ktlint specific rules
 ktlint_standard = enabled
-ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_no-wildcard-imports = enabled
 ktlint_standard_package-name = enabled
 ktlint_standard_filename = enabled
 ktlint_standard_function-naming = enabled
@@ -41,3 +41,6 @@ indent_size = 4
 
 [**Test.{kt,kts}]
 max_line_length = 999
+
+[**/ModuleInfo.kt]
+ktlint_standard_filename = disabled

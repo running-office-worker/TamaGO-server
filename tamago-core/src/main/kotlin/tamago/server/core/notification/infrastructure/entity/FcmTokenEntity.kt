@@ -19,15 +19,11 @@ class FcmTokenEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "fcm_token_id")
     val id: Long? = null,
-
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-
     var token: String? = null,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "device_type", nullable = false)
     val deviceType: DeviceType,
-
     var lastUsedAt: LocalDateTime? = null,
 ) : BaseTimeEntity()

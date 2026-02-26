@@ -9,7 +9,6 @@ data class LoginRequest(
     @field:NotBlank(message = "이메일은 필수입니다.")
     @field:Email(message = "올바른 이메일 형식이 아닙니다.")
     val email: String,
-
     @field:Schema(description = "비밀번호", example = "password123!", requiredMode = Schema.RequiredMode.REQUIRED)
     @field:NotBlank(message = "비밀번호는 필수입니다.")
     val password: String,

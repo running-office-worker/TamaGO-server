@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
-import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.port.outbound.UserLetterPersistencePort
+import tamago.server.core.running.domain.event.RunningCompletedEvent
 import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
@@ -34,11 +34,12 @@ class LetterEventListener(
             val selectedLetter = letterQueryService.getRandomTemplate()
 
             // 러닝 시작 시간 기준 23시간 후로 편지 발송 시간 설정
-            val createdLetter = UserLetter.new(
-                userId = event.userId,
-                letterId = selectedLetter.id!!,
-                startedAt = event.startedAt,
-            )
+            val createdLetter =
+                UserLetter.new(
+                    userId = event.userId,
+                    letterId = selectedLetter.id!!,
+                    startedAt = event.startedAt,
+                )
             userLetterPersistencePort.save(createdLetter)
         } catch (e: Exception) {
             // TODO: Sentry 로 예외 전송

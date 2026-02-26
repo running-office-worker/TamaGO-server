@@ -13,11 +13,13 @@ class Letter(
     val deletedAt: LocalDateTime? = null,
 ) {
     companion object {
-        fun create(title: String, content: String): Letter {
-            return Letter(
+        fun create(
+            title: String,
+            content: String,
+        ): Letter =
+            Letter(
                 title = title,
                 content = LetterContent(content),
             )
-        }
     }
 }

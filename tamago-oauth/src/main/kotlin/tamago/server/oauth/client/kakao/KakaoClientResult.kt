@@ -12,5 +12,5 @@ fun KakaoClientResult.toCommand(provider: AuthProvider): LoginCommandDto =
     LoginCommandDto(
         externalId = this.externalId,
         email = this.email,
-        provider = provider
+        provider = provider,
     )

@@ -15,7 +15,8 @@ import java.util.concurrent.Future
 class FirebaseCloudMessageSender(
     private val firebaseMessaging: FirebaseMessaging,
 ) {
-    fun sendAsync(fcmSendRequest: FcmSendRequest): Future<String> = firebaseMessaging.sendAsync(toMessage(fcmSendRequest))
+    fun sendAsync(fcmSendRequest: FcmSendRequest): Future<String> =
+        firebaseMessaging.sendAsync(toMessage(fcmSendRequest))
 
     fun sendAsync(requests: List<FcmSendRequest>): ApiFuture<BatchResponse> {
         val messages = requests.map { toMessage(it) }

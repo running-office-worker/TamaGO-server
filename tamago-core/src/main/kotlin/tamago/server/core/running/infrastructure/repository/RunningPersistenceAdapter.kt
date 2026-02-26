@@ -18,11 +18,14 @@ class RunningPersistenceAdapter(
     private val entityManager: EntityManager,
     private val jpqlRenderContext: JpqlRenderContext,
 ) : RunningPersistencePort {
-
     override fun save(running: Running): Running =
         RunningMapper.toDomain(runningJpaRepository.save(RunningMapper.toEntity(running)))!!
 
-    override fun findAllByUserIdAndMonth(userId: UserId, year: Int, month: Int): List<Running> {
+    override fun findAllByUserIdAndMonth(
+        userId: UserId,
+        year: Int,
+        month: Int,
+    ): List<Running> {
         val monthStart = LocalDate.of(year, month, 1).atStartOfDay()
         val monthEnd = monthStart.plusMonths(1)
         return runningJpaRepository
@@ -30,31 +33,34 @@ class RunningPersistenceAdapter(
                 userId = userId.value,
                 monthStart = monthStart,
                 monthEnd = monthEnd,
-            )
-            .mapNotNull { RunningMapper.toDomain(it) }
+            ).mapNotNull { RunningMapper.toDomain(it) }
     }
 
     override fun sumDistanceByUserId(userId: UserId): Double {
-        val query = jpql {
-            select(coalesce(sum(path(RunningEntity::distance)), 0.0))
-                .from(entity(RunningEntity::class))
-                .where(
-                    path(RunningEntity::userId).equal(userId.value)
-                        .and(path(RunningEntity::deletedAt).isNull()),
-                )
-        }
+        val query =
+            jpql {
+                select(coalesce(sum(path(RunningEntity::distance)), 0.0))
+                    .from(entity(RunningEntity::class))
+                    .where(
+                        path(RunningEntity::userId)
+                            .equal(userId.value)
+                            .and(path(RunningEntity::deletedAt).isNull()),
+                    )
+            }
         return entityManager.findOne<Double>(query, jpqlRenderContext) ?: 0.0
     }
 
     override fun sumDurationMinutesByUserId(userId: UserId): Long {
-        val query = jpql {
-            select(coalesce(sum(path(RunningEntity::elapsedTime)), 0))
-                .from(entity(RunningEntity::class))
-                .where(
-                    path(RunningEntity::userId).equal(userId.value)
-                        .and(path(RunningEntity::deletedAt).isNull()),
-                )
-        }
+        val query =
+            jpql {
+                select(coalesce(sum(path(RunningEntity::elapsedTime)), 0))
+                    .from(entity(RunningEntity::class))
+                    .where(
+                        path(RunningEntity::userId)
+                            .equal(userId.value)
+                            .and(path(RunningEntity::deletedAt).isNull()),
+                    )
+            }
         val totalSeconds = entityManager.findOne<Long>(query, jpqlRenderContext) ?: 0L
         return totalSeconds / 60
     }

@@ -17,16 +17,12 @@ class RunningRouteEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "running_route_id")
     val id: Long? = null,
-
     @Column(name = "running_id", nullable = false)
     val runningId: Long,
-
     @Column(name = "route", columnDefinition = "LINESTRING")
     val route: LineString? = null,
-
     @Column(name = "start_point", columnDefinition = "POINT")
     val startPoint: Point? = null,
-
     @Column(name = "end_point", columnDefinition = "POINT")
     val endPoint: Point? = null,
 ) : BaseTimeEntity()

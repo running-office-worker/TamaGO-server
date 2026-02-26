@@ -7,14 +7,14 @@ import tamago.server.core.monster.domain.aggregate.OwnedMonster
 data class OwnedMonsterMappingResponse(
     @field:Schema(description = "소유 몬스터 ID", example = "5", requiredMode = Schema.RequiredMode.REQUIRED)
     val ownedMonsterId: Long,
-
     @field:Schema(description = "몬스터 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     val monsterId: Long,
 ) {
     companion object {
-        fun from(ownedMonster: OwnedMonster) = OwnedMonsterMappingResponse(
-            ownedMonsterId = ownedMonster.id!!.value,
-            monsterId = ownedMonster.monsterId.value,
-        )
+        fun from(ownedMonster: OwnedMonster) =
+            OwnedMonsterMappingResponse(
+                ownedMonsterId = ownedMonster.id!!.value,
+                monsterId = ownedMonster.monsterId.value,
+            )
     }
 }

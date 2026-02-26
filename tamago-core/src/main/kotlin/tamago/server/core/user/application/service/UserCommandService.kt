@@ -24,14 +24,14 @@ class UserCommandService(
     private val passwordEncoder: PasswordEncoder,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) : UserCommandUseCase {
-
     override fun createUser(command: SignUpCommandDto) {
         val encodedPassword = passwordEncoder.encode(command.password)
-        val user = User.create(
-            command.email,
-            AuthProvider.EMAIL,
-            encodedPassword,
-        )
+        val user =
+            User.create(
+                command.email,
+                AuthProvider.EMAIL,
+                encodedPassword,
+            )
 
         val savedUser = userPersistencePort.save(user)
         val userId = savedUser.id ?: throw UserSaveErrorException()
@@ -40,8 +40,9 @@ class UserCommandService(
     }
 
     override fun socialLogin(command: LoginCommandDto): TokenQueryDto {
-        val user = userPersistencePort.findByExternalId(command.provider, command.externalId)
-            ?: run { createSocialUser(command) }
+        val user =
+            userPersistencePort.findByExternalId(command.provider, command.externalId)
+                ?: run { createSocialUser(command) }
 
         val userId = user.id ?: throw UserSaveErrorException()
 
@@ -58,12 +59,18 @@ class UserCommandService(
         )
     }
 
-    override fun updateNickname(user: User, nickname: String) {
+    override fun updateNickname(
+        user: User,
+        nickname: String,
+    ) {
         user.updateNickname(nickname)
         userPersistencePort.save(user)
     }
 
-    override fun updateGoalKilo(user: User, goalKilo: Int) {
+    override fun updateGoalKilo(
+        user: User,
+        goalKilo: Int,
+    ) {
         user.updateGoalKilo(goalKilo)
         userPersistencePort.save(user)
     }

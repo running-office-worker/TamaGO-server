@@ -21,7 +21,8 @@ class MonsterEventListener(
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onUserSignedUp(event: UserSignedUpEvent) {
         try {
-            monsterQueryService.getDefaultMonsters()
+            monsterQueryService
+                .getDefaultMonsters()
                 .forEach { monster -> monsterCommandService.ownMonster(monster.id!!, event.userId) }
         } catch (e: Exception) {
             // TODO: Sentry 연동
@@ -48,8 +49,7 @@ class MonsterEventListener(
                             event.totalDurationMinutes,
                         )
                     }
-                }
-                .forEach { monster -> monsterCommandService.ownMonster(monster.id!!, event.userId) }
+                }.forEach { monster -> monsterCommandService.ownMonster(monster.id!!, event.userId) }
         } catch (e: Exception) {
             // TODO: Sentry 연동
             logger.error(e) { "러닝 완료 후 몬스터 해금 처리 오류 - userId: ${event.userId}" }

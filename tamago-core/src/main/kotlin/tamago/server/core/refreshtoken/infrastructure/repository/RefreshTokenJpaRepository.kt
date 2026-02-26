@@ -5,5 +5,6 @@ import tamago.server.core.refreshtoken.infrastructure.entity.RefreshTokenEntity
 
 interface RefreshTokenJpaRepository : JpaRepository<RefreshTokenEntity, Long> {
     fun findByUserId(userId: Long): RefreshTokenEntity?
+
     fun deleteByUserId(userId: Long)
 }

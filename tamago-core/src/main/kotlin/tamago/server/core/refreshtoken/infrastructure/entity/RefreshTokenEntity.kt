@@ -15,9 +15,7 @@ class RefreshTokenEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "refresh_token_id")
     val id: Long? = null,
-
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-
     var token: String? = null,
 ) : BaseTimeEntity()

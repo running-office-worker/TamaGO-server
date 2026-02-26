@@ -6,7 +6,13 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestController
 import tamago.server.core.letter.LetterCommandUseCase
 import tamago.server.core.letter.LetterFacade
 import tamago.server.core.letter.LetterQueryUseCase
@@ -24,13 +30,15 @@ class LetterController(
     private val letterCommandUseCase: LetterCommandUseCase,
     private val letterFacade: LetterFacade,
 ) {
-
     @Operation(summary = "편지 수신함 조회", description = "가장 최근 받은 편지 한 개를 조회합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/api/v1/letters")
-    fun readLetterInbox(@CurrentUser user: User): CustomResponse<LetterResponse> {
-        val result = letterQueryUseCase.getLatestLetter(user.id!!)
-            ?: return CustomResponse.ok(null)
+    fun readLetterInbox(
+        @CurrentUser user: User,
+    ): CustomResponse<LetterResponse> {
+        val result =
+            letterQueryUseCase.getLatestLetter(user.id!!)
+                ?: return CustomResponse.ok(null)
 
         return CustomResponse.ok(
             LetterResponse(
@@ -57,7 +65,9 @@ class LetterController(
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/api/v1/letters")
-    fun createTemplate(@RequestBody @Valid request: LetterCreateRequest): CustomResponse<Void> {
+    fun createTemplate(
+        @RequestBody @Valid request: LetterCreateRequest,
+    ): CustomResponse<Void> {
         letterCommandUseCase.createTemplate(
             title = request.title,
             content = request.content,

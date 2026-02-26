@@ -9,5 +9,5 @@ import org.springframework.boot.runApplication
 class TamaGoApplication
 
 fun main(args: Array<String>) {
-	runApplication<TamaGoApplication>(*args)
+    runApplication<TamaGoApplication>(*args)
 }

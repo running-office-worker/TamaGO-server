@@ -21,13 +21,13 @@ class UserFacade(
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    fun signUp(command: SignUpCommandDto) = command
-        .takeUnless { userQueryUseCase.exists(it.email) }
-        ?.let(userCommandUseCase::createUser)
-        ?: throw EmailAlreadyExistsException()
+    fun signUp(command: SignUpCommandDto) =
+        command
+            .takeUnless { userQueryUseCase.exists(it.email) }
+            ?.let(userCommandUseCase::createUser)
+            ?: throw EmailAlreadyExistsException()
 
-    fun socialLogin(command: LoginCommandDto): TokenQueryDto =
-        userCommandUseCase.socialLogin(command)
+    fun socialLogin(command: LoginCommandDto): TokenQueryDto = userCommandUseCase.socialLogin(command)
 
     fun emailLogin(command: TestLoginCommandDto): TokenQueryDto {
         val auth = userQueryUseCase.getEmailAuth(command.email)

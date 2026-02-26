@@ -38,9 +38,11 @@ data class MonthlyRunningQueryDto(
                 MonthlySummaryDto(
                     totalDistance = runnings.sumOf { it.distance ?: 0.0 },
                     runCount = runnings.size,
-                    totalTimeMinutes = runnings.sumOf {
-                        Duration.between(it.startedAt, it.finishedAt).toMinutes()
-                    }.toInt(),
+                    totalTimeMinutes =
+                        runnings
+                            .sumOf {
+                                Duration.between(it.startedAt, it.finishedAt).toMinutes()
+                            }.toInt(),
                 )
         }
     }

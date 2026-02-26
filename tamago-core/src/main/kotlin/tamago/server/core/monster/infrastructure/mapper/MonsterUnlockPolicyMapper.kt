@@ -7,15 +7,17 @@ import tamago.server.core.monster.infrastructure.entity.MonsterEntity
 import tamago.server.core.monster.infrastructure.entity.MonsterUnlockPolicyEntity
 
 object MonsterUnlockPolicyMapper {
-    fun toEntity(domain: MonsterUnlockPolicy, monster: MonsterEntity): MonsterUnlockPolicyEntity {
-        return MonsterUnlockPolicyEntity(
+    fun toEntity(
+        domain: MonsterUnlockPolicy,
+        monster: MonsterEntity,
+    ): MonsterUnlockPolicyEntity =
+        MonsterUnlockPolicyEntity(
             id = domain.id?.value,
             monster = monster,
             ruleType = domain.ruleType,
             ruleValue = domain.ruleValue,
             description = domain.description,
         )
-    }
 
     fun toDomain(entity: MonsterUnlockPolicyEntity?): MonsterUnlockPolicy? {
         if (entity == null) return null

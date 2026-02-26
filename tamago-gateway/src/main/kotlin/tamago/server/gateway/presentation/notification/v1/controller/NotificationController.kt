@@ -20,7 +20,6 @@ import tamago.server.gateway.presentation.notification.v1.request.FcmTokenReques
 class NotificationController(
     private val notificationFacade: NotificationFacade,
 ) {
-
     @Operation(summary = "FCM 토큰 등록/갱신", description = "FCM 푸시 알림 토큰을 등록하거나 갱신합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/api/v1/fcm/token")
@@ -28,10 +27,11 @@ class NotificationController(
         @CurrentUser user: User,
         @Valid @RequestBody request: FcmTokenRequest,
     ): CustomResponse<Void> {
-        val command = RegisterFcmTokenCommandDto(
-            userId = UserId(user.id!!.value),
-            token = request.token,
-        )
+        val command =
+            RegisterFcmTokenCommandDto(
+                userId = UserId(user.id!!.value),
+                token = request.token,
+            )
         notificationFacade.registerFcmToken(command)
         return CustomResponse.ok()
     }

@@ -7,7 +7,7 @@ import tamago.server.gateway.common.resolver.UserIdResolver
 
 @Configuration
 class WebConfig(
-    private val userIdResolver: UserIdResolver
+    private val userIdResolver: UserIdResolver,
 ) : WebMvcConfigurer {
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
         resolvers.add(userIdResolver)

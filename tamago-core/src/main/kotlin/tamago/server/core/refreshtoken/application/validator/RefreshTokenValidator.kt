@@ -7,7 +7,7 @@ import tamago.server.core.refreshtoken.application.exception.InvalidRefreshToken
 
 @Component
 class RefreshTokenValidator(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
 ) {
     fun typeCheck(token: String) {
         if (jwtTokenProvider.getTokenType(token) != TokenType.REFRESH_TOKEN) {

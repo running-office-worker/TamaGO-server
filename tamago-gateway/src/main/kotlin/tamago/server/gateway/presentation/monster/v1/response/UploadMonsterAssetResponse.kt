@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 data class UploadMonsterAssetResponse(
     @field:Schema(description = "조회용 Presigned URL", requiredMode = Schema.RequiredMode.REQUIRED)
     val previewUrl: String,
-
     @field:Schema(
         description = "S3 에셋 경로",
         example = "dev/monster/1/abc.png",

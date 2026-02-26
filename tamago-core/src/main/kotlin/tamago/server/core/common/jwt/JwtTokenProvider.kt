@@ -16,19 +16,29 @@ import javax.crypto.SecretKey
 
 @Component
 class JwtTokenProvider(
-    private val jwtProperties: JwtProperties
+    private val jwtProperties: JwtProperties,
 ) {
-    fun generateAccessToken(userId: UserId, role: String): String =
-        makeToken(userId, role, jwtProperties.accessTokenExpiryMs, TokenType.ACCESS_TOKEN)
+    fun generateAccessToken(
+        userId: UserId,
+        role: String,
+    ): String = makeToken(userId, role, jwtProperties.accessTokenExpiryMs, TokenType.ACCESS_TOKEN)
 
-    fun generateRefreshToken(userId: UserId, role: String): String =
-        makeToken(userId, role, jwtProperties.refreshTokenExpiryMs, TokenType.REFRESH_TOKEN)
+    fun generateRefreshToken(
+        userId: UserId,
+        role: String,
+    ): String = makeToken(userId, role, jwtProperties.refreshTokenExpiryMs, TokenType.REFRESH_TOKEN)
 
-    private fun makeToken(userId: UserId, role: String, expiryMillis: Long, tokenType: TokenType): String {
+    private fun makeToken(
+        userId: UserId,
+        role: String,
+        expiryMillis: Long,
+        tokenType: TokenType,
+    ): String {
         val now = Date()
         val expiry = Date(now.time + expiryMillis)
 
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .header()
             .add("typ", "JWT")
             .and()
@@ -44,7 +54,11 @@ class JwtTokenProvider(
 
     fun validateToken(token: String): Boolean =
         try {
-            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token)
+            Jwts
+                .parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
             true
         } catch (e: Exception) {
             false
@@ -65,21 +79,23 @@ class JwtTokenProvider(
         return UsernamePasswordAuthenticationToken(
             principal,
             token,
-            principal.authorities
+            principal.authorities,
         )
     }
 
-    fun getUserId(token: String): UserId =
-        UserId(getClaims(token).subject.toLong())
+    fun getUserId(token: String): UserId = UserId(getClaims(token).subject.toLong())
 
-    fun getUserRole(token: String): String =
-        getClaims(token)["role", String::class.java]
+    fun getUserRole(token: String): String = getClaims(token)["role", String::class.java]
 
-    fun getTokenType(token: String): TokenType =
-        TokenType.valueOf(getClaims(token)["tokenType", String::class.java])
+    fun getTokenType(token: String): TokenType = TokenType.valueOf(getClaims(token)["tokenType", String::class.java])
 
     private fun getClaims(token: String): Claims =
-        Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).payload
+        Jwts
+            .parser()
+            .verifyWith(getSigningKey())
+            .build()
+            .parseSignedClaims(token)
+            .payload
 
     private fun getSigningKey(): SecretKey =
         Keys.hmacShaKeyFor(jwtProperties.secretKey.toByteArray(StandardCharsets.UTF_8))

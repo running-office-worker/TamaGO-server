@@ -12,12 +12,12 @@ class OwnedMonsterPersistenceAdapter(
     private val ownedMonsterJpaRepository: OwnedMonsterJpaRepository,
     private val monsterJpaRepository: MonsterJpaRepository,
 ) : OwnedMonsterPersistencePort {
-
     override fun findById(id: OwnedMonsterId): OwnedMonster? =
         OwnedMonsterMapper.toDomain(ownedMonsterJpaRepository.findById(id.value).orElse(null))
 
     override fun findAllByUserId(userId: UserId): List<OwnedMonster> =
-        ownedMonsterJpaRepository.findAllByUserIdAndDeletedAtIsNull(userId.value)
+        ownedMonsterJpaRepository
+            .findAllByUserIdAndDeletedAtIsNull(userId.value)
             .mapNotNull { OwnedMonsterMapper.toDomain(it) }
 
     override fun save(ownedMonster: OwnedMonster): OwnedMonster {

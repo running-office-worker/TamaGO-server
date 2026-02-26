@@ -9,7 +9,7 @@ plugins {
 dependencies {
     implementation(project(":tamago-core"))
 
-    implementation ("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
     implementation(platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")

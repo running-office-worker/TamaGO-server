@@ -23,7 +23,6 @@ class MonsterAssetEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "monster_asset_id")
     val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "monster_id",
@@ -31,13 +30,10 @@ class MonsterAssetEntity(
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT),
     )
     val monster: MonsterEntity,
-
     @Column(name = "asset_key")
     val assetKey: String? = null,
-
     @Column(name = "asset_name")
     val assetName: String? = null,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "asset_type")
     val assetType: AssetType? = null,

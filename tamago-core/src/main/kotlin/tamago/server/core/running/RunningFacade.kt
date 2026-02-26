@@ -3,15 +3,15 @@ package tamago.server.core.running
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.MonsterQueryUseCase
+import tamago.server.core.running.application.service.RunningCommandService
+import tamago.server.core.running.application.service.RunningQueryService
+import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
-import tamago.server.core.running.application.service.RunningCommandService
-import tamago.server.core.running.application.service.RunningQueryService
 
 @Component
 class RunningFacade(
@@ -34,8 +34,11 @@ class RunningFacade(
         val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
 
         // 획득한 경험치 계산 및 저장
-        val earnedXp = evolutionChain.first { it.id == ownedMonster.monsterId }
-            .evolutionPolicy?.calculateXp(command.distance) ?: 0
+        val earnedXp =
+            evolutionChain
+                .first { it.id == ownedMonster.monsterId }
+                .evolutionPolicy
+                ?.calculateXp(command.distance) ?: 0
         monsterCommandUseCase.addEarnedXp(ownedMonster, earnedXp)
 
         return RunningFinishQueryDto.of(
@@ -47,7 +50,11 @@ class RunningFacade(
         )
     }
 
-    private fun publishRunningCompletedEvent(command: SaveRunningCommandDto, totalDistance: Double, totalDurationMinutes: Long) {
+    private fun publishRunningCompletedEvent(
+        command: SaveRunningCommandDto,
+        totalDistance: Double,
+        totalDurationMinutes: Long,
+    ) {
         applicationEventPublisher.publishEvent(
             RunningCompletedEvent(
                 userId = command.userId,
@@ -59,25 +66,29 @@ class RunningFacade(
     }
 
     @Transactional(readOnly = true)
-    fun getMonthlyRunningData(userId: UserId, year: Int, month: Int): MonthlyRunningQueryDto {
+    fun getMonthlyRunningData(
+        userId: UserId,
+        year: Int,
+        month: Int,
+    ): MonthlyRunningQueryDto {
         val runnings = runningQueryService.getMonthlyRunnings(userId, year, month)
 
         // 날짜별 그룹핑
-        val dailyRunnings = runnings
-            .groupBy { it.startedAt!!.toLocalDate() }
-            .entries
-            .sortedBy { it.key }
-            .map { (date, runs) ->
-                MonthlyRunningQueryDto.DailyRunningDto(
-                    date = date,
-                    runs = runs.map { running -> MonthlyRunningQueryDto.RunDetailDto.from(running) },
-                )
-            }
+        val dailyRunnings =
+            runnings
+                .groupBy { it.startedAt!!.toLocalDate() }
+                .entries
+                .sortedBy { it.key }
+                .map { (date, runs) ->
+                    MonthlyRunningQueryDto.DailyRunningDto(
+                        date = date,
+                        runs = runs.map { running -> MonthlyRunningQueryDto.RunDetailDto.from(running) },
+                    )
+                }
 
         return MonthlyRunningQueryDto(
             dailyRunnings = dailyRunnings,
             summary = MonthlyRunningQueryDto.MonthlySummaryDto.from(runnings),
         )
     }
-
 }

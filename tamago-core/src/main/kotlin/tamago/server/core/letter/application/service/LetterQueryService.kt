@@ -11,7 +11,6 @@ import tamago.server.core.letter.domain.port.outbound.LetterPersistencePort
 class LetterQueryService(
     private val letterPersistencePort: LetterPersistencePort,
 ) : LetterQueryUseCase {
-
     override fun getLatestLetter(userId: UserId): LetterInboxDto? {
         val query = letterPersistencePort.findLatestByUserId(userId)
 
@@ -25,7 +24,5 @@ class LetterQueryService(
         }
     }
 
-    fun getRandomTemplate(): Letter {
-        return letterPersistencePort.findAllActive().random()
-    }
+    fun getRandomTemplate(): Letter = letterPersistencePort.findAllActive().random()
 }

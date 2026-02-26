@@ -23,7 +23,6 @@ class MonsterUnlockPolicyEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "monster_unlock_policy_id")
     val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "monster_id",
@@ -31,13 +30,10 @@ class MonsterUnlockPolicyEntity(
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT),
     )
     val monster: MonsterEntity,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "rule_type")
     val ruleType: MonsterRuleType? = null,
-
     @Column(name = "rule_value")
     val ruleValue: Int? = null,
-
     val description: String? = null,
 ) : BaseTimeEntity()

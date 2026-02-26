@@ -9,7 +9,7 @@ plugins {
 dependencies {
     implementation(project(":tamago-core"))
 
-    implementation ("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.google.firebase:firebase-admin:9.7.0")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
 }

@@ -23,7 +23,6 @@ class OwnedMonsterEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "owned_monster_id")
     val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "monster_id",
@@ -31,13 +30,10 @@ class OwnedMonsterEntity(
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT),
     )
     val monster: MonsterEntity,
-
     @Column(name = "user_id", nullable = false)
     val userId: Long,
-
     @Column(name = "having_xp")
     val havingXp: Int? = null,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     val status: OwnedMonsterStatus? = null,

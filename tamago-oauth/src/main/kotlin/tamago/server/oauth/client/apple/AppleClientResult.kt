@@ -12,5 +12,5 @@ fun AppleClientResult.toCommand(provider: AuthProvider): LoginCommandDto =
     LoginCommandDto(
         externalId = this.id,
         email = this.email,
-        provider = provider
+        provider = provider,
     )

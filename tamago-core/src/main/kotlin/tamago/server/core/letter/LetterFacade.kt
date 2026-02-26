@@ -15,7 +15,10 @@ class LetterFacade(
     private val letterValidator: LetterValidator,
 ) {
     @Transactional
-    fun markAsRead(userId: UserId, userLetterId: UserLetterId) {
+    fun markAsRead(
+        userId: UserId,
+        userLetterId: UserLetterId,
+    ) {
         val userLetter = userLetterQueryService.get(userLetterId)
         letterValidator.validateOwner(userId, userLetter)
         userLetterCommandService.markAsRead(userLetter)

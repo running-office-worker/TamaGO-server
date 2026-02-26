@@ -1,20 +1,19 @@
 package tamago.server.core.notification.infrastructure.mapper
 
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.notification.domain.aggregate.FcmToken
 import tamago.server.core.notification.domain.vo.FcmTokenId
 import tamago.server.core.notification.infrastructure.entity.FcmTokenEntity
-import tamago.server.core.common.vo.UserId
 
 object FcmTokenMapper {
-    fun toEntity(fcmToken: FcmToken): FcmTokenEntity {
-        return FcmTokenEntity(
+    fun toEntity(fcmToken: FcmToken): FcmTokenEntity =
+        FcmTokenEntity(
             id = fcmToken.id?.value,
             userId = fcmToken.userId.value,
             token = fcmToken.token,
             deviceType = fcmToken.deviceType,
             lastUsedAt = fcmToken.lastUsedAt,
         )
-    }
 
     fun toDomain(entity: FcmTokenEntity?): FcmToken? {
         if (entity == null) return null

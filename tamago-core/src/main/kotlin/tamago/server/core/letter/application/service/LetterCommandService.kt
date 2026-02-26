@@ -10,7 +10,6 @@ import tamago.server.core.letter.domain.port.outbound.LetterPersistencePort
 class LetterCommandService(
     private val letterPersistencePort: LetterPersistencePort,
 ) : LetterCommandUseCase {
-
     @Transactional
     override fun createTemplate(
         title: String,
