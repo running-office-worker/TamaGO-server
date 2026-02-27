@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 data class RunningCompletedEvent(
     val userId: UserId,
     val startedAt: LocalDateTime,
+    val distance: Double,
     val totalDistance: Double,
     val totalDurationMinutes: Long,
 )

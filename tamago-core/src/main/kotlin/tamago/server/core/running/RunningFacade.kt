@@ -59,6 +59,7 @@ class RunningFacade(
             RunningCompletedEvent(
                 userId = command.userId,
                 startedAt = command.startedAt,
+                distance = command.distance,
                 totalDistance = totalDistance,
                 totalDurationMinutes = totalDurationMinutes,
             ),

@@ -46,6 +46,10 @@ class User(
         this.runningData = runningData.updateGoalKilo(goalKilo)
     }
 
+    fun addRunningDistance(distance: Double) {
+        this.runningData = runningData.addKilo(distance)
+    }
+
     fun isOnboarded(): Boolean = !nickname.isNullOrBlank() && runningData.goalKilo != null
 
     companion object {
