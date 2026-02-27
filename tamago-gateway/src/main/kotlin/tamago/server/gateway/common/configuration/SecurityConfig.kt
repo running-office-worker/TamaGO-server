@@ -90,6 +90,7 @@ class SecurityConfig(
                 "/api/v1/auth/**",
                 "/error",
                 "/api/v1/monsters/assets",
+                "/api/v1/monsters/assets/check-updates",
             )
     }
 }
