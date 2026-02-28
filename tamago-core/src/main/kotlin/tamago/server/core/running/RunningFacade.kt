@@ -10,6 +10,7 @@ import tamago.server.core.running.application.service.RunningCommandService
 import tamago.server.core.running.application.service.RunningQueryService
 import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
+import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
 
@@ -65,6 +66,12 @@ class RunningFacade(
             ),
         )
     }
+
+    @Transactional(readOnly = true)
+    fun getStatsByOwnedMonsterIds(
+        userId: UserId,
+        ownedMonsterIds: List<Long>,
+    ): List<MonsterRunningStatsQueryDto> = runningQueryService.getStatsByOwnedMonsterIds(userId, ownedMonsterIds)
 
     @Transactional(readOnly = true)
     fun getMonthlyRunningData(
