@@ -18,6 +18,7 @@ import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.running.v1.request.RunningRequest
 import tamago.server.gateway.presentation.running.v1.request.toCommand
+import tamago.server.gateway.presentation.running.v1.response.MonsterRunningStatsResponse
 import tamago.server.gateway.presentation.running.v1.response.MonthlyRunningResponse
 import tamago.server.gateway.presentation.running.v1.response.RunningFinishResponse
 
@@ -36,6 +37,17 @@ class RunningController(
     ): CustomResponse<RunningFinishResponse> {
         val result = runningFacade.saveRunningData(request.toCommand(user.id!!, user.weight))
         return CustomResponse.created(RunningFinishResponse.from(result))
+    }
+
+    @Operation(summary = "몬스터별 러닝 통계 조회", description = "소유 몬스터 ID 목록으로 몬스터별 러닝 통계를 반환합니다.")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/api/v1/running/stats")
+    fun getStatsByOwnedMonsterIds(
+        @CurrentUser user: User,
+        @RequestParam @Parameter(description = "소유 몬스터 ID 목록", example = "[1,2,3]") ownedMonsterIds: List<Long>,
+    ): CustomResponse<List<MonsterRunningStatsResponse>> {
+        val result = runningFacade.getStatsByOwnedMonsterIds(user.id!!, ownedMonsterIds)
+        return CustomResponse.ok(result.map { MonsterRunningStatsResponse.from(it) })
     }
 
     @Operation(summary = "월별 러닝 데이터 조회", description = "해당 월의 일별 러닝 데이터와 월간 요약을 반환합니다.")

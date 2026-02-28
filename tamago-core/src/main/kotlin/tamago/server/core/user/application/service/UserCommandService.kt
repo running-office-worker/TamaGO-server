@@ -80,6 +80,14 @@ class UserCommandService(
         userPersistencePort.save(user)
     }
 
+    fun addRunningDistance(
+        user: User,
+        distance: Double,
+    ) {
+        user.addRunningDistance(distance)
+        userPersistencePort.save(user)
+    }
+
     private fun createSocialUser(command: LoginCommandDto): User {
         val savedUser = userPersistencePort.save(User.create(command.email, command.provider, command.externalId))
         val userId = savedUser.id ?: throw UserSaveErrorException()

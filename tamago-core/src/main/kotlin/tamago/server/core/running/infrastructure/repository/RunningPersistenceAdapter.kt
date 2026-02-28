@@ -4,9 +4,11 @@ import com.linecorp.kotlinjdsl.dsl.jpql.jpql
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Repository
+import tamago.server.core.common.jdsl.findAll
 import tamago.server.core.common.jdsl.findOne
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.domain.aggregate.Running
+import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
 import tamago.server.core.running.infrastructure.entity.RunningEntity
 import tamago.server.core.running.infrastructure.mapper.RunningMapper
@@ -68,5 +70,39 @@ class RunningPersistenceAdapter(
             }
         val totalSeconds = entityManager.findOne<Long>(query, jpqlRenderContext) ?: 0L
         return totalSeconds / 60
+    }
+
+    override fun findStatsByUserIdAndOwnedMonsterIds(
+        userId: UserId,
+        ownedMonsterIds: List<Long>,
+    ): List<MonsterRunningStatsQueryDto> {
+        if (ownedMonsterIds.isEmpty()) return emptyList()
+
+        val query =
+            jpql {
+                selectNew<RunningStatsByMonsterRow>(
+                    path(RunningEntity::ownedMonsterId),
+                    coalesce(sum(path(RunningEntity::distance)), 0.0),
+                    count(path(RunningEntity::id)),
+                    coalesce(sum(path(RunningEntity::elapsedTime)), 0L),
+                ).from(entity(RunningEntity::class))
+                    .where(
+                        path(RunningEntity::userId)
+                            .equal(userId.value)
+                            .and(path(RunningEntity::ownedMonsterId).`in`(ownedMonsterIds))
+                            .and(path(RunningEntity::deletedAt).isNull()),
+                    ).groupBy(path(RunningEntity::ownedMonsterId))
+            }
+
+        val rows = entityManager.findAll<RunningStatsByMonsterRow>(query, jpqlRenderContext)
+
+        return rows.map { row ->
+            MonsterRunningStatsQueryDto(
+                ownedMonsterId = row.ownedMonsterId,
+                totalDistance = row.totalDistance,
+                runCount = row.runCount.toInt(),
+                totalTimeMinutes = row.totalElapsedSeconds / 60,
+            )
+        }
     }
 }
