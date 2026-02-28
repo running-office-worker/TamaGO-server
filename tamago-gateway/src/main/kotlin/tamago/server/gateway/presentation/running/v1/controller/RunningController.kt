@@ -44,7 +44,7 @@ class RunningController(
     @GetMapping("/api/v1/running/stats")
     fun getStatsByOwnedMonsterIds(
         @CurrentUser user: User,
-        @RequestParam @Parameter(description = "소유 몬스터 ID 목록", example = "1,2,3") ownedMonsterIds: List<Long>,
+        @RequestParam @Parameter(description = "소유 몬스터 ID 목록", example = "[1,2,3]") ownedMonsterIds: List<Long>,
     ): CustomResponse<List<MonsterRunningStatsResponse>> {
         val result = runningFacade.getStatsByOwnedMonsterIds(user.id!!, ownedMonsterIds)
         return CustomResponse.ok(result.map { MonsterRunningStatsResponse.from(it) })
