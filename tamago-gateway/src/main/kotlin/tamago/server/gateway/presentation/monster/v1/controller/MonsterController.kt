@@ -99,6 +99,7 @@ class MonsterController(
     }
 
     @Operation(summary = "몬스터 에셋 변경 여부 확인", description = "마지막 로그인 이후 몬스터 에셋이 변경되었는지 확인합니다.")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/api/v1/monsters/assets/check-updates")
     fun checkMonsterAssetUpdates(
         @CurrentUser user: User,
