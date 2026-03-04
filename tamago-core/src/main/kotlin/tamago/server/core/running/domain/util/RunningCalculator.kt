@@ -15,7 +15,7 @@ object RunningCalculator {
     }
 
     private fun validateDistance(distanceKm: Double) {
-        if (distanceKm <= 0) throw InvalidRunningDataException()
+        if (distanceKm < 0) throw InvalidRunningDataException()
     }
 
     fun calculatePace(
