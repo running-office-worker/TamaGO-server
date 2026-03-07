@@ -15,7 +15,7 @@ object RunningCalculator {
     }
 
     private fun validateDistance(distanceKm: Double) {
-        if (distanceKm <= 0) throw InvalidRunningDataException()
+        if (distanceKm < 0) throw InvalidRunningDataException()
     }
 
     fun calculatePace(
@@ -24,6 +24,7 @@ object RunningCalculator {
         finishedAt: LocalDateTime,
     ): Double {
         validateDistance(distanceKm)
+        if (distanceKm == 0.0) return 0.0 // 0 나눗셈으로 인한 sql 바인딩 에러 방지
         return elapsedSeconds(startedAt, finishedAt).toDouble() / distanceKm
     }
 
@@ -33,6 +34,7 @@ object RunningCalculator {
         finishedAt: LocalDateTime,
     ): Int {
         validateDistance(distanceKm)
+        if (distanceKm == 0.0) return 0 // 0 나눗셈으로 인한 sql 바인딩 에러 방지
         val hours = elapsedSeconds(startedAt, finishedAt) / 3600.0
         val speedKmh = distanceKm / hours
         return when {
@@ -50,6 +52,7 @@ object RunningCalculator {
         finishedAt: LocalDateTime,
     ): Int {
         validateDistance(distanceKm)
+        if (distanceKm == 0.0) return 0
         val hours = elapsedSeconds(startedAt, finishedAt) / 3600.0
         val speedKmh = distanceKm / hours
         val met =
