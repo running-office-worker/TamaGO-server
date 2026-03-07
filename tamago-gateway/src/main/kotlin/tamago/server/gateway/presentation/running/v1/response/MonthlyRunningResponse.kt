@@ -17,12 +17,19 @@ data class MonthlyRunningResponse(
         val date: LocalDate,
         @field:Schema(description = "해당 날짜의 러닝 목록", requiredMode = Schema.RequiredMode.REQUIRED)
         val runs: List<RunDetailResponse>,
+        @field:Schema(
+            description = "해당 날짜의 마지막 러닝에 사용된 보유 몬스터 ID",
+            example = "1",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+        )
+        val lastRunOwnedMonsterId: Long,
     ) {
         companion object {
             fun from(dto: MonthlyRunningQueryDto.DailyRunningDto): DailyRunningResponse =
                 DailyRunningResponse(
                     date = dto.date,
                     runs = dto.runs.map { RunDetailResponse.from(it) },
+                    lastRunOwnedMonsterId = dto.lastRunOwnedMonsterId,
                 )
         }
     }

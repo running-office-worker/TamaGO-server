@@ -88,9 +88,11 @@ class RunningFacade(
                 .entries
                 .sortedBy { it.key }
                 .map { (date, runs) ->
+                    val sortedRuns = runs.sortedBy { it.startedAt }
                     MonthlyRunningQueryDto.DailyRunningDto(
                         date = date,
-                        runs = runs.map { running -> MonthlyRunningQueryDto.RunDetailDto.from(running) },
+                        runs = sortedRuns.map { running -> MonthlyRunningQueryDto.RunDetailDto.from(running) },
+                        lastRunOwnedMonsterId = sortedRuns.last().ownedMonsterId.value,
                     )
                 }
 

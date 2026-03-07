@@ -11,6 +11,7 @@ data class MonthlyRunningQueryDto(
     data class DailyRunningDto(
         val date: LocalDate,
         val runs: List<RunDetailDto>,
+        val lastRunOwnedMonsterId: Long,
     )
 
     data class RunDetailDto(
