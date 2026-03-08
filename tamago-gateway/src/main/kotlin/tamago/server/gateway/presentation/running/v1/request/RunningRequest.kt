@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
+import tamago.server.core.running.domain.vo.RunningPlanId
 import java.time.LocalDateTime
 
 @Schema(description = "러닝 데이터 저장 바디")
@@ -26,6 +27,8 @@ data class RunningRequest(
         requiredMode = Schema.RequiredMode.REQUIRED,
     )
     val finishedAt: LocalDateTime,
+    @field:Schema(description = "러닝 계획 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    val runningPlanId: Long,
     @field:Schema(description = "소유한 몬스터 ID", example = "42", requiredMode = Schema.RequiredMode.REQUIRED)
     val ownedMonsterId: Long,
     @field:Schema(description = "경로 꺾이는 지점 목록", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -48,6 +51,7 @@ fun RunningRequest.toCommand(
     heartbeat = heartbeat,
     startedAt = startedAt,
     finishedAt = finishedAt,
+    runningPlanId = RunningPlanId(runningPlanId),
     ownedMonsterId = OwnedMonsterId(ownedMonsterId),
     waypoints = waypoints.map { SaveRunningCommandDto.WaypointDto(it.latitude, it.longitude) },
 )

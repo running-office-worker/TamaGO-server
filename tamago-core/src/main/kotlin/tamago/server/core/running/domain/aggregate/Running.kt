@@ -3,12 +3,14 @@ package tamago.server.core.running.domain.aggregate
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.running.domain.vo.RunningId
+import tamago.server.core.running.domain.vo.RunningPlanId
 import java.time.LocalDateTime
 
 class Running(
     val id: RunningId? = null,
     val userId: UserId,
     val ownedMonsterId: OwnedMonsterId,
+    val runningPlanId: RunningPlanId? = null,
     val pace: Double? = null,
     val cadence: Int? = null,
     val calories: Int? = null,
@@ -26,6 +28,7 @@ class Running(
         fun create(
             userId: UserId,
             ownedMonsterId: OwnedMonsterId,
+            runningPlanId: RunningPlanId? = null,
             pace: Double,
             cadence: Int,
             calories: Int,
@@ -39,6 +42,7 @@ class Running(
             Running(
                 userId = userId,
                 ownedMonsterId = ownedMonsterId,
+                runningPlanId = runningPlanId,
                 pace = pace,
                 cadence = cadence,
                 calories = calories,

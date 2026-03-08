@@ -41,6 +41,7 @@ class RunningCommandService(
             Running.create(
                 userId = command.userId,
                 ownedMonsterId = command.ownedMonsterId,
+                runningPlanId = command.runningPlanId,
                 pace = pace,
                 cadence = cadence,
                 calories = calories,

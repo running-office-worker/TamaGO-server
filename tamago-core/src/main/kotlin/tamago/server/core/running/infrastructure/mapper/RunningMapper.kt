@@ -4,6 +4,7 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.vo.RunningId
+import tamago.server.core.running.domain.vo.RunningPlanId
 import tamago.server.core.running.infrastructure.entity.RunningEntity
 
 object RunningMapper {
@@ -21,6 +22,7 @@ object RunningMapper {
             elapsedTime = running.elapsedTime,
             startedAt = running.startedAt,
             finishedAt = running.finishedAt,
+            runningPlanId = running.runningPlanId?.value,
         )
 
     fun toDomain(entity: RunningEntity?): Running? {
@@ -30,6 +32,7 @@ object RunningMapper {
             id = entity.id?.let { RunningId(it) },
             userId = UserId(entity.userId),
             ownedMonsterId = OwnedMonsterId(entity.ownedMonsterId),
+            runningPlanId = entity.runningPlanId?.let { RunningPlanId(it) },
             pace = entity.pace,
             cadence = entity.cadence,
             calories = entity.calories,
