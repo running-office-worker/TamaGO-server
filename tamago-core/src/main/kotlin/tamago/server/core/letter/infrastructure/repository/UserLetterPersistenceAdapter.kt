@@ -10,6 +10,7 @@ import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.UserLetterId
 import tamago.server.core.letter.infrastructure.entity.UserLetterEntity
 import tamago.server.core.letter.infrastructure.mapper.UserLetterMapper
+import java.time.LocalDateTime
 
 @Repository
 class UserLetterPersistenceAdapter(
@@ -52,6 +53,14 @@ class UserLetterPersistenceAdapter(
         UserLetterMapper.toDomain(
             userLetterJpaRepository.findFirstByUserIdAndLetterStatusOrderByCreatedAtDesc(userId.value, letterStatus),
         )
+
+    override fun findAllByLetterStatusAndScheduledAtBefore(
+        letterStatus: LetterStatus,
+        before: LocalDateTime,
+    ): List<UserLetter> =
+        userLetterJpaRepository
+            .findAllByLetterStatusAndScheduledAtBefore(letterStatus, before)
+            .mapNotNull { UserLetterMapper.toDomain(it) }
 
     override fun findLatestDistinctByUser(): List<UserLetter> =
         userLetterJpaRepository

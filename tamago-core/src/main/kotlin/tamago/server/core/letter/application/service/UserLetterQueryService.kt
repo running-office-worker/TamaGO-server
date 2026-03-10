@@ -6,6 +6,7 @@ import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.port.outbound.UserLetterPersistencePort
 import tamago.server.core.letter.domain.vo.UserLetterId
+import java.time.LocalDateTime
 
 @Service
 class UserLetterQueryService(
@@ -19,4 +20,7 @@ class UserLetterQueryService(
         userLetterPersistencePort
             .findLatestDistinctByUser()
             .filter { it.letterStatus != LetterStatus.SCHEDULED }
+
+    fun getScheduledLettersBefore(now: LocalDateTime): List<UserLetter> =
+        userLetterPersistencePort.findAllByLetterStatusAndScheduledAtBefore(LetterStatus.SCHEDULED, now)
 }

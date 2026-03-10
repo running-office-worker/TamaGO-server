@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":tamago-core"))
     implementation(project(":tamago-oauth"))
     implementation(project(":tamago-aws"))
+    implementation(project(":tamago-notification"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")

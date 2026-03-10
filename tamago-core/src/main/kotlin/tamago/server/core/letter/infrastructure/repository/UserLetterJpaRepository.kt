@@ -4,6 +4,7 @@ import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpql
 import org.springframework.data.jpa.repository.JpaRepository
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.infrastructure.entity.UserLetterEntity
+import java.time.LocalDateTime
 
 interface UserLetterJpaRepository :
     JpaRepository<UserLetterEntity, Long>,
@@ -21,4 +22,9 @@ interface UserLetterJpaRepository :
         userId: Long,
         letterStatus: LetterStatus,
     ): UserLetterEntity?
+
+    fun findAllByLetterStatusAndScheduledAtBefore(
+        letterStatus: LetterStatus,
+        scheduledAt: LocalDateTime,
+    ): List<UserLetterEntity>
 }
