@@ -19,7 +19,7 @@ class UserLetterNotifier(
     @Scheduled(fixedDelay = 60_000)
     fun notifyScheduledLetters() {
         val now = LocalDateTime.now()
-        val scheduledLetters = userLetterQueryService.getScheduledLettersBefore(now)
+        val scheduledLetters = userLetterQueryService.getScheduledLettersBeforeOrEqual(now)
 
         if (scheduledLetters.isEmpty()) return
 

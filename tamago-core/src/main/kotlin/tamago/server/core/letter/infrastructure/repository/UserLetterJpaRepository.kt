@@ -23,7 +23,7 @@ interface UserLetterJpaRepository :
         letterStatus: LetterStatus,
     ): UserLetterEntity?
 
-    fun findAllByLetterStatusAndScheduledAtBefore(
+    fun findAllByLetterStatusAndScheduledAtLessThanEqual(
         letterStatus: LetterStatus,
         scheduledAt: LocalDateTime,
     ): List<UserLetterEntity>

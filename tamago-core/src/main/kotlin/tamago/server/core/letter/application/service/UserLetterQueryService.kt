@@ -22,8 +22,8 @@ class UserLetterQueryService(
             .findLatestDistinctByUser()
             .filter { it.letterStatus != LetterStatus.SCHEDULED }
 
-    fun getScheduledLettersBefore(now: LocalDateTime): List<UserLetter> =
-        userLetterPersistencePort.findAllByLetterStatusAndScheduledAtBefore(LetterStatus.SCHEDULED, now)
+    fun getScheduledLettersBeforeOrEqual(now: LocalDateTime): List<UserLetter> =
+        userLetterPersistencePort.findAllByLetterStatusAndScheduledAtBeforeOrEqual(LetterStatus.SCHEDULED, now)
 
     fun findByUserIdAndLetterStatus(
         userId: UserId,

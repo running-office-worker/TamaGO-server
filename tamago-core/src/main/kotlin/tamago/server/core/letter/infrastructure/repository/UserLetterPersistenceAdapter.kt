@@ -54,12 +54,12 @@ class UserLetterPersistenceAdapter(
             userLetterJpaRepository.findFirstByUserIdAndLetterStatusOrderByCreatedAtDesc(userId.value, letterStatus),
         )
 
-    override fun findAllByLetterStatusAndScheduledAtBefore(
+    override fun findAllByLetterStatusAndScheduledAtBeforeOrEqual(
         letterStatus: LetterStatus,
-        before: LocalDateTime,
+        now: LocalDateTime,
     ): List<UserLetter> =
         userLetterJpaRepository
-            .findAllByLetterStatusAndScheduledAtBefore(letterStatus, before)
+            .findAllByLetterStatusAndScheduledAtLessThanEqual(letterStatus, now)
             .mapNotNull { UserLetterMapper.toDomain(it) }
 
     override fun findLatestDistinctByUser(): List<UserLetter> =

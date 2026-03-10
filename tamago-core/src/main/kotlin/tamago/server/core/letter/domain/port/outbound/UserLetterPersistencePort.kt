@@ -30,8 +30,8 @@ interface UserLetterPersistencePort {
 
     fun findLatestDistinctByUser(): List<UserLetter>
 
-    fun findAllByLetterStatusAndScheduledAtBefore(
+    fun findAllByLetterStatusAndScheduledAtBeforeOrEqual(
         letterStatus: LetterStatus,
-        before: LocalDateTime,
+        beforeOrEqual: LocalDateTime,
     ): List<UserLetter>
 }
