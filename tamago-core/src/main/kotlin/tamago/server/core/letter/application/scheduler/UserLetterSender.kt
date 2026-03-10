@@ -4,9 +4,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import tamago.server.core.letter.application.service.LetterQueryService
-import tamago.server.core.letter.application.service.LetterTagResolver
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
+import tamago.server.core.letter.domain.enum.LetterTag
 import tamago.server.core.running.RunningQueryUseCase
 
 private val logger = KotlinLogging.logger {}
@@ -16,7 +16,6 @@ class UserLetterSender(
     private val userLetterCommandService: UserLetterCommandService,
     private val userLetterQueryService: UserLetterQueryService,
     private val letterQueryService: LetterQueryService,
-    private val letterTagResolver: LetterTagResolver,
     private val runningQueryUseCase: RunningQueryUseCase,
 ) {
     @Scheduled(fixedDelay = 60_000) // 이전 실행 완료 후 1분마다 실행
@@ -28,7 +27,7 @@ class UserLetterSender(
         letters.forEach { letter ->
             try {
                 val streak = runningQueryUseCase.getRunningStreak(letter.userId)
-                val tag = letterTagResolver.resolve(streak.isFirstRun, streak.streakDays, streak.inactiveDays)
+                val tag = LetterTag.resolve(streak.isFirstRun, streak.streakDays, streak.inactiveDays)
                 val selectedLetter = letterQueryService.getRandomTemplateByTag(tag)
 
                 userLetterCommandService.scheduleNextLetter(
