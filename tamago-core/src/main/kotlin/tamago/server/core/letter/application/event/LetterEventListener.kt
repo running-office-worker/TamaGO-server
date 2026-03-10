@@ -26,12 +26,11 @@ class LetterEventListener(
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {
         try {
-            // 이미 스케줄된 편지가 있는 경우, 편지 발송 시간을 재조정
+            // 이미 스케줄된 편지가 있는 경우 삭제
             val scheduledLetter =
                 userLetterQueryService.findByUserIdAndLetterStatus(event.userId, LetterStatus.SCHEDULED)
             if (scheduledLetter != null) {
-                userLetterCommandService.reschedule(scheduledLetter)
-                return
+                userLetterCommandService.delete(scheduledLetter)
             }
 
             // 러닝 상태에 맞는 태그 결정하고 다음 편지 세팅

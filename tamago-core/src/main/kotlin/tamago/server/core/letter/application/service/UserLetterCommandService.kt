@@ -41,8 +41,8 @@ class UserLetterCommandService(
     }
 
     @Transactional
-    fun reschedule(userLetter: UserLetter) {
-        userLetter.reschedule(LocalDateTime.now())
+    fun delete(userLetter: UserLetter) {
+        userLetter.delete()
         userLetterPersistencePort.save(userLetter)
     }
 
