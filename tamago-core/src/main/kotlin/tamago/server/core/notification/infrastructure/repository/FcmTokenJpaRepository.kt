@@ -8,5 +8,8 @@ interface FcmTokenJpaRepository : JpaRepository<FcmTokenEntity, Long> {
 
     fun findAllByUserIdAndDeletedAtIsNull(userId: Long): List<FcmTokenEntity>
 
-    fun findByUserIdAndDeletedAtIsNull(userId: Long): FcmTokenEntity?
+    fun findByUserIdAndDeviceIdAndDeletedAtIsNull(
+        userId: Long,
+        deviceId: String?,
+    ): FcmTokenEntity?
 }

@@ -21,6 +21,7 @@ class FcmTokenEntity(
     val id: Long? = null,
     @Column(name = "user_id", nullable = false)
     val userId: Long,
+    val deviceId: String? = null,
     var token: String? = null,
     @Enumerated(EnumType.STRING)
     @Column(name = "device_type", nullable = false)
