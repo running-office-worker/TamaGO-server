@@ -13,6 +13,7 @@ import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
 import tamago.server.core.running.infrastructure.entity.RunningEntity
 import tamago.server.core.running.infrastructure.mapper.RunningMapper
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Repository
 class RunningPersistenceAdapter(
@@ -104,5 +105,27 @@ class RunningPersistenceAdapter(
                 totalTimeMinutes = row.totalElapsedSeconds / 60,
             )
         }
+    }
+
+    override fun findRunningDatesByUserId(
+        userId: UserId,
+        since: LocalDateTime,
+    ): List<LocalDate> {
+        val query =
+            jpql {
+                select(path(RunningEntity::startedAt))
+                    .from(entity(RunningEntity::class))
+                    .where(
+                        path(RunningEntity::userId)
+                            .equal(userId.value)
+                            .and(path(RunningEntity::startedAt).greaterThanOrEqualTo(since))
+                            .and(path(RunningEntity::deletedAt).isNull()),
+                    ).orderBy(path(RunningEntity::startedAt).desc())
+            }
+
+        return entityManager
+            .findAll<LocalDateTime>(query, jpqlRenderContext)
+            .map { it.toLocalDate() }
+            .distinct()
     }
 }

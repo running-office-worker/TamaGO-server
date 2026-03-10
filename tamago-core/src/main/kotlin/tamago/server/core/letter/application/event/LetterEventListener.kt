@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.letter.application.service.LetterQueryService
+import tamago.server.core.letter.application.service.LetterTagResolver
 import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.port.outbound.UserLetterPersistencePort
@@ -17,6 +18,7 @@ private val logger = KotlinLogging.logger {}
 @Component
 class LetterEventListener(
     private val letterQueryService: LetterQueryService,
+    private val letterTagResolver: LetterTagResolver,
     private val userLetterPersistencePort: UserLetterPersistencePort,
 ) {
     @TransactionalEventListener
@@ -30,8 +32,9 @@ class LetterEventListener(
                 return
             }
 
-            // 스케줄된 편지가 없는 경우, 새로운 편지 생성
-            val selectedLetter = letterQueryService.getRandomTemplate()
+            // 러닝 상태에 맞는 태그 결정하고 다음 편지 세팅
+            val tag = letterTagResolver.resolve(event.isFirstRun, event.streakDays, event.inactiveDays)
+            val selectedLetter = letterQueryService.getRandomTemplateByTag(tag)
 
             // 러닝 시작 시간 기준 23시간 후로 편지 발송 시간 설정
             val createdLetter =

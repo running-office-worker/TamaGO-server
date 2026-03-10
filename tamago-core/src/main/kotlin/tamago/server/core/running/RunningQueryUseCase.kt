@@ -2,6 +2,7 @@ package tamago.server.core.running
 
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
+import tamago.server.core.running.domain.port.inbound.query.RunningStreakQueryDto
 import java.time.LocalDateTime
 
 interface RunningQueryUseCase {
@@ -11,4 +12,6 @@ interface RunningQueryUseCase {
         userId: UserId,
         ownedMonsterIds: List<Long>,
     ): List<MonsterRunningStatsQueryDto>
+
+    fun getRunningStreak(userId: UserId): RunningStreakQueryDto
 }

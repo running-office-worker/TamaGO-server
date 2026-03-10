@@ -56,6 +56,8 @@ class RunningFacade(
         totalDistance: Double,
         totalDurationMinutes: Long,
     ) {
+        val streak = runningQueryService.getRunningStreak(command.userId)
+
         applicationEventPublisher.publishEvent(
             RunningCompletedEvent(
                 userId = command.userId,
@@ -63,6 +65,9 @@ class RunningFacade(
                 distance = command.distance,
                 totalDistance = totalDistance,
                 totalDurationMinutes = totalDurationMinutes,
+                isFirstRun = streak.isFirstRun,
+                streakDays = streak.streakDays,
+                inactiveDays = streak.inactiveDays,
             ),
         )
     }
