@@ -7,11 +7,11 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.application.service.LetterTagResolver
+import tamago.server.core.letter.application.service.UserLetterCommandService
+import tamago.server.core.letter.application.service.UserLetterQueryService
 import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
-import tamago.server.core.letter.domain.port.outbound.UserLetterPersistencePort
 import tamago.server.core.running.domain.event.RunningCompletedEvent
-import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
 
@@ -19,16 +19,18 @@ private val logger = KotlinLogging.logger {}
 class LetterEventListener(
     private val letterQueryService: LetterQueryService,
     private val letterTagResolver: LetterTagResolver,
-    private val userLetterPersistencePort: UserLetterPersistencePort,
+    private val userLetterQueryService: UserLetterQueryService,
+    private val userLetterCommandService: UserLetterCommandService,
 ) {
     @TransactionalEventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {
         try {
             // 이미 스케줄된 편지가 있는 경우, 편지 발송 시간을 재조정
-            userLetterPersistencePort.findByUserIdAndLetterStatus(event.userId, LetterStatus.SCHEDULED)?.let {
-                it.reschedule(LocalDateTime.now())
-                userLetterPersistencePort.save(it)
+            val scheduledLetter =
+                userLetterQueryService.findByUserIdAndLetterStatus(event.userId, LetterStatus.SCHEDULED)
+            if (scheduledLetter != null) {
+                userLetterCommandService.reschedule(scheduledLetter)
                 return
             }
 
@@ -43,7 +45,7 @@ class LetterEventListener(
                     letterId = selectedLetter.id!!,
                     startedAt = event.startedAt,
                 )
-            userLetterPersistencePort.save(createdLetter)
+            userLetterCommandService.create(createdLetter)
         } catch (e: Exception) {
             // TODO: Sentry 로 예외 전송
             logger.error(e) { "러닝 완료 후 편지 발송 시간 조정 오류 - userId: ${event.userId}" }

@@ -39,4 +39,15 @@ class UserLetterCommandService(
 
         userLetterPersistencePort.save(nextLetter)
     }
+
+    @Transactional
+    fun reschedule(userLetter: UserLetter) {
+        userLetter.reschedule(LocalDateTime.now())
+        userLetterPersistencePort.save(userLetter)
+    }
+
+    @Transactional
+    fun create(userLetter: UserLetter) {
+        userLetterPersistencePort.save(userLetter)
+    }
 }

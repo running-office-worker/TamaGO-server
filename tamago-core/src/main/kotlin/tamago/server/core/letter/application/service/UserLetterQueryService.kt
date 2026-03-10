@@ -1,6 +1,7 @@
 package tamago.server.core.letter.application.service
 
 import org.springframework.stereotype.Service
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.letter.application.exception.UserLetterNotFoundException
 import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
@@ -23,4 +24,9 @@ class UserLetterQueryService(
 
     fun getScheduledLettersBefore(now: LocalDateTime): List<UserLetter> =
         userLetterPersistencePort.findAllByLetterStatusAndScheduledAtBefore(LetterStatus.SCHEDULED, now)
+
+    fun findByUserIdAndLetterStatus(
+        userId: UserId,
+        letterStatus: LetterStatus,
+    ): UserLetter? = userLetterPersistencePort.findByUserIdAndLetterStatus(userId, letterStatus)
 }
