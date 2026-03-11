@@ -24,5 +24,5 @@ interface MonsterQueryUseCase {
     fun calculateEarnedXp(
         ownedMonsterId: OwnedMonsterId,
         distance: Double,
-    ): MonsterXpResultDto
+    ): MonsterQuery.XpResult
 }

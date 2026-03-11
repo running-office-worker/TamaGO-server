@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service
 import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.monster.MonsterQuery
 import tamago.server.core.monster.MonsterQueryUseCase
-import tamago.server.core.monster.MonsterXpResultDto
 import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
 import tamago.server.core.monster.application.exception.MonsterNotFoundException
 import tamago.server.core.monster.application.exception.OwnedMonsterNotFoundException
@@ -103,7 +103,7 @@ class MonsterQueryService(
     override fun calculateEarnedXp(
         ownedMonsterId: OwnedMonsterId,
         distance: Double,
-    ): MonsterXpResultDto {
+    ): MonsterQuery.XpResult {
         val ownedMonster = getOwnedMonster(ownedMonsterId)
         val evolutionChain = getEvolutionChain(ownedMonster.monsterId)
         val earnedXp =
@@ -112,12 +112,12 @@ class MonsterQueryService(
                 .evolutionPolicy
                 ?.calculateXp(distance) ?: 0
 
-        return MonsterXpResultDto(
+        return MonsterQuery.XpResult(
             originXp = ownedMonster.havingXp ?: 0,
             earnedXp = earnedXp,
             evolutionStages =
                 evolutionChain.mapIndexed { index, monster ->
-                    MonsterXpResultDto.EvolutionStageDto(
+                    MonsterQuery.XpResult.EvolutionStage(
                         stage = index + 1,
                         monsterId = monster.id!!.value,
                         evolutionXp = monster.evolutionXp,

@@ -12,5 +12,5 @@ interface RunningQueryUseCase {
         ownedMonsterIds: List<Long>,
     ): List<MonsterRunningStatsQueryDto>
 
-    fun getRunningStreak(userId: UserId): RunningStreakQueryDto
+    fun getRunningStreak(userId: UserId): RunningQuery.Streak
 }

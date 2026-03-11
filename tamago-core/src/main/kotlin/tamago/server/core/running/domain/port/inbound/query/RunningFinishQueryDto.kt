@@ -1,6 +1,6 @@
 package tamago.server.core.running.domain.port.inbound.query
 
-import tamago.server.core.monster.MonsterXpResultDto
+import tamago.server.core.monster.MonsterQuery
 import tamago.server.core.running.domain.aggregate.Running
 
 data class RunningFinishQueryDto(
@@ -28,7 +28,7 @@ data class RunningFinishQueryDto(
     companion object {
         fun of(
             running: Running,
-            xpResult: MonsterXpResultDto,
+            xpResult: MonsterQuery.XpResult,
             waypoints: List<WaypointDto>,
         ): RunningFinishQueryDto =
             RunningFinishQueryDto(
