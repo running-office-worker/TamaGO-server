@@ -1,7 +1,7 @@
 package tamago.server.core.monster.infrastructure.mapper
 
+import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.aggregate.Monster
-import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.infrastructure.entity.MonsterEntity
 
 object MonsterMapper {

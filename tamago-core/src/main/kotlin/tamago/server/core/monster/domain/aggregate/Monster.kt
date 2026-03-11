@@ -1,6 +1,6 @@
 package tamago.server.core.monster.domain.aggregate
 
-import tamago.server.core.monster.domain.vo.MonsterId
+import tamago.server.core.common.vo.MonsterId
 import java.time.LocalDateTime
 
 class Monster(

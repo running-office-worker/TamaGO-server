@@ -32,6 +32,6 @@ interface UserLetterPersistencePort {
 
     fun findAllByLetterStatusAndScheduledAtBeforeOrEqual(
         letterStatus: LetterStatus,
-        beforeOrEqual: LocalDateTime,
+        now: LocalDateTime,
     ): List<UserLetter>
 }

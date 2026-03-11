@@ -5,9 +5,9 @@ import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Repository
 import tamago.server.core.common.jdsl.findAll
+import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
-import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.infrastructure.entity.MonsterEntity
 import tamago.server.core.monster.infrastructure.mapper.MonsterMapper
 

@@ -1,9 +1,9 @@
 package tamago.server.core.monster.domain.aggregate
 
+import tamago.server.core.common.vo.MonsterId
+import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
-import tamago.server.core.monster.domain.vo.MonsterId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import java.time.LocalDateTime
 
 class OwnedMonster(

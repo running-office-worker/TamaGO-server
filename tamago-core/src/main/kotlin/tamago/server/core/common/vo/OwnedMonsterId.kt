@@ -1,4 +1,4 @@
-package tamago.server.core.monster.domain.vo
+package tamago.server.core.common.vo
 
 @JvmInline
 value class OwnedMonsterId(

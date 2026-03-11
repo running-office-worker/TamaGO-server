@@ -1,8 +1,11 @@
 package tamago.server.core.monster.application.service
 
 import org.springframework.stereotype.Service
+import tamago.server.core.common.vo.MonsterId
+import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQueryUseCase
+import tamago.server.core.monster.MonsterXpResultDto
 import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
 import tamago.server.core.monster.application.exception.MonsterNotFoundException
 import tamago.server.core.monster.application.exception.OwnedMonsterNotFoundException
@@ -13,8 +16,6 @@ import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
-import tamago.server.core.monster.domain.vo.MonsterId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import java.time.LocalDateTime
 
 @Service
@@ -98,4 +99,31 @@ class MonsterQueryService(
         userId: UserId,
         after: LocalDateTime,
     ): List<OwnedMonster> = ownedMonsterPersistencePort.findAllByUserIdAndCreatedAfter(userId, after)
+
+    override fun calculateEarnedXp(
+        ownedMonsterId: OwnedMonsterId,
+        distance: Double,
+    ): MonsterXpResultDto {
+        val ownedMonster = getOwnedMonster(ownedMonsterId)
+        val evolutionChain = getEvolutionChain(ownedMonster.monsterId)
+        val earnedXp =
+            evolutionChain
+                .first { it.id == ownedMonster.monsterId }
+                .evolutionPolicy
+                ?.calculateXp(distance) ?: 0
+
+        return MonsterXpResultDto(
+            originXp = ownedMonster.havingXp ?: 0,
+            earnedXp = earnedXp,
+            evolutionStages =
+                evolutionChain.mapIndexed { index, monster ->
+                    MonsterXpResultDto.EvolutionStageDto(
+                        stage = index + 1,
+                        monsterId = monster.id!!.value,
+                        evolutionXp = monster.evolutionXp,
+                        current = monster.id == ownedMonster.monsterId,
+                    )
+                },
+        )
+    }
 }

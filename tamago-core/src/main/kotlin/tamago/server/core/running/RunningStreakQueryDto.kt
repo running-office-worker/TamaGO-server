@@ -1,4 +1,4 @@
-package tamago.server.core.running.domain.port.inbound.query
+package tamago.server.core.running
 
 data class RunningStreakQueryDto(
     val isFirstRun: Boolean,

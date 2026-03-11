@@ -30,23 +30,13 @@ class RunningFacade(
 
         publishRunningCompletedEvent(command, totalDistance, totalDurationMinutes)
 
-        // 같이 뛴 몬스터의 진화 체인 조회
-        val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
-        val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
-
-        // 획득한 경험치 계산 및 저장
-        val earnedXp =
-            evolutionChain
-                .first { it.id == ownedMonster.monsterId }
-                .evolutionPolicy
-                ?.calculateXp(command.distance) ?: 0
-        monsterCommandUseCase.addEarnedXp(ownedMonster, earnedXp)
+        // Query로 XP 계산, Command로 저장 (CQRS 분리)
+        val xpResult = monsterQueryUseCase.calculateEarnedXp(command.ownedMonsterId, command.distance)
+        monsterCommandUseCase.addEarnedXp(command.ownedMonsterId, xpResult.earnedXp)
 
         return RunningFinishQueryDto.of(
             running = running,
-            ownedMonster = ownedMonster,
-            evolutionChain = evolutionChain,
-            earnedXp = earnedXp,
+            xpResult = xpResult,
             waypoints = command.waypoints.map { RunningFinishQueryDto.WaypointDto(it.latitude, it.longitude) },
         )
     }

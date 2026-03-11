@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.image.ImageFileConstructor
 import tamago.server.core.common.image.ImagePrefix
 import tamago.server.core.common.image.ImageProcessor
+import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
@@ -14,7 +15,6 @@ import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterAssetBundleQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.MonsterDexQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.UploadMonsterAssetQueryDto
-import tamago.server.core.monster.domain.vo.MonsterId
 
 @Component
 class MonsterFacade(
