@@ -3,12 +3,12 @@ package tamago.server.core.running
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.application.service.RunningCommandService
 import tamago.server.core.running.application.service.RunningQueryService
-import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto

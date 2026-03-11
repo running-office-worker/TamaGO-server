@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
+import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
 import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.enum.LetterTag
-import tamago.server.core.running.domain.event.RunningCompletedEvent
 
 private val logger = KotlinLogging.logger {}
 

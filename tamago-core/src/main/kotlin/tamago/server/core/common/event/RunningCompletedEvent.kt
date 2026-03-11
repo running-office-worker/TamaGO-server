@@ -1,4 +1,4 @@
-package tamago.server.core.running.domain.event
+package tamago.server.core.common.event
 
 import tamago.server.core.common.vo.UserId
 import java.time.LocalDateTime

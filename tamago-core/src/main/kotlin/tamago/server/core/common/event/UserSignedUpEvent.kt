@@ -1,4 +1,4 @@
-package tamago.server.core.user.domain.event
+package tamago.server.core.common.event
 
 import tamago.server.core.common.vo.UserId
 
