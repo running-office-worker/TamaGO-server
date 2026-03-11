@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
 import tamago.server.core.notification.NotificationCommandUseCase
+import tamago.server.core.notification.NotificationQueryUseCase
 import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
@@ -14,6 +15,7 @@ private val logger = KotlinLogging.logger {}
 class UserLetterNotifier(
     private val userLetterQueryService: UserLetterQueryService,
     private val userLetterCommandService: UserLetterCommandService,
+    private val notificationQueryUseCase: NotificationQueryUseCase,
     private val notificationCommandUseCase: NotificationCommandUseCase,
 ) {
     @Scheduled(fixedDelay = 60_000)
@@ -32,7 +34,12 @@ class UserLetterNotifier(
         val userIds = scheduledLetters.map { it.userId }.distinct()
         userIds.forEach { userId ->
             try {
-                notificationCommandUseCase.sendLetterArrivalNotification(userId)
+                val tokens = notificationQueryUseCase.getFcmTokensByUserId(userId)
+                if (tokens.isEmpty()) {
+                    logger.info { "FCM 토큰이 없어 알림 발송 생략 - userId: $userId" }
+                    return@forEach
+                }
+                notificationCommandUseCase.sendLetterArrivalNotification(tokens)
             } catch (e: Exception) {
                 logger.error(e) { "편지 도착 알림 발송 중 오류 발생 - userId: $userId" }
             }
