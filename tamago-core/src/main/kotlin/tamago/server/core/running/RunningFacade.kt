@@ -3,12 +3,12 @@ package tamago.server.core.running
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.application.service.RunningCommandService
 import tamago.server.core.running.application.service.RunningQueryService
-import tamago.server.core.running.domain.event.RunningCompletedEvent
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
@@ -30,23 +30,13 @@ class RunningFacade(
 
         publishRunningCompletedEvent(command, totalDistance, totalDurationMinutes)
 
-        // 같이 뛴 몬스터의 진화 체인 조회
-        val ownedMonster = monsterQueryUseCase.getOwnedMonster(command.ownedMonsterId)
-        val evolutionChain = monsterQueryUseCase.getEvolutionChain(ownedMonster.monsterId)
-
-        // 획득한 경험치 계산 및 저장
-        val earnedXp =
-            evolutionChain
-                .first { it.id == ownedMonster.monsterId }
-                .evolutionPolicy
-                ?.calculateXp(command.distance) ?: 0
-        monsterCommandUseCase.addEarnedXp(ownedMonster, earnedXp)
+        // Query로 XP 계산, Command로 저장 (CQRS 분리)
+        val xpResult = monsterQueryUseCase.calculateEarnedXp(command.ownedMonsterId, command.distance)
+        monsterCommandUseCase.addEarnedXp(command.ownedMonsterId, xpResult.earnedXp)
 
         return RunningFinishQueryDto.of(
             running = running,
-            ownedMonster = ownedMonster,
-            evolutionChain = evolutionChain,
-            earnedXp = earnedXp,
+            xpResult = xpResult,
             waypoints = command.waypoints.map { RunningFinishQueryDto.WaypointDto(it.latitude, it.longitude) },
         )
     }
@@ -56,6 +46,8 @@ class RunningFacade(
         totalDistance: Double,
         totalDurationMinutes: Long,
     ) {
+        val streak = runningQueryService.getRunningStreak(command.userId)
+
         applicationEventPublisher.publishEvent(
             RunningCompletedEvent(
                 userId = command.userId,
@@ -63,6 +55,9 @@ class RunningFacade(
                 distance = command.distance,
                 totalDistance = totalDistance,
                 totalDurationMinutes = totalDurationMinutes,
+                isFirstRun = streak.isFirstRun,
+                streakDays = streak.streakDays,
+                inactiveDays = streak.inactiveDays,
             ),
         )
     }

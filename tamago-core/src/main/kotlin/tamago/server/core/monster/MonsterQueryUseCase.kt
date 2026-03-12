@@ -1,10 +1,10 @@
 package tamago.server.core.monster
 
+import tamago.server.core.common.vo.MonsterId
+import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
-import tamago.server.core.monster.domain.vo.MonsterId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import java.time.LocalDateTime
 
 interface MonsterQueryUseCase {
@@ -20,4 +20,9 @@ interface MonsterQueryUseCase {
     ): List<OwnedMonster>
 
     fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean
+
+    fun calculateEarnedXp(
+        ownedMonsterId: OwnedMonsterId,
+        distance: Double,
+    ): MonsterQuery.XpResult
 }

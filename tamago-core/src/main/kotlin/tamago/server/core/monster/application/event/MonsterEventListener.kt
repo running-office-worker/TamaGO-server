@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
+import tamago.server.core.common.event.RunningCompletedEvent
+import tamago.server.core.common.event.UserSignedUpEvent
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
-import tamago.server.core.running.domain.event.RunningCompletedEvent
-import tamago.server.core.user.domain.event.UserSignedUpEvent
 
 private val logger = KotlinLogging.logger {}
 

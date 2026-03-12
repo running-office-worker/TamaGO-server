@@ -1,7 +1,7 @@
 package tamago.server.core.monster.domain.aggregate
 
+import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.enum.MonsterRuleType
-import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.monster.domain.vo.MonsterUnlockPolicyId
 import java.time.LocalDateTime
 

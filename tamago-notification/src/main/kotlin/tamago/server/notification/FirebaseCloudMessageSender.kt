@@ -36,7 +36,7 @@ class FirebaseCloudMessageSender(
             ).setApnsConfig(
                 ApnsConfig
                     .builder()
-                    .putCustomData("destination", request.destination)
+                    .apply { request.destination?.let { putCustomData("destination", it) } }
                     .setAps(
                         Aps
                             .builder()

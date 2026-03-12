@@ -45,7 +45,7 @@ jobs:
 
       - name: "Flyway 마이그레이션"
         run: |
-          ./gradlew :tamago-core:flywayMigrate \
+          ./gradlew :tamago-storage:flywayMigrate \
             -Dflyway.url=jdbc:mysql://127.0.0.1:3306/tamago \
             -Dflyway.user=root \
             -Dflyway.password=test \
@@ -53,7 +53,7 @@ jobs:
 
       - name: "Flyway 마이그레이션 무결성 검증"
         run: |
-          ./gradlew :tamago-core:flywayValidate \
+          ./gradlew :tamago-storage:flywayValidate \
             -Dflyway.url=jdbc:mysql://127.0.0.1:3306/tamago \
             -Dflyway.user=root \
             -Dflyway.password=test \

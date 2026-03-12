@@ -1,14 +1,16 @@
 package tamago.server.core.monster.application.service
 
 import org.springframework.stereotype.Service
+import tamago.server.core.common.vo.MonsterId
+import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterCommandUseCase
+import tamago.server.core.monster.application.exception.OwnedMonsterNotFoundException
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
-import tamago.server.core.monster.domain.vo.MonsterId
 
 @Service
 class MonsterCommandService(
@@ -47,11 +49,14 @@ class MonsterCommandService(
     }
 
     override fun addEarnedXp(
-        ownedMonster: OwnedMonster,
+        ownedMonsterId: OwnedMonsterId,
         xp: Int,
-    ): OwnedMonster {
+    ) {
+        val ownedMonster =
+            ownedMonsterPersistencePort.findById(ownedMonsterId)
+                ?: throw OwnedMonsterNotFoundException()
         ownedMonster.addXp(xp)
-        return ownedMonsterPersistencePort.save(ownedMonster)
+        ownedMonsterPersistencePort.save(ownedMonster)
     }
 
     fun ownMonster(

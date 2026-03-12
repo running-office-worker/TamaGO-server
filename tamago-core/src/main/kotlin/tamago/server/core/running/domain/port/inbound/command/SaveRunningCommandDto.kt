@@ -1,7 +1,7 @@
 package tamago.server.core.running.domain.port.inbound.command
 
+import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import java.time.LocalDateTime
 
 data class SaveRunningCommandDto(

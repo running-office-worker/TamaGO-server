@@ -1,10 +1,10 @@
 package tamago.server.core.monster
 
-import tamago.server.core.monster.domain.aggregate.OwnedMonster
+import tamago.server.core.common.vo.OwnedMonsterId
 
 interface MonsterCommandUseCase {
     fun addEarnedXp(
-        ownedMonster: OwnedMonster,
+        ownedMonsterId: OwnedMonsterId,
         xp: Int,
-    ): OwnedMonster
+    )
 }

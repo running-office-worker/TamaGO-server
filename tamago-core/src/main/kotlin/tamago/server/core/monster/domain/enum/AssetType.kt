@@ -4,10 +4,15 @@ enum class AssetType(
     val contentType: String,
     val extension: String,
 ) {
-    PNG("image/png", "png"),
-    GIF("image/gif", "gif"),
-
+    /** 몬스터 로띠 애니메이션 */
     M_LOTTIE("application/zip+dotlottie", "lottie"),
+
+    /** 몬스터 기본 이미지 */
     M_SVG("image/svg+xml", "svg"),
+
+    /** 썸네일 SVG 이미지 (미사용) */
     S_SVG("image/svg+xml", "svg"),
+
+    /** 썸네일 PNG 이미지 */
+    S_PNG("image/png", "png"),
 }

@@ -9,6 +9,7 @@ enum class LetterExceptionCode(
     @JvmField val message: String,
 ) : ExceptionCode {
     USER_LETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "LETTER_4040", "편지를 찾을 수 없습니다."),
+    LETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "LETTER_4041", "편지 템플릿을 찾을 수 없습니다."),
     LETTER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "LETTER_4030", "해당 편지에 접근 권한이 없습니다."),
     ;
 

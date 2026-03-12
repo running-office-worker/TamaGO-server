@@ -1,8 +1,8 @@
 package tamago.server.core.monster.domain.aggregate
 
+import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.enum.MonsterRuleType
 import tamago.server.core.monster.domain.vo.MonsterEvolutionPolicyId
-import tamago.server.core.monster.domain.vo.MonsterId
 import java.time.LocalDateTime
 
 class MonsterEvolutionPolicy(

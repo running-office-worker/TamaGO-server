@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
-import tamago.server.core.running.domain.event.RunningCompletedEvent
+import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.user.application.service.UserCommandService
 import tamago.server.core.user.application.service.UserQueryService
 
