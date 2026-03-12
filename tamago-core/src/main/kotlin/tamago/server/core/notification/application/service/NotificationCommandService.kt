@@ -20,11 +20,15 @@ class NotificationCommandService(
         fcmTokenPersistencePort.save(fcmToken)
     }
 
-    override fun sendLetterArrivalNotification(tokens: List<String>) {
+    override fun sendLetterArrivalNotification(
+        tokens: List<String>,
+        title: String,
+        body: String,
+    ) {
         fcmSendPort.send(
             tokens = tokens,
-            title = "Tamago",
-            body = "타마고가 보낸 편지가 도착했어요!",
+            title = title,
+            body = body,
             destination = null,
         )
         logger.info { "편지 도착 알림 발송 완료 - tokenCount: ${tokens.size}" }

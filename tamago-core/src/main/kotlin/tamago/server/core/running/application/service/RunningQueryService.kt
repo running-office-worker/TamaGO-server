@@ -18,6 +18,9 @@ class RunningQueryService(
     override fun getLastFinishedAt(userId: UserId): LocalDateTime? =
         runningPersistencePort.findLastByUserId(userId)?.finishedAt
 
+    override fun getLastMonsterNickname(userId: UserId): String? =
+        runningPersistencePort.findLastMonsterNicknameByUserId(userId)
+
     fun getMonthlyRunnings(
         userId: UserId,
         year: Int,

@@ -30,4 +30,6 @@ interface RunningPersistencePort {
         userId: UserId,
         since: LocalDateTime,
     ): List<LocalDate>
+
+    fun findLastMonsterNicknameByUserId(userId: UserId): String?
 }

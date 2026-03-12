@@ -8,11 +8,16 @@ import tamago.server.core.letter.domain.aggregate.Letter
 import tamago.server.core.letter.domain.enum.LetterTag
 import tamago.server.core.letter.domain.port.inbound.query.LetterInboxDto
 import tamago.server.core.letter.domain.port.outbound.LetterPersistencePort
+import tamago.server.core.letter.domain.vo.LetterId
 
 @Service
 class LetterQueryService(
     private val letterPersistencePort: LetterPersistencePort,
 ) : LetterQueryUseCase {
+    fun get(id: LetterId): Letter =
+        letterPersistencePort.findById(id)
+            ?: throw LetterNotFoundException()
+
     override fun getLatestLetter(userId: UserId): LetterInboxDto? {
         val query = letterPersistencePort.findLatestByUserId(userId)
 

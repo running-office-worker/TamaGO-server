@@ -7,6 +7,8 @@ import java.time.LocalDateTime
 interface RunningQueryUseCase {
     fun getLastFinishedAt(userId: UserId): LocalDateTime?
 
+    fun getLastMonsterNickname(userId: UserId): String?
+
     fun getStatsByOwnedMonsterIds(
         userId: UserId,
         ownedMonsterIds: List<Long>,

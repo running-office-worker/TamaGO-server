@@ -6,6 +6,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":tamago-storage"))
     implementation(project(":tamago-core"))
     implementation(project(":tamago-oauth"))
     implementation(project(":tamago-aws"))

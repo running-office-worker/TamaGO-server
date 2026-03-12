@@ -3,10 +3,12 @@ package tamago.server.core.letter.application.scheduler
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
 import tamago.server.core.notification.NotificationCommandUseCase
 import tamago.server.core.notification.NotificationQueryUseCase
+import tamago.server.core.running.RunningQueryUseCase
 import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
@@ -15,6 +17,8 @@ private val logger = KotlinLogging.logger {}
 class UserLetterSender(
     private val userLetterQueryService: UserLetterQueryService,
     private val userLetterCommandService: UserLetterCommandService,
+    private val letterQueryService: LetterQueryService,
+    private val runningQueryUseCase: RunningQueryUseCase,
     private val notificationQueryUseCase: NotificationQueryUseCase,
     private val notificationCommandUseCase: NotificationCommandUseCase,
 ) {
@@ -39,7 +43,14 @@ class UserLetterSender(
                     logger.info { "FCM 토큰이 없어 알림 발송 생략 - userId: $userId" }
                     return@forEach
                 }
-                notificationCommandUseCase.sendLetterArrivalNotification(tokens)
+                val letterId = scheduledLetters.first { it.userId == userId }.letterId
+                val letter = letterQueryService.get(letterId)
+                val monsterNickname = runningQueryUseCase.getLastMonsterNickname(userId)
+                notificationCommandUseCase.sendLetterArrivalNotification(
+                    tokens = tokens,
+                    title = monsterNickname?.let { "안녕 난 ${it}이야" } ?: letter.title,
+                    body = letter.content.value,
+                )
             } catch (e: Exception) {
                 logger.error(e) { "편지 도착 알림 발송 중 오류 발생 - userId: $userId" }
             }
