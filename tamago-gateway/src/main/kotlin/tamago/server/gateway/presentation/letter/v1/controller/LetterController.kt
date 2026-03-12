@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import tamago.server.core.letter.LetterCommandUseCase
 import tamago.server.core.letter.LetterFacade
 import tamago.server.core.letter.LetterQueryUseCase
+import tamago.server.core.letter.domain.port.inbound.command.CreateLetterCommand
 import tamago.server.core.letter.domain.vo.UserLetterId
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
@@ -27,7 +27,6 @@ import tamago.server.gateway.presentation.letter.v1.response.LetterResponse
 @RestController
 class LetterController(
     private val letterQueryUseCase: LetterQueryUseCase,
-    private val letterCommandUseCase: LetterCommandUseCase,
     private val letterFacade: LetterFacade,
 ) {
     @Operation(summary = "편지 수신함 조회", description = "가장 최근 받은 편지 한 개를 조회합니다.")
@@ -61,17 +60,22 @@ class LetterController(
         return CustomResponse.noContent()
     }
 
-    @Operation(summary = "\uD83E\uDDEA 편지 템플릿 데이터 삽입", description = "편지 템플릿에 데이터를 삽입하여 편지 내용을 생성합니다.")
+    @Operation(summary = "\uD83E\uDDEA 편지 템플릿 일괄 삽입", description = "편지 템플릿을 태그와 함께 일괄 생성합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/api/v1/letters")
-    fun createTemplate(
-        @RequestBody @Valid request: LetterCreateRequest,
+    fun createTemplates(
+        @RequestBody @Valid requests: List<LetterCreateRequest>,
     ): CustomResponse<Void> {
-        letterCommandUseCase.createTemplate(
-            title = request.title,
-            content = request.content,
-        )
+        val commands =
+            requests.map { request ->
+                CreateLetterCommand(
+                    title = request.title,
+                    content = request.content,
+                    tags = request.tags,
+                )
+            }
+        letterFacade.createTemplates(commands)
 
         return CustomResponse.created()
     }

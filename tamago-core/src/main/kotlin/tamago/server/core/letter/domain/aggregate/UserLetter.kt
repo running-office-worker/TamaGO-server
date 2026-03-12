@@ -14,12 +14,15 @@ class UserLetter(
     scheduledAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    val deletedAt: LocalDateTime? = null,
+    deletedAt: LocalDateTime? = null,
 ) {
     var letterStatus: LetterStatus = letterStatus
         private set
 
     var scheduledAt: LocalDateTime? = scheduledAt
+        private set
+
+    var deletedAt: LocalDateTime? = deletedAt
         private set
 
     fun send() {
@@ -30,8 +33,8 @@ class UserLetter(
         this.letterStatus = LetterStatus.READ
     }
 
-    fun reschedule(baseTime: LocalDateTime) {
-        this.scheduledAt = baseTime.plusHours(INITIAL_DELAY_HOURS)
+    fun delete() {
+        this.deletedAt = LocalDateTime.now()
     }
 
     fun isOwnedBy(userId: UserId): Boolean = this.userId == userId

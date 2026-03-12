@@ -5,6 +5,7 @@ import tamago.server.core.letter.domain.aggregate.UserLetter
 import tamago.server.core.letter.domain.enum.LetterStatus
 import tamago.server.core.letter.domain.vo.LetterId
 import tamago.server.core.letter.domain.vo.UserLetterId
+import java.time.LocalDateTime
 
 interface UserLetterPersistencePort {
     fun save(userLetter: UserLetter)
@@ -28,4 +29,9 @@ interface UserLetterPersistencePort {
     ): UserLetter?
 
     fun findLatestDistinctByUser(): List<UserLetter>
+
+    fun findAllByLetterStatusAndScheduledAtBeforeOrEqual(
+        letterStatus: LetterStatus,
+        now: LocalDateTime,
+    ): List<UserLetter>
 }

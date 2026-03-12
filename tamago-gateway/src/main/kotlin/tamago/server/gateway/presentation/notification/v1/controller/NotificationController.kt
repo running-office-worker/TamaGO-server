@@ -6,6 +6,7 @@ import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.notification.NotificationFacade
@@ -25,11 +26,13 @@ class NotificationController(
     @PostMapping("/api/v1/fcm/token")
     fun registerFcmToken(
         @CurrentUser user: User,
+        @RequestHeader("X-DEVICE-ID") deviceId: String?,
         @Valid @RequestBody request: FcmTokenRequest,
     ): CustomResponse<Void> {
         val command =
             RegisterFcmTokenCommandDto(
                 userId = UserId(user.id!!.value),
+                deviceId = deviceId,
                 token = request.token,
             )
         notificationFacade.registerFcmToken(command)

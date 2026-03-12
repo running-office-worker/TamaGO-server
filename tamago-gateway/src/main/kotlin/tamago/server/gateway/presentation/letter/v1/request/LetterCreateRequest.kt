@@ -2,6 +2,7 @@ package tamago.server.gateway.presentation.letter.v1.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
+import tamago.server.core.letter.domain.enum.LetterTag
 
 data class LetterCreateRequest(
     @field:Schema(description = "편지 제목", example = "템플릿 제목", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -14,4 +15,6 @@ data class LetterCreateRequest(
     )
     @field:NotBlank(message = "내용은 필수입니다.")
     val content: String,
+    @field:Schema(description = "편지 태그 목록", example = "[\"FIRST_START\", \"STREAK_1_2\"]")
+    val tags: Set<LetterTag> = emptySet(),
 )

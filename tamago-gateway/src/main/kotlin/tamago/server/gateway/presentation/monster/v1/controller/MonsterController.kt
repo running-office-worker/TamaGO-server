@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.MonsterFacade
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.domain.enum.AssetType
-import tamago.server.core.monster.domain.vo.MonsterId
 import tamago.server.core.running.RunningQueryUseCase
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser

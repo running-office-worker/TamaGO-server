@@ -1,7 +1,6 @@
 package tamago.server.core.running.domain.port.inbound.query
 
-import tamago.server.core.monster.domain.aggregate.Monster
-import tamago.server.core.monster.domain.aggregate.OwnedMonster
+import tamago.server.core.monster.MonsterQuery
 import tamago.server.core.running.domain.aggregate.Running
 
 data class RunningFinishQueryDto(
@@ -29,9 +28,7 @@ data class RunningFinishQueryDto(
     companion object {
         fun of(
             running: Running,
-            ownedMonster: OwnedMonster,
-            evolutionChain: List<Monster>,
-            earnedXp: Int,
+            xpResult: MonsterQuery.XpResult,
             waypoints: List<WaypointDto>,
         ): RunningFinishQueryDto =
             RunningFinishQueryDto(
@@ -39,15 +36,15 @@ data class RunningFinishQueryDto(
                 cadence = running.cadence ?: 0,
                 elapsedTime = running.elapsedTime ?: 0,
                 totalCalories = running.calories ?: 0,
-                originXp = ownedMonster.havingXp ?: 0,
-                earnedXp = earnedXp,
+                originXp = xpResult.originXp,
+                earnedXp = xpResult.earnedXp,
                 evolutionStages =
-                    evolutionChain.mapIndexed { index, monster ->
+                    xpResult.evolutionStages.map {
                         EvolutionStageDto(
-                            stage = index + 1,
-                            monsterId = monster.id!!.value,
-                            evolutionXp = monster.evolutionXp,
-                            current = monster.id == ownedMonster.monsterId,
+                            stage = it.stage,
+                            monsterId = it.monsterId,
+                            evolutionXp = it.evolutionXp,
+                            current = it.current,
                         )
                     },
                 waypoints = waypoints,

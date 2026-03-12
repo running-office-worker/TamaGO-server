@@ -1,8 +1,8 @@
 package tamago.server.core.monster.domain.aggregate
 
+import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.vo.MonsterAssetId
-import tamago.server.core.monster.domain.vo.MonsterId
 import java.time.LocalDateTime
 
 class MonsterAsset(

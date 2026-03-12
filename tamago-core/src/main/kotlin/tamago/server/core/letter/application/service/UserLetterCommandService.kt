@@ -13,6 +13,12 @@ class UserLetterCommandService(
     private val userLetterPersistencePort: UserLetterPersistencePort,
 ) {
     @Transactional
+    fun sendLetters(userLetters: List<UserLetter>): List<UserLetter> {
+        userLetters.forEach { it.send() }
+        return userLetterPersistencePort.saveAll(userLetters)
+    }
+
+    @Transactional
     fun markAsRead(userLetter: UserLetter) {
         userLetter.markAsRead()
         userLetterPersistencePort.save(userLetter)
@@ -32,5 +38,16 @@ class UserLetterCommandService(
             )
 
         userLetterPersistencePort.save(nextLetter)
+    }
+
+    @Transactional
+    fun delete(userLetter: UserLetter) {
+        userLetter.delete()
+        userLetterPersistencePort.save(userLetter)
+    }
+
+    @Transactional
+    fun create(userLetter: UserLetter) {
+        userLetterPersistencePort.save(userLetter)
     }
 }

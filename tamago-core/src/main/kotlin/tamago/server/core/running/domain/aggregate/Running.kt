@@ -1,7 +1,7 @@
 package tamago.server.core.running.domain.aggregate
 
+import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.running.domain.vo.RunningId
 import tamago.server.core.running.domain.vo.RunningPlanId
 import java.time.LocalDateTime

@@ -1,8 +1,8 @@
 package tamago.server.gateway.presentation.running.v1.request
 
 import io.swagger.v3.oas.annotations.media.Schema
+import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
-import tamago.server.core.monster.domain.vo.OwnedMonsterId
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.vo.RunningPlanId
 import java.time.LocalDateTime

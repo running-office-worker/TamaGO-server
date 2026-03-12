@@ -6,33 +6,53 @@ import org.springframework.stereotype.Component
 import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
+import tamago.server.core.notification.NotificationCommandUseCase
+import tamago.server.core.notification.NotificationQueryUseCase
+import tamago.server.core.running.RunningQueryUseCase
+import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
 
 @Component
 class UserLetterSender(
-    private val userLetterCommandService: UserLetterCommandService,
     private val userLetterQueryService: UserLetterQueryService,
+    private val userLetterCommandService: UserLetterCommandService,
     private val letterQueryService: LetterQueryService,
+    private val runningQueryUseCase: RunningQueryUseCase,
+    private val notificationQueryUseCase: NotificationQueryUseCase,
+    private val notificationCommandUseCase: NotificationCommandUseCase,
 ) {
-    @Scheduled(fixedDelay = 60_000) // 이전 실행 완료 후 1분마다 실행
-    fun sendLetter() {
-        // 모든 유저의 SCHEDULED 상태가 아닌 마지막 편지 조회
-        val letters = userLetterQueryService.getAllUsersLastSentLetter()
+    @Scheduled(fixedDelay = 60_000)
+    fun notifyScheduledLetters() {
+        val now = LocalDateTime.now()
+        val scheduledLetters = userLetterQueryService.getScheduledLettersBeforeOrEqual(now)
 
-        // 마지막 발송 시각 24시간 뒤로 편지 예약
-        letters.forEach { letter ->
+        if (scheduledLetters.isEmpty()) return
+
+        logger.info { "발송 대상 편지 ${scheduledLetters.size}건 발견" }
+
+        // 편지 상태를 UNREAD로 전환
+        userLetterCommandService.sendLetters(scheduledLetters)
+
+        // 유저별로 FCM 알림 발송 (알림 실패가 편지 발송을 막지 않음)
+        val userIds = scheduledLetters.map { it.userId }.distinct()
+        userIds.forEach { userId ->
             try {
-                val selectedLetter = letterQueryService.getRandomTemplate()
-
-                userLetterCommandService.scheduleNextLetter(
-                    userId = letter.userId,
-                    letterId = selectedLetter.id!!,
-                    prevScheduledAt = letter.scheduledAt!!,
+                val tokens = notificationQueryUseCase.getFcmTokensByUserId(userId)
+                if (tokens.isEmpty()) {
+                    logger.info { "FCM 토큰이 없어 알림 발송 생략 - userId: $userId" }
+                    return@forEach
+                }
+                val letterId = scheduledLetters.first { it.userId == userId }.letterId
+                val letter = letterQueryService.get(letterId)
+                val monsterNickname = runningQueryUseCase.getLastMonsterNickname(userId)
+                notificationCommandUseCase.sendLetterArrivalNotification(
+                    tokens = tokens,
+                    title = monsterNickname?.let { "안녕 난 ${it}이야" } ?: letter.title,
+                    body = letter.content.value,
                 )
             } catch (e: Exception) {
-                // TODO: Sentry 로 예외 전송
-                logger.error(e) { "다음 편지 예약 중 오류 발생 - userId: ${letter.userId}, letterId: ${letter.letterId}" }
+                logger.error(e) { "편지 도착 알림 발송 중 오류 발생 - userId: $userId" }
             }
         }
     }
