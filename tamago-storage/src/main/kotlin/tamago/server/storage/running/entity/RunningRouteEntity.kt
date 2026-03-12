@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
-import tamago.server.storage.common.entity.BaseTimeEntity
+import tamago.server.storage.support.BaseTimeEntity
 
 @Entity
 @Table(name = "t_running_routes")

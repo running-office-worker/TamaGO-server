@@ -14,7 +14,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import tamago.server.core.letter.domain.enum.LetterStatus
-import tamago.server.storage.common.entity.BaseTimeEntity
+import tamago.server.storage.support.BaseTimeEntity
 import java.time.LocalDateTime
 
 @Entity

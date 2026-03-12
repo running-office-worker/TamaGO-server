@@ -1,4 +1,4 @@
-package tamago.server.storage.common.jdsl
+package tamago.server.storage.support
 
 import com.linecorp.kotlinjdsl.querymodel.jpql.JpqlQuery
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext

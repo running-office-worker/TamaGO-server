@@ -8,12 +8,12 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
-import tamago.server.storage.common.jdsl.findAll
-import tamago.server.storage.common.jdsl.findOne
 import tamago.server.storage.monster.entity.MonsterEntity
 import tamago.server.storage.monster.entity.OwnedMonsterEntity
 import tamago.server.storage.running.entity.RunningEntity
 import tamago.server.storage.running.mapper.RunningMapper
+import tamago.server.storage.support.findAll
+import tamago.server.storage.support.findOne
 import java.time.LocalDate
 import java.time.LocalDateTime
 

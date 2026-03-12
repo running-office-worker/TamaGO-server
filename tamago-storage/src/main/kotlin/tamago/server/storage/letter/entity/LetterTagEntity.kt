@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import tamago.server.core.letter.domain.enum.LetterTag
-import tamago.server.storage.common.entity.BaseTimeEntity
+import tamago.server.storage.support.BaseTimeEntity
 
 @Entity
 @Table(name = "t_letter_tags")

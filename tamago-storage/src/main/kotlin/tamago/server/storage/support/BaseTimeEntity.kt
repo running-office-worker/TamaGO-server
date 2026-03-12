@@ -1,4 +1,4 @@
-package tamago.server.storage.common.entity
+package tamago.server.storage.support
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

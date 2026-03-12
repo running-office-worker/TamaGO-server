@@ -12,7 +12,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import tamago.server.core.user.domain.enum.UserRole
-import tamago.server.storage.common.entity.BaseTimeEntity
+import tamago.server.storage.support.BaseTimeEntity
 import java.time.LocalDateTime
 
 @Entity

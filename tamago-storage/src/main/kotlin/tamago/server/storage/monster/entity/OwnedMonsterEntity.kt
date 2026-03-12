@@ -14,7 +14,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import tamago.server.core.monster.domain.enum.OwnedMonsterStatus
-import tamago.server.storage.common.entity.BaseTimeEntity
+import tamago.server.storage.support.BaseTimeEntity
 
 @Entity
 @Table(name = "t_owned_monsters")

@@ -14,7 +14,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import tamago.server.core.monster.domain.enum.MonsterRuleType
-import tamago.server.storage.common.entity.BaseTimeEntity
+import tamago.server.storage.support.BaseTimeEntity
 
 @Entity
 @Table(name = "t_monster_evolution_policy")

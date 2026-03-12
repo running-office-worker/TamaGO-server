@@ -9,10 +9,10 @@ import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
-import tamago.server.storage.common.jdsl.findAll
 import tamago.server.storage.monster.entity.MonsterAssetEntity
 import tamago.server.storage.monster.entity.MonsterEntity
 import tamago.server.storage.monster.mapper.MonsterAssetMapper
+import tamago.server.storage.support.findAll
 import java.time.LocalDateTime
 
 @Repository

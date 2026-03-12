@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository
 import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
-import tamago.server.storage.common.jdsl.findAll
 import tamago.server.storage.monster.entity.MonsterEntity
 import tamago.server.storage.monster.mapper.MonsterMapper
+import tamago.server.storage.support.findAll
 
 @Repository
 class MonsterPersistenceAdapter(

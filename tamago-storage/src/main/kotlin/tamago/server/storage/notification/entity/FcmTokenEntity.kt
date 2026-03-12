@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import tamago.server.core.notification.domain.enum.DeviceType
-import tamago.server.storage.common.entity.BaseTimeEntity
+import tamago.server.storage.support.BaseTimeEntity
 import java.time.LocalDateTime
 
 @Entity
