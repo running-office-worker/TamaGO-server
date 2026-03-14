@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import java.io.IOException
+import java.io.InputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 
 @Configuration
 @EnableConfigurationProperties(FirebaseProperties::class)
@@ -23,7 +26,7 @@ class FirebaseConfig(
 
         val credentials =
             try {
-                ClassPathResource(firebaseProperties.credentialsPath).inputStream.use {
+                openCredentialsStream(firebaseProperties.credentialsPath).use {
                     GoogleCredentials.fromStream(it)
                 }
             } catch (e: IOException) {
@@ -40,6 +43,14 @@ class FirebaseConfig(
                 .build()
 
         return FirebaseApp.initializeApp(options)
+    }
+
+    private fun openCredentialsStream(path: String): InputStream {
+        val filePath = Paths.get(path)
+        if (Files.exists(filePath)) {
+            return Files.newInputStream(filePath)
+        }
+        return ClassPathResource(path).inputStream
     }
 
     @Bean
