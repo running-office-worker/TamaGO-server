@@ -51,6 +51,7 @@ jobs:
               --name tamago-server \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=dev \
+              -v ${{ secrets.FCM_CREDENTIALS_PATH }}:/app/firebase-service-account.json:ro \
               -p 8080:8080 \
               --network tamago \
               --cpus="0.5" \
