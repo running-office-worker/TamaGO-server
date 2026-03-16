@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
-import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -29,9 +28,9 @@ class FirebaseConfig(
                 openCredentialsStream(firebaseProperties.credentialsPath).use {
                     GoogleCredentials.fromStream(it)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 throw IllegalStateException(
-                    "Firebase credentials file not found: ${firebaseProperties.credentialsPath}",
+                    "Failed to load Firebase credentials from: ${firebaseProperties.credentialsPath}",
                     e,
                 )
             }
