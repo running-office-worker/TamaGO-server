@@ -30,7 +30,7 @@ class FirebaseConfig(
                 }
             } catch (e: Exception) {
                 throw IllegalStateException(
-                    "Failed to load Firebase credentials from: ${firebaseProperties.credentialsPath}",
+                    "Failed to load Firebase credentials from: ${firebaseProperties.credentialsPath} - ${e.message}",
                     e,
                 )
             }
