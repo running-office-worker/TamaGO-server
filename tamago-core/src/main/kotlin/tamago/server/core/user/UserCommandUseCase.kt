@@ -15,10 +15,5 @@ interface UserCommandUseCase {
         nickname: String,
     )
 
-    fun updateGoalKilo(
-        user: User,
-        goalKilo: Int,
-    )
-
     fun recordLogin(user: User)
 }

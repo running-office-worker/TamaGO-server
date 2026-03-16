@@ -27,8 +27,6 @@ data class MeResponse(
     val updatedAt: LocalDateTime?,
 ) {
     data class RunningDataDto(
-        @field:Schema(description = "하루 러닝 목표 (km)", example = "5")
-        val goalKilo: Int?,
         @field:Schema(description = "누적 러닝 거리 (km)", example = "42.5")
         val totalKilo: Double?,
     )
@@ -49,7 +47,6 @@ data class MeResponse(
                 weight = user.weight,
                 runningData =
                     RunningDataDto(
-                        goalKilo = user.runningData.goalKilo,
                         totalKilo = user.runningData.totalKilo,
                     ),
                 auths =

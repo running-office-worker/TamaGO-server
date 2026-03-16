@@ -1,10 +1,7 @@
 package tamago.server.core.user.domain.aggregate
 
 data class UserRunningData(
-    val goalKilo: Int? = null,
     val totalKilo: Double? = null,
 ) {
-    fun updateGoalKilo(goalKilo: Int): UserRunningData = copy(goalKilo = goalKilo)
-
     fun addKilo(kilo: Double): UserRunningData = copy(totalKilo = (totalKilo ?: 0.0) + kilo)
 }
