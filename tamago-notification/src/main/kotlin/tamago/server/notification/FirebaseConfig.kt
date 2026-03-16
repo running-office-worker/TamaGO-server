@@ -44,13 +44,12 @@ class FirebaseConfig(
         return FirebaseApp.initializeApp(options)
     }
 
-    private fun openCredentialsStream(path: String): InputStream {
-        val filePath = Paths.get(path)
-        if (Files.exists(filePath)) {
-            return Files.newInputStream(filePath)
+    private fun openCredentialsStream(path: String): InputStream =
+        try {
+            Files.newInputStream(Paths.get(path))
+        } catch (e: Exception) {
+            ClassPathResource(path).inputStream
         }
-        return ClassPathResource(path).inputStream
-    }
 
     @Bean
     fun firebaseMessaging(firebaseApp: FirebaseApp): FirebaseMessaging = FirebaseMessaging.getInstance(firebaseApp)
