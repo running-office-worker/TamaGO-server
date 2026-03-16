@@ -2,6 +2,7 @@ package tamago.server.core.running.domain.port.inbound.command
 
 import tamago.server.core.common.vo.OwnedMonsterId
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.running.domain.vo.RunningPlanId
 import java.time.LocalDateTime
 
 data class SaveRunningCommandDto(
@@ -12,6 +13,7 @@ data class SaveRunningCommandDto(
     val heartbeat: Int?,
     val startedAt: LocalDateTime,
     val finishedAt: LocalDateTime,
+    val runningPlanId: RunningPlanId,
     val ownedMonsterId: OwnedMonsterId,
     val waypoints: List<WaypointDto> = emptyList(),
 ) {

@@ -10,7 +10,7 @@ class Running(
     val id: RunningId? = null,
     val userId: UserId,
     val ownedMonsterId: OwnedMonsterId,
-    val runningPlanId: RunningPlanId? = null,
+    val runningPlanId: RunningPlanId,
     val pace: Double? = null,
     val cadence: Int? = null,
     val calories: Int? = null,
@@ -28,7 +28,7 @@ class Running(
         fun create(
             userId: UserId,
             ownedMonsterId: OwnedMonsterId,
-            runningPlanId: RunningPlanId? = null,
+            runningPlanId: RunningPlanId,
             pace: Double,
             cadence: Int,
             calories: Int,
