@@ -12,7 +12,6 @@ import tamago.server.core.user.UserCommandUseCase
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
-import tamago.server.gateway.presentation.user.v1.request.GoalKiloRequest
 import tamago.server.gateway.presentation.user.v1.request.NicknameRequest
 import tamago.server.gateway.presentation.user.v1.response.MeResponse
 import tamago.server.gateway.presentation.user.v1.response.RunningDataResponse
@@ -39,17 +38,6 @@ class UserController(
         @Valid @RequestBody request: NicknameRequest,
     ): CustomResponse<Void> {
         userCommandUseCase.updateNickname(user, request.nickname)
-        return CustomResponse.ok()
-    }
-
-    @Operation(summary = "하루 러닝 목표 설정", description = "하루 러닝 목표를 정합니다.")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping("/api/v1/users/running-goal")
-    fun setRunningGoal(
-        @CurrentUser user: User,
-        @Valid @RequestBody request: GoalKiloRequest,
-    ): CustomResponse<Void> {
-        userCommandUseCase.updateGoalKilo(user, request.goalKilo)
         return CustomResponse.ok()
     }
 

@@ -32,7 +32,6 @@ class UserEntity(
         orphanRemoval = true,
     )
     val auths: MutableList<UserAuthEntity> = mutableListOf(),
-    var goalKilo: Int? = null,
     var totalKilo: Double? = null,
     @Column(nullable = false)
     var weight: Double = 70.0,

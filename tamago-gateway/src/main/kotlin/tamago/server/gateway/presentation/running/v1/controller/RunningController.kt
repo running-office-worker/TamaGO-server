@@ -16,17 +16,31 @@ import tamago.server.core.running.RunningFacade
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
+import tamago.server.gateway.presentation.running.v1.request.RunningPlanRequest
 import tamago.server.gateway.presentation.running.v1.request.RunningRequest
 import tamago.server.gateway.presentation.running.v1.request.toCommand
 import tamago.server.gateway.presentation.running.v1.response.MonsterRunningStatsResponse
 import tamago.server.gateway.presentation.running.v1.response.MonthlyRunningResponse
 import tamago.server.gateway.presentation.running.v1.response.RunningFinishResponse
+import tamago.server.gateway.presentation.running.v1.response.RunningPlanResponse
 
 @Tag(name = "Running API", description = "러닝 데이터 API")
 @RestController
 class RunningController(
     private val runningFacade: RunningFacade,
 ) {
+    @Operation(summary = "러닝 목표 생성", description = "목표 거리를 설정하여 러닝 계획을 생성합니다.")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/api/v1/running/plan")
+    fun createRunningPlan(
+        @CurrentUser user: User,
+        @RequestBody @Valid request: RunningPlanRequest,
+    ): CustomResponse<RunningPlanResponse> {
+        val runningPlanId = runningFacade.createRunningPlan(request.toCommand(user.id!!))
+        return CustomResponse.created(RunningPlanResponse.from(runningPlanId))
+    }
+
     @Operation(summary = "러닝 데이터 저장", description = "사용자의 러닝 데이터를 저장하고, 계산된 러닝 데이터와 몬스터 경험치를 반환합니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")

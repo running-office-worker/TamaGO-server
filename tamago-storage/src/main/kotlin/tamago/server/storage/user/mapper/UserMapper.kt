@@ -12,7 +12,6 @@ object UserMapper {
                 id = user.id?.value,
                 nickname = user.nickname,
                 role = user.role,
-                goalKilo = user.runningData.goalKilo,
                 totalKilo = user.runningData.totalKilo,
                 weight = user.weight,
                 lastLoginAt = user.lastLoginAt,
@@ -37,7 +36,6 @@ object UserMapper {
             auths = UserAuthMapper.toDomain(entity.auths),
             runningData =
                 UserRunningData(
-                    goalKilo = entity.goalKilo,
                     totalKilo = entity.totalKilo,
                 ),
             weight = entity.weight,

@@ -67,14 +67,6 @@ class UserCommandService(
         userPersistencePort.save(user)
     }
 
-    override fun updateGoalKilo(
-        user: User,
-        goalKilo: Int,
-    ) {
-        user.updateGoalKilo(goalKilo)
-        userPersistencePort.save(user)
-    }
-
     override fun recordLogin(user: User) {
         user.updateLastLogin()
         userPersistencePort.save(user)

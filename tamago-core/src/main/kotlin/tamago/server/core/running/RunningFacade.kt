@@ -8,22 +8,35 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.application.service.RunningCommandService
+import tamago.server.core.running.application.service.RunningPlanCommandService
+import tamago.server.core.running.application.service.RunningPlanQueryService
 import tamago.server.core.running.application.service.RunningQueryService
+import tamago.server.core.running.domain.port.inbound.command.CreateRunningPlanCommandDto
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
+import tamago.server.core.running.domain.vo.RunningPlanId
 
 @Component
 class RunningFacade(
     private val runningCommandService: RunningCommandService,
     private val runningQueryService: RunningQueryService,
+    private val runningPlanQueryService: RunningPlanQueryService,
+    private val runningPlanCommandService: RunningPlanCommandService,
     private val monsterCommandUseCase: MonsterCommandUseCase,
     private val monsterQueryUseCase: MonsterQueryUseCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
+    fun createRunningPlan(command: CreateRunningPlanCommandDto): RunningPlanId =
+        runningPlanCommandService.create(command).id!!
+
+    @Transactional
     fun saveRunningData(command: SaveRunningCommandDto): RunningFinishQueryDto {
+        // runningPlan 존재 여부 검증
+        runningPlanQueryService.get(command.runningPlanId, command.userId)
+
         val running = runningCommandService.save(command)
         val totalDistance = runningQueryService.getTotalDistance(command.userId)
         val totalDurationMinutes = runningQueryService.getTotalDurationMinutes(command.userId)
