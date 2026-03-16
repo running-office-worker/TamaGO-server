@@ -35,7 +35,7 @@ class RunningFacade(
     @Transactional
     fun saveRunningData(command: SaveRunningCommandDto): RunningFinishQueryDto {
         // runningPlan 존재 여부 검증
-        runningPlanQueryService.getById(command.runningPlanId)
+        runningPlanQueryService.get(command.runningPlanId, command.userId)
 
         val running = runningCommandService.save(command)
         val totalDistance = runningQueryService.getTotalDistance(command.userId)
