@@ -43,8 +43,6 @@ jobs:
           key: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            set -a && source .env && set +a
-
             docker rm -f tamago-server || true
 
             docker pull ${{ secrets.DOCKER_USERNAME }}/tamago-server:latest
@@ -53,7 +51,7 @@ jobs:
               --name tamago-server \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=dev \
-              -v $FCM_CREDENTIALS_PATH:/app/firebase-service-account.json:ro \
+              -v ${{ secrets.FCM_CREDENTIALS_PATH }}:/app/firebase-service-account.json:ro \
               -p 8080:8080 \
               --network tamago \
               --cpus="0.5" \
