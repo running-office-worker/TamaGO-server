@@ -55,7 +55,7 @@ class UserCommandService(
         refreshTokenCommandUseCase.saveOrUpdate(userId, refreshToken)
 
         return TokenQueryDto(
-            userId = userId.value,
+            userId = userId!!.value,
             accessToken = accessToken,
             refreshToken = refreshToken,
             isNewUser = !user.isOnboarded(),

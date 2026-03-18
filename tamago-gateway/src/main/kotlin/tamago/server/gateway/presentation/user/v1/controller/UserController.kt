@@ -33,7 +33,7 @@ class UserController(
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 처리합니다. 유저 및 모든 연관 데이터가 soft delete 됩니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/api/v1/users/me")
+    @DeleteMapping("/api/v1/users")
     fun deleteAccount(
         @CurrentUser user: User,
     ): CustomResponse<Void> {
