@@ -37,6 +37,7 @@ class RunningFacade(
             .also { publishRunningCompletedEvent(command) }
 
     private fun saveRunIfPlanned(command: SaveRunningCommandDto): RunningId {
+        // running plan 이 있으면 러닝 기록 저장
         runningPlanQueryService.get(command.runningPlanId, command.userId)
         return runningCommandService.save(command)
     }
