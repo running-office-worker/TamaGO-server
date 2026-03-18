@@ -16,7 +16,11 @@ import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommand
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
+import tamago.server.core.running.domain.util.RunningCalculator.calculateCadence
+import tamago.server.core.running.domain.util.RunningCalculator.calculateCalories
+import tamago.server.core.running.domain.util.RunningCalculator.calculatePace
 import tamago.server.core.running.domain.vo.RunningPlanId
+import java.time.Duration
 
 @Component
 class RunningFacade(
@@ -34,10 +38,7 @@ class RunningFacade(
 
     @Transactional
     fun finishRun(command: SaveRunningCommandDto): RunningFinishQueryDto {
-        // running plan 있으면 러닝 기록 저장
-        runningPlanQueryService.get(command.runningPlanId, command.userId)
-        val running = runningCommandService.save(command)
-
+        saveRunIfPlanned(command)
         publishRunningCompletedEvent(command)
 
         // Query로 XP 계산, Command로 저장 (CQRS 분리)
@@ -45,10 +46,19 @@ class RunningFacade(
         monsterCommandUseCase.addEarnedXp(command.ownedMonsterId, xpResult.earnedXp)
 
         return RunningFinishQueryDto.of(
-            running = running,
+            pace = calculatePace(command.distance, command.startedAt, command.finishedAt).toInt(),
+            cadence = calculateCadence(command.distance, command.startedAt, command.finishedAt),
+            elapsedTime = Duration.between(command.startedAt, command.finishedAt).seconds.toInt(),
+            totalCalories = calculateCalories(command.distance, command.weight, command.startedAt, command.finishedAt),
             xpResult = xpResult,
             waypoints = command.waypoints.map { RunningFinishQueryDto.WaypointDto(it.latitude, it.longitude) },
         )
+    }
+
+    private fun saveRunIfPlanned(command: SaveRunningCommandDto) {
+        // running plan 있으면 러닝 기록 저장
+        runningPlanQueryService.get(command.runningPlanId, command.userId)
+        runningCommandService.save(command)
     }
 
     private fun publishRunningCompletedEvent(command: SaveRunningCommandDto) {

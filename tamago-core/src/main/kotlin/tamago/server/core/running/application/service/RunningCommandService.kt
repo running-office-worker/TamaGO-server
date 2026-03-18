@@ -30,7 +30,7 @@ class RunningCommandService(
             4326,
         )
 
-    fun save(command: SaveRunningCommandDto): Running {
+    fun save(command: SaveRunningCommandDto) {
         if (command.distance < 0 || !command.finishedAt.isAfter(command.startedAt)) {
             throw InvalidRunningDataException()
         }
@@ -58,7 +58,6 @@ class RunningCommandService(
 
         val savedRunning = runningPersistencePort.save(running)
         saveRunningRoute(savedRunning, command)
-        return savedRunning
     }
 
     fun delete(running: Running) {
