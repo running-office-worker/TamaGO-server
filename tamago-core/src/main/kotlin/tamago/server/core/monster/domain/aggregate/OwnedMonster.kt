@@ -32,12 +32,8 @@ class OwnedMonster(
         havingXp = (havingXp ?: 0) + xp
     }
 
-    fun evolve(
-        nextMonsterId: MonsterId,
-        currentEvolutionXp: Int,
-    ) {
+    fun evolve(nextMonsterId: MonsterId) {
         monsterId = nextMonsterId
-        havingXp = (havingXp ?: 0) - currentEvolutionXp
     }
 
     fun delete() {

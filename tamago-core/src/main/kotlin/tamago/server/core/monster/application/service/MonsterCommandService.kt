@@ -62,9 +62,8 @@ class MonsterCommandService(
     fun evolve(
         ownedMonster: OwnedMonster,
         nextMonsterId: MonsterId,
-        currentEvolutionXp: Int,
     ) {
-        ownedMonster.evolve(nextMonsterId, currentEvolutionXp)
+        ownedMonster.evolve(nextMonsterId)
         ownedMonsterPersistencePort.save(ownedMonster)
     }
 

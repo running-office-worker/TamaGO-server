@@ -70,7 +70,7 @@ class MonsterEventListener(
 
                 if ((ownedMonster.havingXp ?: 0) < evolutionXp) break
 
-                monsterCommandService.evolve(ownedMonster, nextMonsterId, evolutionXp)
+                monsterCommandService.evolve(ownedMonster, nextMonsterId)
             }
         } catch (e: Exception) {
             logger.error(
