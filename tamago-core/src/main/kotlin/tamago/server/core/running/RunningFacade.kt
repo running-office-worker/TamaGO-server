@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
-import tamago.server.core.monster.MonsterCommandUseCase
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.application.service.RunningCommandService
 import tamago.server.core.running.application.service.RunningPlanCommandService
@@ -16,11 +15,8 @@ import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommand
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
-import tamago.server.core.running.domain.util.RunningCalculator.calculateCadence
-import tamago.server.core.running.domain.util.RunningCalculator.calculateCalories
-import tamago.server.core.running.domain.util.RunningCalculator.calculatePace
+import tamago.server.core.running.domain.vo.RunningId
 import tamago.server.core.running.domain.vo.RunningPlanId
-import java.time.Duration
 
 @Component
 class RunningFacade(
@@ -28,7 +24,6 @@ class RunningFacade(
     private val runningQueryService: RunningQueryService,
     private val runningPlanQueryService: RunningPlanQueryService,
     private val runningPlanCommandService: RunningPlanCommandService,
-    private val monsterCommandUseCase: MonsterCommandUseCase,
     private val monsterQueryUseCase: MonsterQueryUseCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
@@ -37,28 +32,13 @@ class RunningFacade(
         runningPlanCommandService.create(command).id!!
 
     @Transactional
-    fun finishRun(command: SaveRunningCommandDto): RunningFinishQueryDto {
+    fun finishRun(command: SaveRunningCommandDto) =
         saveRunIfPlanned(command)
-        publishRunningCompletedEvent(command)
+            .also { publishRunningCompletedEvent(command) }
 
-        // Query로 XP 계산, Command로 저장 (CQRS 분리)
-        val xpResult = monsterQueryUseCase.calculateEarnedXp(command.ownedMonsterId, command.distance)
-        monsterCommandUseCase.addEarnedXp(command.ownedMonsterId, xpResult.earnedXp)
-
-        return RunningFinishQueryDto.of(
-            pace = calculatePace(command.distance, command.startedAt, command.finishedAt).toInt(),
-            cadence = calculateCadence(command.distance, command.startedAt, command.finishedAt),
-            elapsedTime = Duration.between(command.startedAt, command.finishedAt).seconds.toInt(),
-            totalCalories = calculateCalories(command.distance, command.weight, command.startedAt, command.finishedAt),
-            xpResult = xpResult,
-            waypoints = command.waypoints.map { RunningFinishQueryDto.WaypointDto(it.latitude, it.longitude) },
-        )
-    }
-
-    private fun saveRunIfPlanned(command: SaveRunningCommandDto) {
-        // running plan 있으면 러닝 기록 저장
+    private fun saveRunIfPlanned(command: SaveRunningCommandDto): RunningId {
         runningPlanQueryService.get(command.runningPlanId, command.userId)
-        runningCommandService.save(command)
+        return runningCommandService.save(command)
     }
 
     private fun publishRunningCompletedEvent(command: SaveRunningCommandDto) {
@@ -69,6 +49,7 @@ class RunningFacade(
         applicationEventPublisher.publishEvent(
             RunningCompletedEvent(
                 userId = command.userId,
+                ownedMonsterId = command.ownedMonsterId,
                 startedAt = command.startedAt,
                 distance = command.distance,
                 totalDistance = totalDistance,
@@ -77,6 +58,34 @@ class RunningFacade(
                 streakDays = streak.streakDays,
                 inactiveDays = streak.inactiveDays,
             ),
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getRunningResult(
+        runningId: RunningId,
+        userId: UserId,
+    ): RunningFinishQueryDto {
+        val running = runningQueryService.getRunning(runningId, userId)
+        val runningRoute = runningQueryService.getRunningRoute(runningId)
+
+        // LineString 좌표 → WaypointDto 변환
+        val waypoints =
+            runningRoute?.route?.let { lineString ->
+                lineString.coordinates.map { coordinate ->
+                    RunningFinishQueryDto.WaypointDto(
+                        latitude = coordinate.y,
+                        longitude = coordinate.x,
+                    )
+                }
+            } ?: emptyList()
+
+        val xpResult = monsterQueryUseCase.calculateEarnedXp(running.ownedMonsterId, running.distance ?: 0.0)
+
+        return RunningFinishQueryDto.of(
+            running = running,
+            xpResult = xpResult,
+            waypoints = waypoints,
         )
     }
 

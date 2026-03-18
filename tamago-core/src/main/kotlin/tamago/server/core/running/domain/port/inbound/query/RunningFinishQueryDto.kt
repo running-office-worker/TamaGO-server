@@ -1,6 +1,7 @@
 package tamago.server.core.running.domain.port.inbound.query
 
 import tamago.server.core.monster.MonsterQuery
+import tamago.server.core.running.domain.aggregate.Running
 
 data class RunningFinishQueryDto(
     val pace: Int,
@@ -26,18 +27,15 @@ data class RunningFinishQueryDto(
 
     companion object {
         fun of(
-            pace: Int,
-            cadence: Int,
-            elapsedTime: Int,
-            totalCalories: Int,
+            running: Running,
             xpResult: MonsterQuery.XpResult,
             waypoints: List<WaypointDto>,
         ): RunningFinishQueryDto =
             RunningFinishQueryDto(
-                pace = pace,
-                cadence = cadence,
-                elapsedTime = elapsedTime,
-                totalCalories = totalCalories,
+                pace = running.pace?.toInt() ?: 0,
+                cadence = running.cadence ?: 0,
+                elapsedTime = running.elapsedTime ?: 0,
+                totalCalories = running.calories ?: 0,
                 originXp = xpResult.originXp,
                 earnedXp = xpResult.earnedXp,
                 evolutionStages =

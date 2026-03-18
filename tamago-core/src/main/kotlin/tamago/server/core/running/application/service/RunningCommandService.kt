@@ -16,6 +16,7 @@ import tamago.server.core.running.domain.port.outbound.RunningRoutePersistencePo
 import tamago.server.core.running.domain.util.RunningCalculator.calculateCadence
 import tamago.server.core.running.domain.util.RunningCalculator.calculateCalories
 import tamago.server.core.running.domain.util.RunningCalculator.calculatePace
+import tamago.server.core.running.domain.vo.RunningId
 import java.time.Duration
 
 @Service
@@ -30,7 +31,7 @@ class RunningCommandService(
             4326,
         )
 
-    fun save(command: SaveRunningCommandDto) {
+    fun save(command: SaveRunningCommandDto): RunningId {
         if (command.distance < 0 || !command.finishedAt.isAfter(command.startedAt)) {
             throw InvalidRunningDataException()
         }
@@ -58,6 +59,7 @@ class RunningCommandService(
 
         val savedRunning = runningPersistencePort.save(running)
         saveRunningRoute(savedRunning, command)
+        return savedRunning.id!!
     }
 
     fun delete(running: Running) {

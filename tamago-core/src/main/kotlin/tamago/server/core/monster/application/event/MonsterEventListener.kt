@@ -45,6 +45,20 @@ class MonsterEventListener(
     @TransactionalEventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {
+        applyEarnedXp(event)
+        unlockMonsters(event)
+    }
+
+    private fun applyEarnedXp(event: RunningCompletedEvent) {
+        try {
+            val xpResult = monsterQueryService.calculateEarnedXp(event.ownedMonsterId, event.distance)
+            monsterCommandService.addEarnedXp(event.ownedMonsterId, xpResult.earnedXp)
+        } catch (e: Exception) {
+            logger.error(e) { "러닝 완료 후 XP 적용 오류 - userId: ${event.userId}, ownedMonsterId: ${event.ownedMonsterId}" }
+        }
+    }
+
+    private fun unlockMonsters(event: RunningCompletedEvent) {
         try {
             val allFirstStageMonsters = monsterQueryService.getAllFirstStageWithUnlockPolicies()
 
