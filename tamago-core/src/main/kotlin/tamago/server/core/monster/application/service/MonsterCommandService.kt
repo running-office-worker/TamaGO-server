@@ -59,6 +59,15 @@ class MonsterCommandService(
         ownedMonsterPersistencePort.save(ownedMonster)
     }
 
+    fun evolve(
+        ownedMonster: OwnedMonster,
+        nextMonsterId: MonsterId,
+        currentEvolutionXp: Int,
+    ) {
+        ownedMonster.evolve(nextMonsterId, currentEvolutionXp)
+        ownedMonsterPersistencePort.save(ownedMonster)
+    }
+
     fun delete(ownedMonster: OwnedMonster) {
         ownedMonster.delete()
         ownedMonsterPersistencePort.save(ownedMonster)

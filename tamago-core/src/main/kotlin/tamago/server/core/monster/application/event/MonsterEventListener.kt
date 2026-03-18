@@ -46,6 +46,7 @@ class MonsterEventListener(
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {
         applyEarnedXp(event)
+        evolutionMonsters(event)
         unlockMonsters(event)
     }
 
@@ -55,6 +56,26 @@ class MonsterEventListener(
             monsterCommandService.addEarnedXp(event.ownedMonsterId, xpResult.earnedXp)
         } catch (e: Exception) {
             logger.error(e) { "러닝 완료 후 XP 적용 오류 - userId: ${event.userId}, ownedMonsterId: ${event.ownedMonsterId}" }
+        }
+    }
+
+    private fun evolutionMonsters(event: RunningCompletedEvent) {
+        try {
+            var ownedMonster = monsterQueryService.getOwnedMonster(event.ownedMonsterId)
+
+            while (true) {
+                val monster = monsterQueryService.get(ownedMonster.monsterId)
+                val nextMonsterId = monster.nextMonsterId ?: break
+                val evolutionXp = monster.evolutionXp ?: break
+
+                if ((ownedMonster.havingXp ?: 0) < evolutionXp) break
+
+                monsterCommandService.evolve(ownedMonster, nextMonsterId, evolutionXp)
+            }
+        } catch (e: Exception) {
+            logger.error(
+                e,
+            ) { "러닝 완료 후 몬스터 진화 처리 오류 - userId: ${event.userId}, ownedMonsterId: ${event.ownedMonsterId}" }
         }
     }
 

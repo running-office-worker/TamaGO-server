@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 class OwnedMonster(
     val id: OwnedMonsterId? = null,
-    val monsterId: MonsterId,
+    monsterId: MonsterId,
     val userId: UserId,
     havingXp: Int? = null,
     status: OwnedMonsterStatus? = null,
@@ -16,6 +16,9 @@ class OwnedMonster(
     val updatedAt: LocalDateTime? = null,
     deletedAt: LocalDateTime? = null,
 ) {
+    var monsterId: MonsterId = monsterId
+        private set
+
     var havingXp: Int? = havingXp
         private set
 
@@ -27,6 +30,14 @@ class OwnedMonster(
 
     fun addXp(xp: Int) {
         havingXp = (havingXp ?: 0) + xp
+    }
+
+    fun evolve(
+        nextMonsterId: MonsterId,
+        currentEvolutionXp: Int,
+    ) {
+        monsterId = nextMonsterId
+        havingXp = (havingXp ?: 0) - currentEvolutionXp
     }
 
     fun delete() {
