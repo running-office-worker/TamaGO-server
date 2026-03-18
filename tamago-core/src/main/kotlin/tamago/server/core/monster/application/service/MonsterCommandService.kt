@@ -59,6 +59,11 @@ class MonsterCommandService(
         ownedMonsterPersistencePort.save(ownedMonster)
     }
 
+    fun delete(ownedMonster: OwnedMonster) {
+        ownedMonster.delete()
+        ownedMonsterPersistencePort.save(ownedMonster)
+    }
+
     fun ownMonster(
         monsterId: MonsterId,
         userId: UserId,

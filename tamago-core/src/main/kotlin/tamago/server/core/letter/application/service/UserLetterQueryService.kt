@@ -25,6 +25,8 @@ class UserLetterQueryService(
     fun getScheduledLettersBeforeOrEqual(now: LocalDateTime): List<UserLetter> =
         userLetterPersistencePort.findAllByLetterStatusAndScheduledAtBeforeOrEqual(LetterStatus.SCHEDULED, now)
 
+    fun findByUserId(userId: UserId): List<UserLetter> = userLetterPersistencePort.findByUserId(userId)
+
     fun findByUserIdAndLetterStatus(
         userId: UserId,
         letterStatus: LetterStatus,

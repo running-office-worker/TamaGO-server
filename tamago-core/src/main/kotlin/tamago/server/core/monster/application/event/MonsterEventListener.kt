@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.common.event.RunningCompletedEvent
+import tamago.server.core.common.event.UserDeletedEvent
 import tamago.server.core.common.event.UserSignedUpEvent
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
@@ -27,6 +28,17 @@ class MonsterEventListener(
         } catch (e: Exception) {
             // TODO: Sentry 연동
             logger.error(e) { "회원 가입 후 기본 몬스터 지급 오류 - userId: ${event.userId}" }
+        }
+    }
+
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun onUserDeleted(event: UserDeletedEvent) {
+        try {
+            val ownedMonsters = monsterQueryService.getOwnedMonstersByUserId(event.userId)
+            ownedMonsters.forEach { monsterCommandService.delete(it) }
+        } catch (e: Exception) {
+            logger.error(e) { "회원 탈퇴 후 보유 몬스터 삭제 오류 - userId: ${event.userId}" }
         }
     }
 

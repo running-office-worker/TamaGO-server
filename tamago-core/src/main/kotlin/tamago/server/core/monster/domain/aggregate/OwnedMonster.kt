@@ -14,7 +14,7 @@ class OwnedMonster(
     status: OwnedMonsterStatus? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    val deletedAt: LocalDateTime? = null,
+    deletedAt: LocalDateTime? = null,
 ) {
     var havingXp: Int? = havingXp
         private set
@@ -22,8 +22,15 @@ class OwnedMonster(
     var status: OwnedMonsterStatus? = status
         private set
 
+    var deletedAt: LocalDateTime? = deletedAt
+        private set
+
     fun addXp(xp: Int) {
         havingXp = (havingXp ?: 0) + xp
+    }
+
+    fun delete() {
+        this.deletedAt = LocalDateTime.now()
     }
 
     companion object {

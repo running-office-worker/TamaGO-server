@@ -10,8 +10,15 @@ class RunningPlan(
     val goalDistance: Double,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    val deletedAt: LocalDateTime? = null,
+    deletedAt: LocalDateTime? = null,
 ) {
+    var deletedAt: LocalDateTime? = deletedAt
+        private set
+
+    fun delete() {
+        this.deletedAt = LocalDateTime.now()
+    }
+
     companion object {
         fun create(
             userId: UserId,

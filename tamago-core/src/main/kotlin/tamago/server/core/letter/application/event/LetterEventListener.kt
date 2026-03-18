@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.common.event.RunningCompletedEvent
+import tamago.server.core.common.event.UserDeletedEvent
 import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
@@ -21,6 +22,17 @@ class LetterEventListener(
     private val userLetterQueryService: UserLetterQueryService,
     private val userLetterCommandService: UserLetterCommandService,
 ) {
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun onUserDeleted(event: UserDeletedEvent) {
+        try {
+            val userLetters = userLetterQueryService.findByUserId(event.userId)
+            userLetters.forEach { userLetterCommandService.delete(it) }
+        } catch (e: Exception) {
+            logger.error(e) { "회원 탈퇴 후 편지 데이터 삭제 오류 - userId: ${event.userId}" }
+        }
+    }
+
     @TransactionalEventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {

@@ -3,6 +3,7 @@ package tamago.server.core.user.application.service
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import tamago.server.core.common.event.UserDeletedEvent
 import tamago.server.core.common.event.UserSignedUpEvent
 import tamago.server.core.common.jwt.JwtTokenProvider
 import tamago.server.core.common.vo.UserId
@@ -70,6 +71,12 @@ class UserCommandService(
     override fun recordLogin(user: User) {
         user.updateLastLogin()
         userPersistencePort.save(user)
+    }
+
+    override fun deleteUser(user: User) {
+        user.delete()
+        userPersistencePort.save(user)
+        applicationEventPublisher.publishEvent(UserDeletedEvent(user.id!!))
     }
 
     fun addRunningDistance(

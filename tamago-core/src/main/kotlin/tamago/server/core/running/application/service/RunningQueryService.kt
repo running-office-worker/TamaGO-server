@@ -5,8 +5,10 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.RunningQuery
 import tamago.server.core.running.RunningQueryUseCase
 import tamago.server.core.running.domain.aggregate.Running
+import tamago.server.core.running.domain.aggregate.RunningPlan
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
+import tamago.server.core.running.domain.port.outbound.RunningPlanPersistencePort
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -14,6 +16,7 @@ import java.time.temporal.ChronoUnit
 @Service
 class RunningQueryService(
     private val runningPersistencePort: RunningPersistencePort,
+    private val runningPlanPersistencePort: RunningPlanPersistencePort,
 ) : RunningQueryUseCase {
     override fun getLastFinishedAt(userId: UserId): LocalDateTime? =
         runningPersistencePort.findLastByUserId(userId)?.finishedAt
@@ -26,6 +29,11 @@ class RunningQueryService(
         year: Int,
         month: Int,
     ): List<Running> = runningPersistencePort.findAllByUserIdAndMonth(userId, year, month)
+
+    fun findAllByUserId(userId: UserId): List<Running> = runningPersistencePort.findAllByUserId(userId)
+
+    fun findAllRunningPlansByUserId(userId: UserId): List<RunningPlan> =
+        runningPlanPersistencePort.findAllByUserId(userId)
 
     fun getTotalDistance(userId: UserId): Double = runningPersistencePort.sumDistanceByUserId(userId)
 

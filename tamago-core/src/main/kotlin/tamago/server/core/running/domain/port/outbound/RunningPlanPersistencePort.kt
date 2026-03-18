@@ -11,4 +11,6 @@ interface RunningPlanPersistencePort {
         id: RunningPlanId,
         userId: UserId,
     ): RunningPlan?
+
+    fun findAllByUserId(userId: UserId): List<RunningPlan>
 }

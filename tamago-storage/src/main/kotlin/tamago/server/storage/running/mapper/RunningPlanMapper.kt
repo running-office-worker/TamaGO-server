@@ -6,12 +6,16 @@ import tamago.server.core.running.domain.vo.RunningPlanId
 import tamago.server.storage.running.entity.RunningPlanEntity
 
 object RunningPlanMapper {
-    fun toEntity(domain: RunningPlan): RunningPlanEntity =
-        RunningPlanEntity(
-            id = domain.id?.value,
-            userId = domain.userId.value,
-            goalDistance = domain.goalDistance,
-        )
+    fun toEntity(domain: RunningPlan): RunningPlanEntity {
+        val entity =
+            RunningPlanEntity(
+                id = domain.id?.value,
+                userId = domain.userId.value,
+                goalDistance = domain.goalDistance,
+            )
+        entity.deletedAt = domain.deletedAt
+        return entity
+    }
 
     fun toDomain(entity: RunningPlanEntity?): RunningPlan? {
         if (entity == null) return null

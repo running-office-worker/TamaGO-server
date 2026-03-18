@@ -8,22 +8,26 @@ import tamago.server.core.running.domain.vo.RunningPlanId
 import tamago.server.storage.running.entity.RunningEntity
 
 object RunningMapper {
-    fun toEntity(running: Running): RunningEntity =
-        RunningEntity(
-            id = running.id?.value,
-            userId = running.userId.value,
-            ownedMonsterId = running.ownedMonsterId.value,
-            pace = running.pace,
-            cadence = running.cadence,
-            calories = running.calories,
-            distance = running.distance,
-            elevationGain = running.elevationGain,
-            heartbeat = running.heartbeat,
-            elapsedTime = running.elapsedTime,
-            startedAt = running.startedAt,
-            finishedAt = running.finishedAt,
-            runningPlanId = running.runningPlanId.value,
-        )
+    fun toEntity(running: Running): RunningEntity {
+        val entity =
+            RunningEntity(
+                id = running.id?.value,
+                userId = running.userId.value,
+                ownedMonsterId = running.ownedMonsterId.value,
+                pace = running.pace,
+                cadence = running.cadence,
+                calories = running.calories,
+                distance = running.distance,
+                elevationGain = running.elevationGain,
+                heartbeat = running.heartbeat,
+                elapsedTime = running.elapsedTime,
+                startedAt = running.startedAt,
+                finishedAt = running.finishedAt,
+                runningPlanId = running.runningPlanId.value,
+            )
+        entity.deletedAt = running.deletedAt
+        return entity
+    }
 
     fun toDomain(entity: RunningEntity?): Running? {
         if (entity == null) return null

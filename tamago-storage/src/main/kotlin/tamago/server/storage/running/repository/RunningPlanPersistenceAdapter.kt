@@ -21,4 +21,9 @@ class RunningPlanPersistenceAdapter(
         runningPlanJpaRepository
             .findByIdAndUserIdAndDeletedAtIsNull(id.value, userId.value)
             ?.let { RunningPlanMapper.toDomain(it) }
+
+    override fun findAllByUserId(userId: UserId): List<RunningPlan> =
+        runningPlanJpaRepository
+            .findAllByUserIdAndDeletedAtIsNull(userId.value)
+            .mapNotNull { RunningPlanMapper.toDomain(it) }
 }

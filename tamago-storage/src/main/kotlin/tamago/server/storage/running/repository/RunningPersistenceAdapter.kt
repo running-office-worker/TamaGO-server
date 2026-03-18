@@ -147,4 +147,9 @@ class RunningPersistenceAdapter(
             .map { it.toLocalDate() }
             .distinct()
     }
+
+    override fun findAllByUserId(userId: UserId): List<Running> =
+        runningJpaRepository
+            .findAllByUserIdAndDeletedAtIsNull(userId.value)
+            .mapNotNull { RunningMapper.toDomain(it) }
 }

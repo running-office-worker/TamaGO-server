@@ -16,4 +16,6 @@ interface UserCommandUseCase {
     )
 
     fun recordLogin(user: User)
+
+    fun deleteUser(user: User)
 }

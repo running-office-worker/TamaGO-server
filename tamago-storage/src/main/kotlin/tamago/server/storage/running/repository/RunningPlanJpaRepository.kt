@@ -8,4 +8,6 @@ interface RunningPlanJpaRepository : JpaRepository<RunningPlanEntity, Long> {
         id: Long,
         userId: Long,
     ): RunningPlanEntity?
+
+    fun findAllByUserIdAndDeletedAtIsNull(userId: Long): List<RunningPlanEntity>
 }

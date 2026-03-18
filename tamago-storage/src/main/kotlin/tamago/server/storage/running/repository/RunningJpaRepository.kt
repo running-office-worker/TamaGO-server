@@ -12,4 +12,6 @@ interface RunningJpaRepository : JpaRepository<RunningEntity, Long> {
     ): List<RunningEntity>
 
     fun findTopByUserIdAndDeletedAtIsNullOrderByFinishedAtDesc(userId: Long): RunningEntity?
+
+    fun findAllByUserIdAndDeletedAtIsNull(userId: Long): List<RunningEntity>
 }

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service
 import tamago.server.core.running.RunningCommandUseCase
 import tamago.server.core.running.application.exception.InvalidRunningDataException
 import tamago.server.core.running.domain.aggregate.Running
+import tamago.server.core.running.domain.aggregate.RunningPlan
 import tamago.server.core.running.domain.aggregate.RunningRoute
 import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommandDto
 import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
+import tamago.server.core.running.domain.port.outbound.RunningPlanPersistencePort
 import tamago.server.core.running.domain.port.outbound.RunningRoutePersistencePort
 import tamago.server.core.running.domain.util.RunningCalculator.calculateCadence
 import tamago.server.core.running.domain.util.RunningCalculator.calculateCalories
@@ -19,6 +21,7 @@ import java.time.Duration
 @Service
 class RunningCommandService(
     private val runningPersistencePort: RunningPersistencePort,
+    private val runningPlanPersistencePort: RunningPlanPersistencePort,
     private val runningRoutePersistencePort: RunningRoutePersistencePort,
 ) : RunningCommandUseCase {
     private val geometryFactory =
@@ -56,6 +59,16 @@ class RunningCommandService(
         val savedRunning = runningPersistencePort.save(running)
         saveRunningRoute(savedRunning, command)
         return savedRunning
+    }
+
+    fun delete(running: Running) {
+        running.delete()
+        runningPersistencePort.save(running)
+    }
+
+    fun deleteRunningPlan(runningPlan: RunningPlan) {
+        runningPlan.delete()
+        runningPlanPersistencePort.save(runningPlan)
     }
 
     private fun saveRunningRoute(

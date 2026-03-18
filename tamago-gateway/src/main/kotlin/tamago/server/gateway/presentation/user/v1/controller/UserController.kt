@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -29,6 +30,16 @@ class UserController(
     fun me(
         @CurrentUser user: User,
     ): CustomResponse<MeResponse> = CustomResponse.ok(MeResponse.from(user))
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 처리합니다. 유저 및 모든 연관 데이터가 soft delete 됩니다.")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @DeleteMapping("/api/v1/users/me")
+    fun deleteAccount(
+        @CurrentUser user: User,
+    ): CustomResponse<Void> {
+        userCommandUseCase.deleteUser(user)
+        return CustomResponse.ok()
+    }
 
     @Operation(summary = "애칭 설정하기", description = "타마고 애칭을 설정합니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
