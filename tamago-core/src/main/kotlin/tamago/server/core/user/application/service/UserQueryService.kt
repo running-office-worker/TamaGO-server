@@ -31,5 +31,10 @@ class UserQueryService(
             ?: throw InvalidCredentialsException()
     }
 
+    fun findByExternalId(
+        provider: AuthProvider,
+        externalId: String,
+    ): User? = userPersistencePort.findByExternalId(provider, externalId)
+
     override fun exists(email: String): Boolean = userPersistencePort.existsByEmail(email)
 }
