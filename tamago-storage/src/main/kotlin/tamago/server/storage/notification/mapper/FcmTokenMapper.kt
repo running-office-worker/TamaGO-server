@@ -6,18 +6,15 @@ import tamago.server.core.notification.domain.vo.FcmTokenId
 import tamago.server.storage.notification.entity.FcmTokenEntity
 
 object FcmTokenMapper {
-    fun toEntity(fcmToken: FcmToken): FcmTokenEntity {
-        val entity =
-            FcmTokenEntity(
-                id = fcmToken.id?.value,
-                userId = fcmToken.userId.value,
-                token = fcmToken.token,
-                deviceType = fcmToken.deviceType,
-                lastUsedAt = fcmToken.lastUsedAt,
-            )
-        entity.deletedAt = fcmToken.deletedAt
-        return entity
-    }
+    fun toEntity(fcmToken: FcmToken): FcmTokenEntity =
+        FcmTokenEntity(
+            id = fcmToken.id?.value,
+            userId = fcmToken.userId.value,
+            token = fcmToken.token,
+            deviceType = fcmToken.deviceType,
+            lastUsedAt = fcmToken.lastUsedAt,
+            deletedAt = fcmToken.deletedAt,
+        )
 
     fun toDomain(entity: FcmTokenEntity?): FcmToken? {
         if (entity == null) return null

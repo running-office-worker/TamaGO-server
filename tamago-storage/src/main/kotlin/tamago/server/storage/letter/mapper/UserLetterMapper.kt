@@ -19,8 +19,8 @@ object UserLetterMapper {
                 letter = letter,
                 letterStatus = userLetter.letterStatus,
                 scheduledAt = userLetter.scheduledAt,
+                deletedAt = userLetter.deletedAt,
             )
-        entity.deletedAt = userLetter.deletedAt
         return entity
     }
 

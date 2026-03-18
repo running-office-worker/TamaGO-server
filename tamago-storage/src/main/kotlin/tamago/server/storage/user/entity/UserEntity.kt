@@ -36,4 +36,5 @@ class UserEntity(
     @Column(nullable = false)
     var weight: Double = 70.0,
     var lastLoginAt: LocalDateTime? = null,
-) : BaseTimeEntity()
+    deletedAt: LocalDateTime? = null,
+) : BaseTimeEntity(deletedAt = deletedAt)

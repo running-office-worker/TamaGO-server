@@ -19,4 +19,5 @@ class RunningPlanEntity(
     val userId: Long,
     @Column(name = "goal_distance", nullable = false)
     val goalDistance: Double,
-) : BaseTimeEntity()
+    deletedAt: java.time.LocalDateTime? = null,
+) : BaseTimeEntity(deletedAt = deletedAt)

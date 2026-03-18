@@ -15,8 +15,8 @@ object UserMapper {
                 totalKilo = user.runningData.totalKilo,
                 weight = user.weight,
                 lastLoginAt = user.lastLoginAt,
+                deletedAt = user.deletedAt,
             )
-        userEntity.deletedAt = user.deletedAt
 
         user.auths.forEach { auth ->
             val authEntity = UserAuthMapper.toEntity(auth)

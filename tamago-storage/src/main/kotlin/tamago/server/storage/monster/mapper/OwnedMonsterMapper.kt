@@ -11,18 +11,15 @@ object OwnedMonsterMapper {
     fun toEntity(
         ownedMonster: OwnedMonster,
         monster: MonsterEntity,
-    ): OwnedMonsterEntity {
-        val entity =
-            OwnedMonsterEntity(
-                id = ownedMonster.id?.value,
-                monster = monster,
-                userId = ownedMonster.userId.value,
-                havingXp = ownedMonster.havingXp,
-                status = ownedMonster.status,
-            )
-        entity.deletedAt = ownedMonster.deletedAt
-        return entity
-    }
+    ): OwnedMonsterEntity =
+        OwnedMonsterEntity(
+            id = ownedMonster.id?.value,
+            monster = monster,
+            userId = ownedMonster.userId.value,
+            havingXp = ownedMonster.havingXp,
+            status = ownedMonster.status,
+            deletedAt = ownedMonster.deletedAt,
+        )
 
     fun toDomain(entity: OwnedMonsterEntity?): OwnedMonster? {
         if (entity == null) return null
