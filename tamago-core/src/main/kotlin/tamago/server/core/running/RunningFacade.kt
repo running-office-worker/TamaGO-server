@@ -29,19 +29,16 @@ class RunningFacade(
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
-    fun createRunningPlan(command: CreateRunningPlanCommandDto): RunningPlanId =
+    fun makeRunningPlan(command: CreateRunningPlanCommandDto): RunningPlanId =
         runningPlanCommandService.create(command).id!!
 
     @Transactional
-    fun saveRunningData(command: SaveRunningCommandDto): RunningFinishQueryDto {
-        // runningPlan 존재 여부 검증
+    fun finishRun(command: SaveRunningCommandDto): RunningFinishQueryDto {
+        // running plan 있으면 러닝 기록 저장
         runningPlanQueryService.get(command.runningPlanId, command.userId)
-
         val running = runningCommandService.save(command)
-        val totalDistance = runningQueryService.getTotalDistance(command.userId)
-        val totalDurationMinutes = runningQueryService.getTotalDurationMinutes(command.userId)
 
-        publishRunningCompletedEvent(command, totalDistance, totalDurationMinutes)
+        publishRunningCompletedEvent(command)
 
         // Query로 XP 계산, Command로 저장 (CQRS 분리)
         val xpResult = monsterQueryUseCase.calculateEarnedXp(command.ownedMonsterId, command.distance)
@@ -54,11 +51,9 @@ class RunningFacade(
         )
     }
 
-    private fun publishRunningCompletedEvent(
-        command: SaveRunningCommandDto,
-        totalDistance: Double,
-        totalDurationMinutes: Long,
-    ) {
+    private fun publishRunningCompletedEvent(command: SaveRunningCommandDto) {
+        val totalDistance = runningQueryService.getTotalDistance(command.userId)
+        val totalDurationMinutes = runningQueryService.getTotalDurationMinutes(command.userId)
         val streak = runningQueryService.getRunningStreak(command.userId)
 
         applicationEventPublisher.publishEvent(

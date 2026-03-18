@@ -37,7 +37,7 @@ class RunningController(
         @CurrentUser user: User,
         @RequestBody @Valid request: RunningPlanRequest,
     ): CustomResponse<RunningPlanResponse> {
-        val runningPlanId = runningFacade.createRunningPlan(request.toCommand(user.id!!))
+        val runningPlanId = runningFacade.makeRunningPlan(request.toCommand(user.id!!))
         return CustomResponse.created(RunningPlanResponse.from(runningPlanId))
     }
 
@@ -49,7 +49,7 @@ class RunningController(
         @CurrentUser user: User,
         @RequestBody @Valid request: RunningRequest,
     ): CustomResponse<RunningFinishResponse> {
-        val result = runningFacade.saveRunningData(request.toCommand(user.id!!, user.weight))
+        val result = runningFacade.finishRun(request.toCommand(user.id!!, user.weight))
         return CustomResponse.created(RunningFinishResponse.from(result))
     }
 

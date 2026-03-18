@@ -56,12 +56,18 @@ class MonsterEventListener(
                 .filter { monster -> monster.id !in ownedMonsterIds } // 이미 보유한 몬스터는 제외
                 .filter { monster ->
                     monster.unlockPolicies.any {
+                        // 여러 해금 조건 중 하나라도 만족하면 몬스터 해금
                         it.isSatisfiedBy(
                             event.totalDistance,
                             event.totalDurationMinutes,
                         )
                     }
-                }.forEach { monster -> monsterCommandService.ownMonster(monster.id!!, event.userId) }
+                }.forEach { monster ->
+                    monsterCommandService.ownMonster( // 해금 조건 만족하는 몬스터 소유 처리
+                        monster.id!!,
+                        event.userId,
+                    )
+                }
         } catch (e: Exception) {
             // TODO: Sentry 연동
             logger.error(e) { "러닝 완료 후 몬스터 해금 처리 오류 - userId: ${event.userId}" }
