@@ -33,7 +33,7 @@ class RunningController(
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/api/v1/running/plan")
-    fun createRunningPlan(
+    fun makeRunningPlan(
         @CurrentUser user: User,
         @RequestBody @Valid request: RunningPlanRequest,
     ): CustomResponse<RunningPlanResponse> {
@@ -45,7 +45,7 @@ class RunningController(
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/api/v1/running")
-    fun saveRunningData(
+    fun finishRun(
         @CurrentUser user: User,
         @RequestBody @Valid request: RunningRequest,
     ): CustomResponse<RunningFinishResponse> {
