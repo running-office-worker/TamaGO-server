@@ -3,6 +3,7 @@ package tamago.server.core.user.application.service
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.event.UserDeletedEvent
 import tamago.server.core.common.event.UserSignedUpEvent
 import tamago.server.core.common.jwt.JwtTokenProvider
@@ -18,6 +19,7 @@ import tamago.server.core.user.domain.port.inbound.query.TokenQueryDto
 import tamago.server.core.user.domain.port.outbound.UserPersistencePort
 
 @Service
+@Transactional
 class UserCommandService(
     private val userPersistencePort: UserPersistencePort,
     private val refreshTokenCommandUseCase: RefreshTokenCommandUseCase,
