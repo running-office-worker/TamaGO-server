@@ -22,8 +22,16 @@ class Running(
     val finishedAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    val deletedAt: LocalDateTime? = null,
+    deletedAt: LocalDateTime? = null,
 ) {
+    var deletedAt: LocalDateTime? = deletedAt
+        private set
+
+    fun delete() {
+        if (this.deletedAt != null) return
+        this.deletedAt = LocalDateTime.now()
+    }
+
     companion object {
         fun create(
             userId: UserId,

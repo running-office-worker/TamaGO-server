@@ -23,6 +23,7 @@ object RunningMapper {
             startedAt = running.startedAt,
             finishedAt = running.finishedAt,
             runningPlanId = running.runningPlanId.value,
+            deletedAt = running.deletedAt,
         )
 
     fun toDomain(entity: RunningEntity?): Running? {

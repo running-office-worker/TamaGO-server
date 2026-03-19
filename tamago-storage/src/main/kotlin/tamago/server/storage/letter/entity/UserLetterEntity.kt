@@ -38,4 +38,5 @@ class UserLetterEntity(
     var letterStatus: LetterStatus = LetterStatus.UNREAD,
     @Column(name = "scheduled_at")
     val scheduledAt: LocalDateTime? = null,
-) : BaseTimeEntity()
+    deletedAt: LocalDateTime? = null,
+) : BaseTimeEntity(deletedAt = deletedAt)

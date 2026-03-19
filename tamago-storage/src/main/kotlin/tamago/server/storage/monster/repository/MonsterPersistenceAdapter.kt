@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Repository
 import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.monster.domain.aggregate.Monster
+import tamago.server.core.monster.domain.enum.MonsterType
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.storage.monster.entity.MonsterEntity
 import tamago.server.storage.monster.mapper.MonsterMapper
@@ -57,22 +58,6 @@ class MonsterPersistenceAdapter(
             .mapNotNull { MonsterMapper.toDomain(it) }
     }
 
-    override fun findDefaultMonster(): Monster? {
-        val query =
-            jpql {
-                selectDistinct(
-                    entity(MonsterEntity::class),
-                ).from(
-                    entity(MonsterEntity::class),
-                    leftFetchJoin(MonsterEntity::unlockPolicies),
-                ).where(
-                    path(MonsterEntity::previousMonster).isNull(),
-                )
-            }
-
-        return entityManager
-            .findAll<MonsterEntity>(query, jpqlRenderContext)
-            .firstOrNull { it.unlockPolicies.isEmpty() }
-            ?.let { MonsterMapper.toDomain(it) }
-    }
+    override fun findDefaultMonster(): Monster? =
+        MonsterMapper.toDomain(monsterJpaRepository.findByMonsterType(MonsterType.DEFAULT))
 }

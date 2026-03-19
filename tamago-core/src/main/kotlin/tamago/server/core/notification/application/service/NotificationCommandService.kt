@@ -33,4 +33,13 @@ class NotificationCommandService(
         )
         logger.info { "편지 도착 알림 발송 완료 - tokenCount: ${tokens.size}" }
     }
+
+    fun deleteFcmTokens(tokens: List<FcmToken>) {
+        tokens.forEach { delete(it) }
+    }
+
+    fun delete(fcmToken: FcmToken) {
+        fcmToken.delete()
+        fcmTokenPersistencePort.save(fcmToken)
+    }
 }

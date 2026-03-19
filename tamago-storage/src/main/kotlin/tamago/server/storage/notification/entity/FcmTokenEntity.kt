@@ -27,4 +27,5 @@ class FcmTokenEntity(
     @Column(name = "device_type", nullable = false)
     val deviceType: DeviceType,
     var lastUsedAt: LocalDateTime? = null,
-) : BaseTimeEntity()
+    deletedAt: LocalDateTime? = null,
+) : BaseTimeEntity(deletedAt = deletedAt)

@@ -11,14 +11,18 @@ object UserLetterMapper {
     fun toEntity(
         userLetter: UserLetter,
         letter: LetterEntity,
-    ): UserLetterEntity =
-        UserLetterEntity(
-            id = userLetter.id?.value,
-            userId = userLetter.userId.value,
-            letter = letter,
-            letterStatus = userLetter.letterStatus,
-            scheduledAt = userLetter.scheduledAt,
-        )
+    ): UserLetterEntity {
+        val entity =
+            UserLetterEntity(
+                id = userLetter.id?.value,
+                userId = userLetter.userId.value,
+                letter = letter,
+                letterStatus = userLetter.letterStatus,
+                scheduledAt = userLetter.scheduledAt,
+                deletedAt = userLetter.deletedAt,
+            )
+        return entity
+    }
 
     fun toDomain(entity: UserLetterEntity?): UserLetter? {
         if (entity == null) return null

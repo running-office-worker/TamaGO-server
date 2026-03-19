@@ -13,12 +13,15 @@ class FcmToken(
     lastUsedAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    val deletedAt: LocalDateTime? = null,
+    deletedAt: LocalDateTime? = null,
 ) {
     var token: String? = token
         private set
 
     var lastUsedAt: LocalDateTime? = lastUsedAt
+        private set
+
+    var deletedAt: LocalDateTime? = deletedAt
         private set
 
     fun updateToken(token: String) {
@@ -28,6 +31,11 @@ class FcmToken(
 
     fun updateLastUsedAt() {
         this.lastUsedAt = LocalDateTime.now()
+    }
+
+    fun delete() {
+        if (this.deletedAt != null) return
+        this.deletedAt = LocalDateTime.now()
     }
 
     companion object {

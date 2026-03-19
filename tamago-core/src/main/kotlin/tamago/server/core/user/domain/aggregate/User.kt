@@ -15,8 +15,11 @@ class User(
     lastLoginAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    val deletedAt: LocalDateTime? = null,
+    deletedAt: LocalDateTime? = null,
 ) {
+    var deletedAt: LocalDateTime? = deletedAt
+        private set
+
     var nickname: String? = nickname
         private set
 
@@ -44,6 +47,11 @@ class User(
 
     fun addRunningDistance(distance: Double) {
         this.runningData = runningData.addKilo(distance)
+    }
+
+    fun delete() {
+        if (this.deletedAt != null) return
+        this.deletedAt = LocalDateTime.now()
     }
 
     fun isOnboarded(): Boolean = !nickname.isNullOrBlank()

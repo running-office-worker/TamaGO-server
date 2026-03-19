@@ -1,6 +1,7 @@
 package tamago.server.core.monster.domain.aggregate
 
 import tamago.server.core.common.vo.MonsterId
+import tamago.server.core.monster.domain.enum.MonsterType
 import java.time.LocalDateTime
 
 class Monster(
@@ -8,6 +9,7 @@ class Monster(
     val previousMonsterId: MonsterId? = null,
     val nextMonsterId: MonsterId? = null,
     val nickname: String? = null,
+    val monsterType: MonsterType? = null,
     val evolutionXp: Int? = null,
     val evolutionPolicy: MonsterEvolutionPolicy? = null,
     val unlockPolicies: List<MonsterUnlockPolicy> = emptyList(),
@@ -20,12 +22,14 @@ class Monster(
             previousMonsterId: MonsterId? = null,
             nextMonsterId: MonsterId? = null,
             nickname: String? = null,
+            monsterType: MonsterType? = null,
             evolutionXp: Int? = null,
         ): Monster =
             Monster(
                 previousMonsterId = previousMonsterId,
                 nextMonsterId = nextMonsterId,
                 nickname = nickname,
+                monsterType = monsterType,
                 evolutionXp = evolutionXp,
             )
     }

@@ -37,4 +37,5 @@ class OwnedMonsterEntity(
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     val status: OwnedMonsterStatus? = null,
-) : BaseTimeEntity()
+    deletedAt: java.time.LocalDateTime? = null,
+) : BaseTimeEntity(deletedAt = deletedAt)

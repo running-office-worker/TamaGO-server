@@ -1,6 +1,7 @@
 package tamago.server.core.notification
 
 import org.springframework.stereotype.Component
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.notification.application.service.NotificationCommandService
 import tamago.server.core.notification.application.service.NotificationQueryService
 import tamago.server.core.notification.domain.aggregate.FcmToken
@@ -23,5 +24,10 @@ class NotificationFacade(
                     deviceType = DeviceType.IOS,
                 )
         notificationCommandService.save(fcmToken)
+    }
+
+    fun deleteFcmTokensByUserId(userId: UserId) {
+        val tokens = notificationQueryService.findFcmTokensByUserId(userId)
+        notificationCommandService.deleteFcmTokens(tokens)
     }
 }

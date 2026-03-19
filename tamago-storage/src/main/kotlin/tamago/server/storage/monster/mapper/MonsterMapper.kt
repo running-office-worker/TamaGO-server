@@ -15,6 +15,7 @@ object MonsterMapper {
             previousMonster = previousMonster,
             nextMonster = nextMonster,
             nickname = monster.nickname,
+            monsterType = monster.monsterType,
             evolutionXp = monster.evolutionXp,
         )
 
@@ -26,6 +27,7 @@ object MonsterMapper {
             previousMonsterId = entity.previousMonster?.id?.let { MonsterId(it) },
             nextMonsterId = entity.nextMonster?.id?.let { MonsterId(it) },
             nickname = entity.nickname,
+            monsterType = entity.monsterType,
             evolutionXp = entity.evolutionXp,
             evolutionPolicy = MonsterEvolutionPolicyMapper.toDomain(entity.evolutionPolicy),
             unlockPolicies = entity.unlockPolicies.mapNotNull { MonsterUnlockPolicyMapper.toDomain(it) },

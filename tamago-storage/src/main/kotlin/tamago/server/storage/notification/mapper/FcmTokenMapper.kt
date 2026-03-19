@@ -13,6 +13,7 @@ object FcmTokenMapper {
             token = fcmToken.token,
             deviceType = fcmToken.deviceType,
             lastUsedAt = fcmToken.lastUsedAt,
+            deletedAt = fcmToken.deletedAt,
         )
 
     fun toDomain(entity: FcmTokenEntity?): FcmToken? {

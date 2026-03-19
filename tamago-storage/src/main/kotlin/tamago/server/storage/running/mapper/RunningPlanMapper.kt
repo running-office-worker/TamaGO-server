@@ -11,6 +11,7 @@ object RunningPlanMapper {
             id = domain.id?.value,
             userId = domain.userId.value,
             goalDistance = domain.goalDistance,
+            deletedAt = domain.deletedAt,
         )
 
     fun toDomain(entity: RunningPlanEntity?): RunningPlan? {
