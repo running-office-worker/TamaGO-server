@@ -63,7 +63,11 @@ class UserFacade(
         }
 
         val userId = auth.userId ?: throw InvalidCredentialsException()
-        val user = userQueryService.get(userId)
+        val user =
+            userQueryService
+                .get(userId)
+                .takeUnless { it.deletedAt != null }
+                ?: throw UserWithdrawnException()
 
         val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role.name)
         val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role.name)
