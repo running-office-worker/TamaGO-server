@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import tamago.server.core.notification.NotificationCommandUseCase
+import tamago.server.core.notification.NotificationFacade
 import tamago.server.core.refreshtoken.RefreshTokenCommandUseCase
 import tamago.server.core.user.UserFacade
 import tamago.server.core.user.domain.aggregate.User
@@ -33,7 +33,7 @@ class AuthController(
     private val oauthService: OAuthService,
     private val userFacade: UserFacade,
     private val refreshTokenCommandUseCase: RefreshTokenCommandUseCase,
-    private val notificationCommandUseCase: NotificationCommandUseCase,
+    private val notificationFacade: NotificationFacade,
 ) {
     @Operation(summary = "카카오 소셜 로그인", description = "access token을 받아 카카오 소셜 로그인을 처리합니다.")
     @PostMapping("/api/v1/auth/social-login/kakao")
@@ -93,7 +93,7 @@ class AuthController(
         @CurrentUser user: User,
     ): CustomResponse<Void> {
         refreshTokenCommandUseCase.delete(user.id!!)
-        notificationCommandUseCase.deleteFcmTokensByUserId(user.id!!)
+        notificationFacade.deleteFcmTokensByUserId(user.id!!)
         return CustomResponse.ok()
     }
 
