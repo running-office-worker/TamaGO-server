@@ -28,6 +28,7 @@ class Running(
         private set
 
     fun delete() {
+        if (this.deletedAt != null) return
         this.deletedAt = LocalDateTime.now()
     }
 

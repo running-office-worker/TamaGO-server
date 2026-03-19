@@ -37,6 +37,7 @@ class OwnedMonster(
     }
 
     fun delete() {
+        if (this.deletedAt != null) return
         this.deletedAt = LocalDateTime.now()
     }
 
