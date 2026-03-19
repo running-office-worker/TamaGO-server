@@ -12,4 +12,9 @@ interface UserJpaRepository : JpaRepository<UserEntity, Long> {
     fun findByAuthsEmail(email: String): UserEntity?
 
     fun existsByAuthsEmail(email: String): Boolean
+
+    fun existsByAuthsProviderAndAuthsExternalIdAndDeletedAtIsNotNull(
+        provider: String,
+        externalId: String,
+    ): Boolean
 }

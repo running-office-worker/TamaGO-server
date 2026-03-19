@@ -8,6 +8,7 @@ import tamago.server.core.refreshtoken.RefreshTokenQueryUseCase
 import tamago.server.core.user.application.exception.EmailAlreadyExistsException
 import tamago.server.core.user.application.exception.InvalidCredentialsException
 import tamago.server.core.user.application.exception.UserSaveErrorException
+import tamago.server.core.user.application.exception.UserWithdrawnException
 import tamago.server.core.user.application.service.UserCommandService
 import tamago.server.core.user.application.service.UserQueryService
 import tamago.server.core.user.domain.port.inbound.command.LoginCommandDto
@@ -31,6 +32,10 @@ class UserFacade(
             ?: throw EmailAlreadyExistsException()
 
     fun socialLogin(command: LoginCommandDto): TokenQueryDto {
+        command
+            .takeUnless { userQueryService.existsDeletedByExternalId(it.provider, it.externalId) }
+            ?: throw UserWithdrawnException()
+
         val user =
             userQueryService.findByExternalId(command.provider, command.externalId)
                 ?: userCommandService.createSocialUser(command)
