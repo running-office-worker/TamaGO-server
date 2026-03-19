@@ -31,4 +31,7 @@ class RunningEntity(
     val elapsedTime: Int? = null,
     val startedAt: LocalDateTime? = null,
     val finishedAt: LocalDateTime? = null,
-) : BaseTimeEntity()
+    @Column(name = "running_plan_id")
+    val runningPlanId: Long,
+    deletedAt: LocalDateTime? = null,
+) : BaseTimeEntity(deletedAt = deletedAt)

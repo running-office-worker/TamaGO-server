@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import tamago.server.storage.user.entity.UserEntity
 
 interface UserJpaRepository : JpaRepository<UserEntity, Long> {
-    fun findByAuthsProviderAndAuthsExternalId(
+    fun findByAuthsProviderAndAuthsExternalIdAndDeletedAtIsNull(
         provider: String,
         externalId: String,
     ): UserEntity?

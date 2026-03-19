@@ -87,7 +87,10 @@ class SecurityConfig(
             arrayOf(
                 "/login/kakao",
                 "/v1/auth/social-login/kakao",
-                "/api/v1/auth/**",
+                "/api/v1/auth/social-login/**",
+                "/api/v1/auth/reissue",
+                "/api/v1/auth/signup",
+                "/api/v1/auth/login",
                 "/error",
                 "/api/v1/monsters/assets",
                 "/api/v1/monsters/assets/check-updates",

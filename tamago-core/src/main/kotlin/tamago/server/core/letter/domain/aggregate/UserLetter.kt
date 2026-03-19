@@ -34,6 +34,7 @@ class UserLetter(
     }
 
     fun delete() {
+        if (this.deletedAt != null) return
         this.deletedAt = LocalDateTime.now()
     }
 

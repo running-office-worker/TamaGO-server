@@ -15,6 +15,8 @@ class NotificationQueryService(
             .findAllByUserId(userId)
             .mapNotNull { it.token }
 
+    fun findFcmTokensByUserId(userId: UserId): List<FcmToken> = fcmTokenPersistencePort.findAllByUserId(userId)
+
     fun findFcmToken(
         userId: UserId,
         deviceId: String?,

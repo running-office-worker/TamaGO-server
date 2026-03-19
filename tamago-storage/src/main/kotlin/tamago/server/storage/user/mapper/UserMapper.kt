@@ -12,10 +12,10 @@ object UserMapper {
                 id = user.id?.value,
                 nickname = user.nickname,
                 role = user.role,
-                goalKilo = user.runningData.goalKilo,
                 totalKilo = user.runningData.totalKilo,
                 weight = user.weight,
                 lastLoginAt = user.lastLoginAt,
+                deletedAt = user.deletedAt,
             )
 
         user.auths.forEach { auth ->
@@ -37,7 +37,6 @@ object UserMapper {
             auths = UserAuthMapper.toDomain(entity.auths),
             runningData =
                 UserRunningData(
-                    goalKilo = entity.goalKilo,
                     totalKilo = entity.totalKilo,
                 ),
             weight = entity.weight,

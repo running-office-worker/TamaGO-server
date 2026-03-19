@@ -18,6 +18,7 @@ object OwnedMonsterMapper {
             userId = ownedMonster.userId.value,
             havingXp = ownedMonster.havingXp,
             status = ownedMonster.status,
+            deletedAt = ownedMonster.deletedAt,
         )
 
     fun toDomain(entity: OwnedMonsterEntity?): OwnedMonster? {

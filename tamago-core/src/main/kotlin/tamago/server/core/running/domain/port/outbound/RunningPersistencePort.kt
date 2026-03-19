@@ -3,11 +3,17 @@ package tamago.server.core.running.domain.port.outbound
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
+import tamago.server.core.running.domain.vo.RunningId
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 interface RunningPersistencePort {
     fun save(running: Running): Running
+
+    fun findByIdAndUserId(
+        runningId: RunningId,
+        userId: UserId,
+    ): Running?
 
     fun findAllByUserIdAndMonth(
         userId: UserId,
@@ -32,4 +38,6 @@ interface RunningPersistencePort {
     ): List<LocalDate>
 
     fun findLastMonsterNicknameByUserId(userId: UserId): String?
+
+    fun findAllByUserId(userId: UserId): List<Running>
 }

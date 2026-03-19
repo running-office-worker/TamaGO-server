@@ -8,6 +8,7 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
+import tamago.server.core.running.domain.vo.RunningId
 import tamago.server.storage.monster.entity.MonsterEntity
 import tamago.server.storage.monster.entity.OwnedMonsterEntity
 import tamago.server.storage.running.entity.RunningEntity
@@ -25,6 +26,14 @@ class RunningPersistenceAdapter(
 ) : RunningPersistencePort {
     override fun save(running: Running): Running =
         RunningMapper.toDomain(runningJpaRepository.save(RunningMapper.toEntity(running)))!!
+
+    override fun findByIdAndUserId(
+        runningId: RunningId,
+        userId: UserId,
+    ): Running? =
+        runningJpaRepository
+            .findByIdAndUserIdAndDeletedAtIsNull(runningId.value, userId.value)
+            ?.let { RunningMapper.toDomain(it) }
 
     override fun findLastByUserId(userId: UserId): Running? =
         runningJpaRepository
@@ -147,4 +156,9 @@ class RunningPersistenceAdapter(
             .map { it.toLocalDate() }
             .distinct()
     }
+
+    override fun findAllByUserId(userId: UserId): List<Running> =
+        runningJpaRepository
+            .findAllByUserIdAndDeletedAtIsNull(userId.value)
+            .mapNotNull { RunningMapper.toDomain(it) }
 }

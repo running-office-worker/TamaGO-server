@@ -13,8 +13,8 @@ DELETE FROM t_monsters WHERE nickname IN ('거북이', '파이리', '팽귄');
 -- 진화: 1km → 3km → 10km
 -- ==============================================
 
-INSERT INTO t_monsters (nickname, evolution_xp, created_at, updated_at)
-VALUES ('거북이', 10, NOW(), NOW());
+INSERT INTO t_monsters (nickname, monster_type, evolution_xp, created_at, updated_at)
+VALUES ('거북이', 'DEFAULT', 10, NOW(), NOW());
 SET @turtle_1 = LAST_INSERT_ID();
 
 INSERT INTO t_monsters (nickname, evolution_xp, created_at, updated_at)
