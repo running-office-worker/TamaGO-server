@@ -46,9 +46,10 @@ class FirebaseConfig(
     }
 
     private fun openCredentialsStream(): InputStream {
-        val json = firebaseProperties.credentialsJson
+        val json = firebaseProperties.credentialsJson.trim().removeSurrounding("\"")
         if (json.isNotBlank()) {
-            return ByteArrayInputStream(json.toByteArray())
+            val unescaped = json.replace("\\n", "\n").replace("\\\"", "\"")
+            return ByteArrayInputStream(unescaped.toByteArray())
         }
 
         val path = firebaseProperties.credentialsPath
