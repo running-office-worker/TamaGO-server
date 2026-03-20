@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
+import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -25,12 +26,12 @@ class FirebaseConfig(
 
         val credentials =
             try {
-                openCredentialsStream(firebaseProperties.credentialsPath).use {
+                openCredentialsStream().use {
                     GoogleCredentials.fromStream(it)
                 }
             } catch (e: Exception) {
                 throw IllegalStateException(
-                    "Failed to load Firebase credentials from: ${firebaseProperties.credentialsPath} - ${e.message}",
+                    "Failed to load Firebase credentials - ${e.message}",
                     e,
                 )
             }
@@ -44,12 +45,19 @@ class FirebaseConfig(
         return FirebaseApp.initializeApp(options)
     }
 
-    private fun openCredentialsStream(path: String): InputStream =
-        try {
+    private fun openCredentialsStream(): InputStream {
+        val json = firebaseProperties.credentialsJson
+        if (json.isNotBlank()) {
+            return ByteArrayInputStream(json.toByteArray())
+        }
+
+        val path = firebaseProperties.credentialsPath
+        return try {
             Files.newInputStream(Paths.get(path))
         } catch (e: Exception) {
             ClassPathResource(path).inputStream
         }
+    }
 
     @Bean
     fun firebaseMessaging(firebaseApp: FirebaseApp): FirebaseMessaging = FirebaseMessaging.getInstance(firebaseApp)

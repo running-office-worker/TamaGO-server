@@ -30,5 +30,3 @@ spring:
   flyway:
     clean-disabled: true
     validate-on-migrate: true
-    locations:
-      - classpath:db/migration

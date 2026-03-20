@@ -1,2 +1,3 @@
 fcm:
   credentials-path: ${FCM_CREDENTIALS_PATH:firebase-service-account.json}
+  credentials-json: ${FIREBASE_CONFIG:}
