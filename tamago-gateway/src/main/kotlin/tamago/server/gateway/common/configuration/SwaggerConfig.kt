@@ -21,6 +21,7 @@ class SwaggerConfig(
             mapOf(
                 "local" to "http://localhost:8080",
                 "dev" to "https://dev.runtamago.shop",
+                "prod" to "https://prd.runtamago.shop",
             )
     }
 
