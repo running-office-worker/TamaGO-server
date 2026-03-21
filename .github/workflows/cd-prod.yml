@@ -1,0 +1,83 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    environment: production
+
+    steps:
+      - name: "레포지토리에서 체크아웃한다."
+        uses: actions/checkout@v4
+
+      - name: "AWS 자격 증명을 구성한다."
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: "Amazon ECR에 로그인한다."
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: "도커 이미지를 빌드하고 ECR에 푸시한다."
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f ./docker/DockerfileProd -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-22.04
+    environment: production
+
+    steps:
+      - name: "AWS 자격 증명을 구성한다."
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: "Amazon ECR에 로그인한다."
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: "ECS 태스크 정의를 업데이트한다."
+        id: render-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-arn: ${{ secrets.ECS_TASK_DEFINITION_ARN }}
+          container-name: ${{ secrets.ECS_CONTAINER_NAME }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: "ECS Fargate 서비스에 배포한다."
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-def.outputs.task-definition }}
+          service: ${{ secrets.ECS_SERVICE }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+          wait-for-service-stability: true
+          wait-for-minutes: 10
+
+      - name: "애플리케이션이 정상적으로 구동되었는지 확인한다."
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://prd.runtamago.shop/actuator/health
+          max-attempts: 10
+          retry-delay: 10s
+          retry-all: true

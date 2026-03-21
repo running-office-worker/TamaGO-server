@@ -12,6 +12,7 @@ enum class UserExceptionCode(
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_4040", "유저를 찾을 수 없습니다"),
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "USER_4010", "이메일 또는 비밀번호가 올바르지 않습니다."),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_4090", "이미 존재하는 이메일입니다."),
+    USER_WITHDRAWN(HttpStatus.FORBIDDEN, "USER_4030", "탈퇴한 유저입니다."),
     ;
 
     override fun getStatus(): HttpStatus = status

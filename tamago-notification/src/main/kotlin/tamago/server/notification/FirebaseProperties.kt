@@ -4,5 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "fcm")
 data class FirebaseProperties(
-    val credentialsPath: String,
+    val credentialsPath: String = "",
+    val credentialsJson: String = "",
 )

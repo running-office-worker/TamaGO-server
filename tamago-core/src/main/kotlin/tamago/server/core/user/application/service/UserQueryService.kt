@@ -37,4 +37,9 @@ class UserQueryService(
     ): User? = userPersistencePort.findByExternalId(provider, externalId)
 
     override fun exists(email: String): Boolean = userPersistencePort.existsByEmail(email)
+
+    fun existsDeletedByExternalId(
+        provider: AuthProvider,
+        externalId: String,
+    ): Boolean = userPersistencePort.existsDeletedByExternalId(provider, externalId)
 }
