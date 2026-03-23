@@ -7,6 +7,7 @@ plugins {
     id("org.springframework.boot") version "3.5.8"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
+    id("io.sentry.jvm.gradle") version "6.0.0" apply false
 }
 
 group = "tamago"
