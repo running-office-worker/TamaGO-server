@@ -42,6 +42,9 @@ class MonsterQueryService(
     fun getOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
         ownedMonsterPersistencePort.findAllByUserId(userId)
 
+    fun getDeletedOwnedMonstersByUserId(userId: UserId): List<OwnedMonster> =
+        ownedMonsterPersistencePort.findAllDeletedByUserId(userId)
+
     fun getMonsterAssetsByMonsterIds(
         monsterIds: List<MonsterId>,
         assetType: AssetType,

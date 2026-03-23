@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.common.event.UserDeletedEvent
+import tamago.server.core.common.event.UserRestoredEvent
 import tamago.server.core.common.event.UserSignedUpEvent
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
@@ -39,6 +40,17 @@ class MonsterEventListener(
             ownedMonsters.forEach { monsterCommandService.delete(it) }
         } catch (e: Exception) {
             logger.error(e) { "회원 탈퇴 후 보유 몬스터 삭제 오류 - userId: ${event.userId}" }
+        }
+    }
+
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun onUserRestored(event: UserRestoredEvent) {
+        try {
+            val ownedMonsters = monsterQueryService.getDeletedOwnedMonstersByUserId(event.userId)
+            ownedMonsters.forEach { monsterCommandService.restore(it) }
+        } catch (e: Exception) {
+            logger.error(e) { "회원 복구 후 보유 몬스터 복구 오류 - userId: ${event.userId}" }
         }
     }
 

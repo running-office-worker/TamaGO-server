@@ -25,11 +25,24 @@ class UserFacade(
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    fun signUp(command: SignUpCommandDto) =
-        command
-            .takeUnless { userQueryService.exists(it.email) }
-            ?.let(userCommandService::createUser)
-            ?: throw EmailAlreadyExistsException()
+    fun signUp(command: SignUpCommandDto) {
+        restoreIfWithdrawnOrThrow(command)
+        createUser(command)
+    }
+
+    private fun createUser(command: SignUpCommandDto) {
+        userCommandService.createUser(command)
+    }
+
+    private fun restoreIfWithdrawnOrThrow(command: SignUpCommandDto) {
+        (
+            userQueryService
+                .get(command.email)
+                .takeIf { it.deletedAt != null }
+                ?.let { userCommandService.restoreUser(it) }
+                ?: throw EmailAlreadyExistsException()
+        )
+    }
 
     fun socialLogin(command: LoginCommandDto): TokenQueryDto {
         command

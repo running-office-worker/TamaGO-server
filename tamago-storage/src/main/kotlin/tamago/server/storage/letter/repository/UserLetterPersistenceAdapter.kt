@@ -62,6 +62,11 @@ class UserLetterPersistenceAdapter(
             .findAllByLetterStatusAndScheduledAtLessThanEqual(letterStatus, now)
             .mapNotNull { UserLetterMapper.toDomain(it) }
 
+    override fun findAllDeletedByUserId(userId: UserId): List<UserLetter> =
+        userLetterJpaRepository
+            .findAllByUserIdAndDeletedAtIsNotNull(userId.value)
+            .mapNotNull { UserLetterMapper.toDomain(it) }
+
     override fun findLatestDistinctByUser(): List<UserLetter> =
         userLetterJpaRepository
             .findAll {

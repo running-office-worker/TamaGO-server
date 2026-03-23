@@ -54,6 +54,10 @@ class User(
         this.deletedAt = LocalDateTime.now()
     }
 
+    fun restore() {
+        this.deletedAt = null
+    }
+
     fun isOnboarded(): Boolean = !nickname.isNullOrBlank()
 
     companion object {

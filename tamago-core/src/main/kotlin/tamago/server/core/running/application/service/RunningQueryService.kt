@@ -49,6 +49,11 @@ class RunningQueryService(
     fun findAllRunningPlansByUserId(userId: UserId): List<RunningPlan> =
         runningPlanPersistencePort.findAllByUserId(userId)
 
+    fun findAllDeletedByUserId(userId: UserId): List<Running> = runningPersistencePort.findAllDeletedByUserId(userId)
+
+    fun findAllDeletedRunningPlansByUserId(userId: UserId): List<RunningPlan> =
+        runningPlanPersistencePort.findAllDeletedByUserId(userId)
+
     fun getTotalDistance(userId: UserId): Double = runningPersistencePort.sumDistanceByUserId(userId)
 
     fun getTotalDurationMinutes(userId: UserId): Long = runningPersistencePort.sumDurationMinutesByUserId(userId)

@@ -16,4 +16,6 @@ interface OwnedMonsterPersistencePort {
     ): List<OwnedMonster>
 
     fun save(ownedMonster: OwnedMonster): OwnedMonster
+
+    fun findAllDeletedByUserId(userId: UserId): List<OwnedMonster>
 }

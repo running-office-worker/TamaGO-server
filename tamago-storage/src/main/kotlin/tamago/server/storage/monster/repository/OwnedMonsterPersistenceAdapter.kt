@@ -35,4 +35,9 @@ class OwnedMonsterPersistenceAdapter(
         val saved = ownedMonsterJpaRepository.save(entity)
         return OwnedMonsterMapper.toDomain(saved)!!
     }
+
+    override fun findAllDeletedByUserId(userId: UserId): List<OwnedMonster> =
+        ownedMonsterJpaRepository
+            .findAllByUserIdAndDeletedAtIsNotNull(userId.value)
+            .mapNotNull { OwnedMonsterMapper.toDomain(it) }
 }
