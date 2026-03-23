@@ -12,4 +12,8 @@ interface FcmTokenPersistencePort {
     ): FcmToken?
 
     fun save(fcmToken: FcmToken): FcmToken
+
+    fun delete(fcmToken: FcmToken)
+
+    fun deleteAllByUserId(userId: UserId)
 }

@@ -28,4 +28,13 @@ class FcmTokenPersistenceAdapter(
         val saved = fcmTokenJpaRepository.save(entity)
         return FcmTokenMapper.toDomain(saved)!!
     }
+
+    override fun delete(fcmToken: FcmToken) {
+        val entity = FcmTokenMapper.toEntity(fcmToken)
+        fcmTokenJpaRepository.delete(entity)
+    }
+
+    override fun deleteAllByUserId(userId: UserId) {
+        fcmTokenJpaRepository.deleteAllByUserId(userId.value)
+    }
 }

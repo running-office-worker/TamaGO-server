@@ -12,4 +12,6 @@ interface FcmTokenJpaRepository : JpaRepository<FcmTokenEntity, Long> {
         userId: Long,
         deviceId: String?,
     ): FcmTokenEntity?
+
+    fun deleteAllByUserId(userId: Long)
 }
