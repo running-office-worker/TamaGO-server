@@ -22,4 +22,6 @@ COPY --from=build /workspace/tamago-gateway/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh","-c","java -javaagent:/opt/sentry/agent.jar -Dsentry.auto.init=false $JAVA_OPTS -jar /app/app.jar"]
+ENV SENTRY_AUTO_INIT=false
+
+ENTRYPOINT ["sh","-c","java -javaagent:/opt/sentry/agent.jar $JAVA_OPTS -jar /app/app.jar"]
