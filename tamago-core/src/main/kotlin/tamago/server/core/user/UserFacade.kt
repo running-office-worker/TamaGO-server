@@ -26,22 +26,13 @@ class UserFacade(
     private val passwordEncoder: PasswordEncoder,
 ) {
     fun signUp(command: SignUpCommandDto) {
-        restoreIfWithdrawnOrThrow(command)
-        createUser(command)
-    }
+        val existingUser = userQueryService.findByEmail(command.email)
 
-    private fun createUser(command: SignUpCommandDto) {
-        userCommandService.createUser(command)
-    }
-
-    private fun restoreIfWithdrawnOrThrow(command: SignUpCommandDto) {
-        (
-            userQueryService
-                .get(command.email)
-                .takeIf { it.deletedAt != null }
-                ?.let { userCommandService.restoreUser(it) }
-                ?: throw EmailAlreadyExistsException()
-        )
+        when {
+            existingUser == null -> userCommandService.createUser(command)
+            existingUser.deletedAt != null -> userCommandService.restoreUser(existingUser)
+            else -> throw EmailAlreadyExistsException()
+        }
     }
 
     fun socialLogin(command: LoginCommandDto): TokenQueryDto {
