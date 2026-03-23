@@ -60,13 +60,13 @@ class UserFacade(
     }
 
     fun emailLogin(command: TestLoginCommandDto): TokenQueryDto {
-        command
-            .takeUnless { userQueryService.existsDeletedByEmail(it.email) }
-            ?: throw UserWithdrawnException()
-
         val auth = userQueryService.getEmailAuth(command.email)
 
         require(passwordEncoder.matches(command.password, auth.password)) {
+            throw InvalidCredentialsException()
+        }
+
+        if (userQueryService.existsDeletedByEmail(command.email)) {
             throw InvalidCredentialsException()
         }
 
