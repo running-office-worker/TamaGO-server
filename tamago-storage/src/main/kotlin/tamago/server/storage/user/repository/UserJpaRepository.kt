@@ -17,4 +17,6 @@ interface UserJpaRepository : JpaRepository<UserEntity, Long> {
         provider: String,
         externalId: String,
     ): Boolean
+
+    fun existsByAuthsEmailAndDeletedAtIsNotNull(email: String): Boolean
 }

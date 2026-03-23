@@ -34,4 +34,6 @@ interface UserLetterPersistencePort {
         letterStatus: LetterStatus,
         now: LocalDateTime,
     ): List<UserLetter>
+
+    fun findAllDeletedByUserId(userId: UserId): List<UserLetter>
 }

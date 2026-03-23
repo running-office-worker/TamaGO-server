@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.common.event.UserDeletedEvent
+import tamago.server.core.common.event.UserRestoredEvent
 import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
@@ -35,6 +36,17 @@ class LetterEventListener(
 
     @TransactionalEventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun onUserRestored(event: UserRestoredEvent) {
+        try {
+            val userLetters = userLetterQueryService.findAllDeletedByUserId(event.userId)
+            userLetters.forEach { userLetterCommandService.restore(it) }
+        } catch (e: Exception) {
+            logger.error(e) { "회원 복구 후 편지 데이터 복구 오류 - userId: ${event.userId}" }
+        }
+    }
+
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onRunningCompleted(event: RunningCompletedEvent) {
         try {
             // 이미 스케줄된 편지가 있는 경우 삭제
@@ -57,7 +69,6 @@ class LetterEventListener(
                 )
             userLetterCommandService.create(createdLetter)
         } catch (e: Exception) {
-            // TODO: Sentry 로 예외 전송
             logger.error(e) { "러닝 완료 후 편지 발송 시간 조정 오류 - userId: ${event.userId}" }
         }
     }

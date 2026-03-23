@@ -13,7 +13,6 @@ object FcmTokenMapper {
             token = fcmToken.token,
             deviceType = fcmToken.deviceType,
             lastUsedAt = fcmToken.lastUsedAt,
-            deletedAt = fcmToken.deletedAt,
         )
 
     fun toDomain(entity: FcmTokenEntity?): FcmToken? {
@@ -27,7 +26,6 @@ object FcmTokenMapper {
             lastUsedAt = entity.lastUsedAt,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
-            deletedAt = entity.deletedAt,
         )
     }
 }

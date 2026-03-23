@@ -50,4 +50,10 @@ class UserLetterCommandService(
     fun create(userLetter: UserLetter) {
         userLetterPersistencePort.save(userLetter)
     }
+
+    @Transactional
+    fun restore(userLetter: UserLetter) {
+        userLetter.restore()
+        userLetterPersistencePort.save(userLetter)
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.event.UserDeletedEvent
+import tamago.server.core.common.event.UserRestoredEvent
 import tamago.server.core.common.event.UserSignedUpEvent
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.user.UserCommandUseCase
@@ -59,6 +60,12 @@ class UserCommandService(
         user.delete()
         userPersistencePort.save(user)
         applicationEventPublisher.publishEvent(UserDeletedEvent(user.id!!))
+    }
+
+    fun restoreUser(user: User) {
+        user.restore()
+        userPersistencePort.save(user)
+        applicationEventPublisher.publishEvent(UserRestoredEvent(user.id!!))
     }
 
     fun addRunningDistance(

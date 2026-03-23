@@ -11,6 +11,7 @@ spring:
       - modulith.yml
       - aws.yml
       - fcm.yml
+      - sentry.yml
   servlet:
     multipart:
       max-file-size: 10MB

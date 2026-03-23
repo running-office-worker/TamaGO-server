@@ -36,10 +36,14 @@ class UserQueryService(
         externalId: String,
     ): User? = userPersistencePort.findByExternalId(provider, externalId)
 
+    fun findByEmail(email: String): User? = userPersistencePort.findByEmail(email)
+
     override fun exists(email: String): Boolean = userPersistencePort.existsByEmail(email)
 
     fun existsDeletedByExternalId(
         provider: AuthProvider,
         externalId: String,
     ): Boolean = userPersistencePort.existsDeletedByExternalId(provider, externalId)
+
+    fun existsDeletedByEmail(email: String): Boolean = userPersistencePort.existsDeletedByEmail(email)
 }

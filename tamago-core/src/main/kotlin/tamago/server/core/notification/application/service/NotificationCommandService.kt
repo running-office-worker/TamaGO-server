@@ -3,6 +3,7 @@ package tamago.server.core.notification.application.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.notification.NotificationCommandUseCase
 import tamago.server.core.notification.domain.aggregate.FcmToken
 import tamago.server.core.notification.domain.port.outbound.FcmSendPort
@@ -34,12 +35,11 @@ class NotificationCommandService(
         logger.info { "편지 도착 알림 발송 완료 - tokenCount: ${tokens.size}" }
     }
 
-    fun deleteFcmTokens(tokens: List<FcmToken>) {
-        tokens.forEach { delete(it) }
+    fun deleteFcmTokensByUserId(userId: UserId) {
+        fcmTokenPersistencePort.deleteAllByUserId(userId)
     }
 
     fun delete(fcmToken: FcmToken) {
-        fcmToken.delete()
-        fcmTokenPersistencePort.save(fcmToken)
+        fcmTokenPersistencePort.delete(fcmToken)
     }
 }

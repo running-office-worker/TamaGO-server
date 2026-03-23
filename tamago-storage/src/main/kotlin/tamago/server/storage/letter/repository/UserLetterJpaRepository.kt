@@ -27,4 +27,6 @@ interface UserLetterJpaRepository :
         letterStatus: LetterStatus,
         scheduledAt: LocalDateTime,
     ): List<UserLetterEntity>
+
+    fun findAllByUserIdAndDeletedAtIsNotNull(userId: Long): List<UserLetterEntity>
 }

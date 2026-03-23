@@ -1,3 +1,8 @@
+# ---------- agent download stage ----------
+FROM alpine:latest AS agent-downloader
+RUN wget -O /sentry-opentelemetry-agent.jar \
+    https://repo1.maven.org/maven2/io/sentry/sentry-opentelemetry-agent/8.31.0/sentry-opentelemetry-agent-8.31.0.jar
+
 # ---------- build stage ----------
 FROM gradle:8-jdk AS build
 WORKDIR /workspace
@@ -12,8 +17,11 @@ RUN addgroup --system app && adduser --system --ingroup app app
 USER app
 WORKDIR /app
 
+COPY --from=agent-downloader /sentry-opentelemetry-agent.jar /opt/sentry/agent.jar
 COPY --from=build /workspace/tamago-gateway/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
+ENV SENTRY_AUTO_INIT=false
+
+ENTRYPOINT ["sh","-c","java -javaagent:/opt/sentry/agent.jar $JAVA_OPTS -jar /app/app.jar"]

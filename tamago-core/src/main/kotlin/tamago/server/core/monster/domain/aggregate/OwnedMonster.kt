@@ -41,6 +41,10 @@ class OwnedMonster(
         this.deletedAt = LocalDateTime.now()
     }
 
+    fun restore() {
+        this.deletedAt = null
+    }
+
     companion object {
         fun create(
             monsterId: MonsterId,

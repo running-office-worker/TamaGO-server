@@ -72,6 +72,16 @@ class RunningCommandService(
         runningPlanPersistencePort.save(runningPlan)
     }
 
+    fun restore(running: Running) {
+        running.restore()
+        runningPersistencePort.save(running)
+    }
+
+    fun restoreRunningPlan(runningPlan: RunningPlan) {
+        runningPlan.restore()
+        runningPlanPersistencePort.save(runningPlan)
+    }
+
     private fun saveRunningRoute(
         savedRunning: Running,
         command: SaveRunningCommandDto,

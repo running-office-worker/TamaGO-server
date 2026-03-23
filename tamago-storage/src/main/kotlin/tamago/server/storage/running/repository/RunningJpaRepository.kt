@@ -19,4 +19,6 @@ interface RunningJpaRepository : JpaRepository<RunningEntity, Long> {
         id: Long,
         userId: Long,
     ): RunningEntity?
+
+    fun findAllByUserIdAndDeletedAtIsNotNull(userId: Long): List<RunningEntity>
 }

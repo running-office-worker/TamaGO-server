@@ -52,7 +52,8 @@ class ResponseExceptionHandler {
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected fun handleException(exception: Exception): CustomResponse<Void> {
-        logger.error { "Exception: ${exception.javaClass.simpleName} - ${exception.message}" }
+        val trace = exception.stackTrace.take(5).joinToString("\n\t")
+        logger.error { "Exception: ${exception.javaClass.simpleName} - ${exception.message}\n\t$trace" }
         return CustomResponse.error(GlobalExceptionCode.SERVER_ERROR)
     }
 

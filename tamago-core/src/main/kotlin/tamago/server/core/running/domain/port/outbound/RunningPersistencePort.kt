@@ -40,4 +40,6 @@ interface RunningPersistencePort {
     fun findLastMonsterNicknameByUserId(userId: UserId): String?
 
     fun findAllByUserId(userId: UserId): List<Running>
+
+    fun findAllDeletedByUserId(userId: UserId): List<Running>
 }

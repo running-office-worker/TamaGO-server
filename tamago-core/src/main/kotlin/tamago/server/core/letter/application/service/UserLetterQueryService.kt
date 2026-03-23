@@ -31,4 +31,7 @@ class UserLetterQueryService(
         userId: UserId,
         letterStatus: LetterStatus,
     ): UserLetter? = userLetterPersistencePort.findByUserIdAndLetterStatus(userId, letterStatus)
+
+    fun findAllDeletedByUserId(userId: UserId): List<UserLetter> =
+        userLetterPersistencePort.findAllDeletedByUserId(userId)
 }

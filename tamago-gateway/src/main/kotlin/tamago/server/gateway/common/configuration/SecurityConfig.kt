@@ -94,6 +94,7 @@ class SecurityConfig(
                 "/error",
                 "/api/v1/monsters/assets",
                 "/api/v1/monsters/assets/check-updates",
+                "/api/health/**",
             )
     }
 }

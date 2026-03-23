@@ -72,6 +72,11 @@ class MonsterCommandService(
         ownedMonsterPersistencePort.save(ownedMonster)
     }
 
+    fun restore(ownedMonster: OwnedMonster) {
+        ownedMonster.restore()
+        ownedMonsterPersistencePort.save(ownedMonster)
+    }
+
     fun ownMonster(
         monsterId: MonsterId,
         userId: UserId,

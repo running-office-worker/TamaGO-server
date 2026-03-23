@@ -27,7 +27,6 @@ class NotificationFacade(
     }
 
     fun deleteFcmTokensByUserId(userId: UserId) {
-        val tokens = notificationQueryService.findFcmTokensByUserId(userId)
-        notificationCommandService.deleteFcmTokens(tokens)
+        notificationCommandService.deleteFcmTokensByUserId(userId)
     }
 }

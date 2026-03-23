@@ -161,4 +161,9 @@ class RunningPersistenceAdapter(
         runningJpaRepository
             .findAllByUserIdAndDeletedAtIsNull(userId.value)
             .mapNotNull { RunningMapper.toDomain(it) }
+
+    override fun findAllDeletedByUserId(userId: UserId): List<Running> =
+        runningJpaRepository
+            .findAllByUserIdAndDeletedAtIsNotNull(userId.value)
+            .mapNotNull { RunningMapper.toDomain(it) }
 }

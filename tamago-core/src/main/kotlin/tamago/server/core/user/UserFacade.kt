@@ -25,11 +25,15 @@ class UserFacade(
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    fun signUp(command: SignUpCommandDto) =
-        command
-            .takeUnless { userQueryService.exists(it.email) }
-            ?.let(userCommandService::createUser)
-            ?: throw EmailAlreadyExistsException()
+    fun signUp(command: SignUpCommandDto) {
+        val existingUser = userQueryService.findByEmail(command.email)
+
+        when {
+            existingUser == null -> userCommandService.createUser(command)
+            existingUser.deletedAt != null -> userCommandService.restoreUser(existingUser)
+            else -> throw EmailAlreadyExistsException()
+        }
+    }
 
     fun socialLogin(command: LoginCommandDto): TokenQueryDto {
         command
@@ -62,12 +66,12 @@ class UserFacade(
             throw InvalidCredentialsException()
         }
 
+        if (userQueryService.existsDeletedByEmail(command.email)) {
+            throw InvalidCredentialsException()
+        }
+
         val userId = auth.userId ?: throw InvalidCredentialsException()
-        val user =
-            userQueryService
-                .get(userId)
-                .takeUnless { it.deletedAt != null }
-                ?: throw UserWithdrawnException()
+        val user = userQueryService.get(userId)
 
         val accessToken = jwtTokenProvider.generateAccessToken(userId, user.role.name)
         val refreshToken = jwtTokenProvider.generateRefreshToken(userId, user.role.name)

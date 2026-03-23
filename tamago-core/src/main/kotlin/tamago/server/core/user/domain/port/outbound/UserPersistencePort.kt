@@ -22,4 +22,6 @@ interface UserPersistencePort {
         provider: AuthProvider,
         externalId: String,
     ): Boolean
+
+    fun existsDeletedByEmail(email: String): Boolean
 }

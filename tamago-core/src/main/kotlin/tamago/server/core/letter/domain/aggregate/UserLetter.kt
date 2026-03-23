@@ -38,6 +38,10 @@ class UserLetter(
         this.deletedAt = LocalDateTime.now()
     }
 
+    fun restore() {
+        this.deletedAt = null
+    }
+
     fun isOwnedBy(userId: UserId): Boolean = this.userId == userId
 
     companion object {
