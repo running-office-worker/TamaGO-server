@@ -69,7 +69,6 @@ class LetterEventListener(
                 )
             userLetterCommandService.create(createdLetter)
         } catch (e: Exception) {
-            // TODO: Sentry 로 예외 전송
             logger.error(e) { "러닝 완료 후 편지 발송 시간 조정 오류 - userId: ${event.userId}" }
         }
     }

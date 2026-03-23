@@ -36,7 +36,6 @@ class UserLetterScheduler(
                     prevScheduledAt = letter.scheduledAt!!,
                 )
             } catch (e: Exception) {
-                // TODO: Sentry 로 예외 전송
                 logger.error(e) { "다음 편지 예약 중 오류 발생 - userId: ${letter.userId}, letterId: ${letter.letterId}" }
             }
         }
