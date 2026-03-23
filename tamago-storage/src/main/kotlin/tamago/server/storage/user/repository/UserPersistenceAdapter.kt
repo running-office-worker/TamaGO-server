@@ -33,4 +33,7 @@ class UserPersistenceAdapter(
     ): Boolean =
         userJpaRepository
             .existsByAuthsProviderAndAuthsExternalIdAndDeletedAtIsNotNull(provider.name, externalId)
+
+    override fun existsDeletedByEmail(email: String): Boolean =
+        userJpaRepository.existsByAuthsEmailAndDeletedAtIsNotNull(email)
 }

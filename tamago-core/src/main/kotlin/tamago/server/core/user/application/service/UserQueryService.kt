@@ -42,4 +42,6 @@ class UserQueryService(
         provider: AuthProvider,
         externalId: String,
     ): Boolean = userPersistencePort.existsDeletedByExternalId(provider, externalId)
+
+    fun existsDeletedByEmail(email: String): Boolean = userPersistencePort.existsDeletedByEmail(email)
 }
