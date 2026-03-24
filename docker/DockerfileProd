@@ -22,4 +22,8 @@ COPY --from=build /workspace/tamago-gateway/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
+ENV OTEL_LOGS_EXPORTER=none
+ENV OTEL_METRICS_EXPORTER=none
+ENV OTEL_TRACES_EXPORTER=none
+
 ENTRYPOINT ["sh","-c","java -javaagent:/opt/sentry/agent.jar -Dsentry.auto.init=false $JAVA_OPTS -jar /app/app.jar"]
