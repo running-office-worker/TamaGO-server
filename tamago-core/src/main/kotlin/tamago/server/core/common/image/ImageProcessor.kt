@@ -33,4 +33,10 @@ interface ImageProcessor {
         fileBytes: ByteArray,
         fileName: String,
     ): UploadedImage
+
+    fun deleteFile(
+        prefix: String,
+        prefixId: Long,
+        fileName: String,
+    )
 }

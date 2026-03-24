@@ -92,4 +92,16 @@ class MonsterAssetPersistenceAdapter(
         val saved = monsterAssetJpaRepository.save(entity)
         return MonsterAssetMapper.toDomain(saved)!!
     }
+
+    override fun findByMonsterIdAndAssetType(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ): MonsterAsset? =
+        monsterAssetJpaRepository
+            .findByMonsterIdAndAssetTypeAndDeletedAtIsNull(monsterId.value, assetType)
+            ?.let { MonsterAssetMapper.toDomain(it) }
+
+    override fun deleteById(monsterAsset: MonsterAsset) {
+        monsterAssetJpaRepository.deleteById(monsterAsset.id!!.value)
+    }
 }

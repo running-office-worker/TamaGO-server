@@ -146,6 +146,22 @@ class MonsterFacade(
     }
 
     @Transactional
+    fun deleteMonsterAsset(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ) {
+        val asset = monsterQueryService.getMonsterAsset(monsterId, assetType)
+
+        imageProcessor.deleteFile(
+            prefix = ImagePrefix.MONSTER.value,
+            prefixId = monsterId.value,
+            fileName = asset.assetName!!,
+        )
+
+        monsterCommandService.hardDeleteMonsterAsset(asset)
+    }
+
+    @Transactional
     fun createOwnedMonster(
         monsterId: MonsterId,
         userId: UserId,

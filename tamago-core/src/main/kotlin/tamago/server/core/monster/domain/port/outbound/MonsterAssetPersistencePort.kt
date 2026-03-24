@@ -21,4 +21,11 @@ interface MonsterAssetPersistencePort {
     fun findAll(): List<MonsterAsset>
 
     fun save(monsterAsset: MonsterAsset): MonsterAsset
+
+    fun findByMonsterIdAndAssetType(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ): MonsterAsset?
+
+    fun deleteById(monsterAsset: MonsterAsset)
 }

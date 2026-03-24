@@ -3,6 +3,7 @@ package tamago.server.aws.s3
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest
 import software.amazon.awssdk.services.s3.model.GetObjectRequest
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request
@@ -128,6 +129,20 @@ class AwsS3Client(
                 .build()
 
         return s3Client.headObject(request).lastModified()
+    }
+
+    fun deleteObject(
+        bucketName: String,
+        key: String,
+    ) {
+        val request =
+            DeleteObjectRequest
+                .builder()
+                .bucket(bucketName)
+                .key(key)
+                .build()
+
+        s3Client.deleteObject(request)
     }
 
     fun putObject(
