@@ -14,6 +14,11 @@ interface UserPersistencePort {
         externalId: String,
     ): User?
 
+    fun findByAuthsProviderAndAuthsExternalId(
+        provider: AuthProvider,
+        externalId: String,
+    ): User?
+
     fun findByEmail(email: String): User?
 
     fun existsByEmail(email: String): Boolean

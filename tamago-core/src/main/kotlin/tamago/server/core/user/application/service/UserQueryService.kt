@@ -31,10 +31,15 @@ class UserQueryService(
             ?: throw InvalidCredentialsException()
     }
 
-    fun findByExternalId(
+    fun findActiveSocialUser(
         provider: AuthProvider,
         externalId: String,
     ): User? = userPersistencePort.findByExternalId(provider, externalId)
+
+    fun findSocialUser(
+        provider: AuthProvider,
+        externalId: String,
+    ): User? = userPersistencePort.findByAuthsProviderAndAuthsExternalId(provider, externalId)
 
     fun findByEmail(email: String): User? = userPersistencePort.findByEmail(email)
 

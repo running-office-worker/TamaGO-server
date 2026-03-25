@@ -23,6 +23,14 @@ class UserPersistenceAdapter(
             userJpaRepository.findByAuthsProviderAndAuthsExternalIdAndDeletedAtIsNull(provider.name, externalId),
         )
 
+    override fun findByAuthsProviderAndAuthsExternalId(
+        provider: AuthProvider,
+        externalId: String,
+    ): User? =
+        UserMapper.toDomain(
+            userJpaRepository.findByAuthsProviderAndAuthsExternalId(provider.name, externalId),
+        )
+
     override fun findByEmail(email: String): User? = UserMapper.toDomain(userJpaRepository.findByAuthsEmail(email))
 
     override fun existsByEmail(email: String): Boolean = userJpaRepository.existsByAuthsEmail(email)
