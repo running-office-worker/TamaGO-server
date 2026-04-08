@@ -29,4 +29,12 @@ class NotificationFacade(
     fun deleteFcmTokensByUserId(userId: UserId) {
         notificationCommandService.deleteFcmTokensByUserId(userId)
     }
+
+    fun sendTestNotification(userId: UserId) {
+        notificationCommandService.createNotification(
+            userId = userId,
+            title = "테스트 알림",
+            content = "푸시 알림 테스트입니다.",
+        )
+    }
 }

@@ -1,9 +1,11 @@
 package tamago.server.core.notification
 
+import tamago.server.core.common.vo.UserId
+
 interface NotificationCommandUseCase {
-    fun sendLetterArrivalNotification(
-        tokens: List<String>,
+    fun createNotification(
+        userId: UserId,
         title: String,
-        body: String,
+        content: String,
     )
 }

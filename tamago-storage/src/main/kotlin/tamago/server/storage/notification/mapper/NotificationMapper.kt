@@ -11,9 +11,8 @@ object NotificationMapper {
             id = notification.id?.value,
             title = notification.title,
             content = notification.content,
-            isRead = notification.isRead,
+            status = notification.status,
             userId = notification.userId.value,
-            scheduledAt = notification.scheduledAt,
         )
 
     fun toDomain(entity: NotificationEntity?): Notification? {
@@ -23,9 +22,8 @@ object NotificationMapper {
             id = entity.id?.let { NotificationId(it) },
             title = entity.title,
             content = entity.content,
-            isRead = entity.isRead,
+            status = entity.status,
             userId = UserId(entity.userId),
-            scheduledAt = entity.scheduledAt,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,
