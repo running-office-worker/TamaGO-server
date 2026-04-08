@@ -2,6 +2,7 @@ package tamago.server.core.notification
 
 import org.springframework.stereotype.Component
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.notification.application.exception.FcmTokenNotFoundException
 import tamago.server.core.notification.application.service.NotificationCommandService
 import tamago.server.core.notification.application.service.NotificationQueryService
 import tamago.server.core.notification.domain.aggregate.FcmToken
@@ -28,5 +29,15 @@ class NotificationFacade(
 
     fun deleteFcmTokensByUserId(userId: UserId) {
         notificationCommandService.deleteFcmTokensByUserId(userId)
+    }
+
+    fun sendTestNotification(userId: UserId) {
+        val tokens = notificationQueryService.getFcmTokensByUserId(userId)
+        if (tokens.isEmpty()) throw FcmTokenNotFoundException()
+        notificationCommandService.sendLetterArrivalNotification(
+            tokens = tokens,
+            title = "테스트 알림",
+            body = "푸시 알림 테스트입니다.",
+        )
     }
 }

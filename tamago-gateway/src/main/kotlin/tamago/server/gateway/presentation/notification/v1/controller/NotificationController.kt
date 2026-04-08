@@ -15,6 +15,7 @@ import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
 import tamago.server.gateway.presentation.notification.v1.request.FcmTokenRequest
+import tamago.server.gateway.presentation.notification.v1.request.TestNotificationRequest
 
 @Tag(name = "Notification API", description = "푸시 알림 관련 API")
 @RestController
@@ -36,6 +37,16 @@ class NotificationController(
                 token = request.token,
             )
         notificationFacade.registerFcmToken(command)
+        return CustomResponse.ok()
+    }
+
+    @Operation(summary = "\uD83E\uDDEA 푸시 알림 테스트", description = "특정 유저에게 테스트 푸시 알림을 발송합니다.")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/api/v1/fcm/test")
+    fun sendTestNotification(
+        @Valid @RequestBody request: TestNotificationRequest,
+    ): CustomResponse<Void> {
+        notificationFacade.sendTestNotification(UserId(request.userId))
         return CustomResponse.ok()
     }
 }
