@@ -2,10 +2,13 @@ package tamago.server.storage.notification.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import tamago.server.core.notification.domain.enum.NotificationStatus
 import tamago.server.storage.support.BaseTimeEntity
 import java.time.LocalDateTime
 
@@ -18,8 +21,9 @@ class NotificationEntity(
     val id: Long? = null,
     val title: String? = null,
     val content: String? = null,
-    @Column(name = "is_read")
-    var isRead: Boolean = false,
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    var status: NotificationStatus = NotificationStatus.PENDING,
     @Column(name = "user_id", nullable = false)
     val userId: Long,
     @Column(name = "scheduled_at")
