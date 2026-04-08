@@ -13,6 +13,7 @@ import tamago.server.storage.monster.entity.MonsterAssetEntity
 import tamago.server.storage.monster.entity.MonsterEntity
 import tamago.server.storage.monster.mapper.MonsterAssetMapper
 import tamago.server.storage.support.findAll
+import tamago.server.storage.support.findOne
 import java.time.LocalDateTime
 
 @Repository
@@ -91,5 +92,33 @@ class MonsterAssetPersistenceAdapter(
         val entity = MonsterAssetMapper.toEntity(monsterAsset, monsterEntity)
         val saved = monsterAssetJpaRepository.save(entity)
         return MonsterAssetMapper.toDomain(saved)!!
+    }
+
+    override fun findByMonsterIdAndAssetType(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ): MonsterAsset? {
+        val query =
+            jpql {
+                select(
+                    entity(MonsterAssetEntity::class),
+                ).from(
+                    entity(MonsterAssetEntity::class),
+                ).where(
+                    and(
+                        path(MonsterAssetEntity::monster)(MonsterEntity::id).eq(monsterId.value),
+                        path(MonsterAssetEntity::assetType).eq(assetType),
+                        path(MonsterAssetEntity::deletedAt).isNull(),
+                    ),
+                )
+            }
+
+        return entityManager
+            .findOne<MonsterAssetEntity>(query, jpqlRenderContext)
+            ?.let { MonsterAssetMapper.toDomain(it) }
+    }
+
+    override fun deleteById(monsterAsset: MonsterAsset) {
+        monsterAssetJpaRepository.deleteById(monsterAsset.id!!.value)
     }
 }

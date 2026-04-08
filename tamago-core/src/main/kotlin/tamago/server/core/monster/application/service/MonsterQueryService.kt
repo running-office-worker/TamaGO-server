@@ -7,6 +7,7 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.MonsterQuery
 import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.monster.application.exception.MonsterAssetAlreadyExistsException
+import tamago.server.core.monster.application.exception.MonsterAssetNotFoundException
 import tamago.server.core.monster.application.exception.MonsterNotFoundException
 import tamago.server.core.monster.application.exception.OwnedMonsterNotFoundException
 import tamago.server.core.monster.domain.aggregate.Monster
@@ -85,6 +86,13 @@ class MonsterQueryService(
         if (firstStageMonsters.isEmpty()) throw MonsterNotFoundException()
         return firstStageMonsters.random()
     }
+
+    fun getMonsterAsset(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ): MonsterAsset =
+        monsterAssetPersistencePort.findByMonsterIdAndAssetType(monsterId, assetType)
+            ?: throw MonsterAssetNotFoundException()
 
     fun checkMonsterAssetNotExists(
         monsterId: MonsterId,

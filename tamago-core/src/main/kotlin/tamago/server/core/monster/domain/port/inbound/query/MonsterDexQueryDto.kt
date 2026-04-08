@@ -12,16 +12,19 @@ data class MonsterDexQueryDto(
 ) {
     companion object {
         fun of(
-            monster: Monster,
+            baseMonster: Monster,
+            currentMonster: Monster?,
             ownedMonster: OwnedMonster?,
-        ): MonsterDexQueryDto =
-            MonsterDexQueryDto(
-                monsterId = monster.id!!.value,
-                nickname = monster.nickname,
-                unlockDescription = monster.unlockPolicies.firstOrNull()?.description,
+        ): MonsterDexQueryDto {
+            val displayMonster = currentMonster ?: baseMonster
+            return MonsterDexQueryDto(
+                monsterId = displayMonster.id!!.value,
+                nickname = displayMonster.nickname,
+                unlockDescription = baseMonster.unlockPolicies.firstOrNull()?.description,
                 owned = ownedMonster != null,
                 ownedMonster = ownedMonster?.let { OwnedMonsterInfo.of(it) },
             )
+        }
     }
 
     data class OwnedMonsterInfo(

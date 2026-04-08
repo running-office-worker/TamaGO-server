@@ -9,6 +9,8 @@ import tamago.server.core.common.vo.MonsterId
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
+import tamago.server.core.monster.domain.aggregate.Monster
+import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQueryDto
 import tamago.server.core.monster.domain.port.inbound.query.InitMonsterQueryDto
@@ -26,18 +28,26 @@ class MonsterFacade(
     @Transactional(readOnly = true)
     fun getMonsterDex(userId: UserId): List<MonsterDexQueryDto> {
         // 1단계 몬스터와 해금 조건 함께 조회
-        val monsters = monsterQueryService.getAllFirstStageWithUnlockPolicies()
+        val firstStageMonsters = monsterQueryService.getAllFirstStageWithUnlockPolicies()
         // 내가 소유한 몬스터 조회
-        val ownedMonsterMap =
-            monsterQueryService
-                .getOwnedMonstersByUserId(userId)
-                .associateBy { it.monsterId }
+        val ownedMonsters = monsterQueryService.getOwnedMonstersByUserId(userId)
 
-        return monsters.map { monster ->
-            // 내가 소유한 몬스터인지 확인
-            val ownedMonster = ownedMonsterMap[monster.id]
+        // 소유 몬스터의 진화 체인을 역추적하여 1단계 몬스터 ID로 매핑
+        val ownedByRootId = mutableMapOf<MonsterId, Pair<OwnedMonster, Monster>>()
+        for (owned in ownedMonsters) {
+            val chain = monsterQueryService.getEvolutionChain(owned.monsterId)
+            val root = chain.first()
+            val current = chain.first { it.id == owned.monsterId }
+            ownedByRootId[root.id!!] = owned to current
+        }
 
-            MonsterDexQueryDto.of(monster, ownedMonster)
+        return firstStageMonsters.map { baseMonster ->
+            val entry = ownedByRootId[baseMonster.id]
+            MonsterDexQueryDto.of(
+                baseMonster = baseMonster,
+                currentMonster = entry?.second,
+                ownedMonster = entry?.first,
+            )
         }
     }
 
@@ -143,6 +153,22 @@ class MonsterFacade(
                     assets = assetList,
                 )
             }
+    }
+
+    @Transactional
+    fun deleteMonsterAsset(
+        monsterId: MonsterId,
+        assetType: AssetType,
+    ) {
+        val asset = monsterQueryService.getMonsterAsset(monsterId, assetType)
+
+        imageProcessor.deleteFile(
+            prefix = ImagePrefix.MONSTER.value,
+            prefixId = monsterId.value,
+            fileName = asset.assetName!!,
+        )
+
+        monsterCommandService.hardDeleteMonsterAsset(asset)
     }
 
     @Transactional

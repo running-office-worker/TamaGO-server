@@ -87,6 +87,19 @@ class S3ImageProcessor(
         }
     }
 
+    override fun deleteFile(
+        prefix: String,
+        prefixId: Long,
+        fileName: String,
+    ) {
+        try {
+            val filePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+            awsS3Client.deleteObject(awsProperties.s3.bucket, "$filePath/$fileName")
+        } catch (e: SdkException) {
+            throw S3Exception(e)
+        }
+    }
+
     private fun generateGetUrl(
         filePath: String,
         fileName: String,

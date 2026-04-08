@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -150,6 +151,17 @@ class MonsterController(
                 assetKey = result.assetKey,
             ),
         )
+    }
+
+    @Operation(summary = "\uD83E\uDDEA 몬스터 에셋 삭제", description = "몬스터 에셋을 S3와 DB에서 하드 딜리트합니다.")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/api/v1/monsters/{monsterId}/assets")
+    fun deleteMonsterAsset(
+        @PathVariable monsterId: Long,
+        @RequestParam assetType: AssetType,
+    ): CustomResponse<Void> {
+        monsterFacade.deleteMonsterAsset(MonsterId(monsterId), assetType)
+        return CustomResponse.ok()
     }
 
     @Operation(summary = "\uD83E\uDDEA 몬스터 에셋 직접 업로드", description = "파일을 서버를 통해 직접 S3에 업로드합니다.")
