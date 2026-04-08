@@ -11,7 +11,6 @@ class Notification(
     val content: String? = null,
     status: NotificationStatus = NotificationStatus.PENDING,
     val userId: UserId,
-    val scheduledAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
@@ -32,14 +31,12 @@ class Notification(
             userId: UserId,
             title: String,
             content: String,
-            scheduledAt: LocalDateTime? = null,
         ): Notification =
             Notification(
                 userId = userId,
                 title = title,
                 content = content,
                 status = NotificationStatus.PENDING,
-                scheduledAt = scheduledAt,
             )
     }
 }
