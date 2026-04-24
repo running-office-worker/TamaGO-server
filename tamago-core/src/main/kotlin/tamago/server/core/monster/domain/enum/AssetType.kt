@@ -15,4 +15,7 @@ enum class AssetType(
 
     /** 썸네일 PNG 이미지 */
     S_PNG("image/png", "png"),
+
+    /** 몬스터 기본 이미지 (PNG) */
+    M_PNG("image/png", "png"),
 }
