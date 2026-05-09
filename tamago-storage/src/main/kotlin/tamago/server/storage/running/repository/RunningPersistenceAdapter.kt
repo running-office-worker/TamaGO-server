@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
+import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
 import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
 import tamago.server.core.running.domain.vo.RunningId
 import tamago.server.storage.monster.entity.MonsterEntity
@@ -34,6 +35,38 @@ class RunningPersistenceAdapter(
         runningJpaRepository
             .findByIdAndUserIdAndDeletedAtIsNull(runningId.value, userId.value)
             ?.let { RunningMapper.toDomain(it) }
+
+    override fun findFinishByIdAndUserId(
+        runningId: RunningId,
+        userId: UserId,
+    ): RunningFinishQueryDto? {
+        val query =
+            jpql {
+                selectNew<RunningFinishRow>(
+                    path(RunningEntity::pace),
+                    path(RunningEntity::cadence),
+                    path(RunningEntity::elapsedTime),
+                    path(RunningEntity::calories),
+                ).from(entity(RunningEntity::class))
+                    .where(
+                        path(RunningEntity::id)
+                            .equal(runningId.value)
+                            .and(path(RunningEntity::userId).equal(userId.value))
+                            .and(path(RunningEntity::deletedAt).isNull()),
+                    )
+            }
+
+        return entityManager
+            .findOne<RunningFinishRow>(query, jpqlRenderContext)
+            ?.let {
+                RunningFinishQueryDto.of(
+                    pace = it.pace,
+                    cadence = it.cadence,
+                    elapsedTime = it.elapsedTime,
+                    totalCalories = it.totalCalories,
+                )
+            }
+    }
 
     override fun findLastByUserId(userId: UserId): Running? =
         runningJpaRepository

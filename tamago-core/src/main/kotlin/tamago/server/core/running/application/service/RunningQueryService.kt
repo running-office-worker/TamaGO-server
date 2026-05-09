@@ -7,11 +7,10 @@ import tamago.server.core.running.RunningQueryUseCase
 import tamago.server.core.running.application.exception.RunningNotFoundException
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.aggregate.RunningPlan
-import tamago.server.core.running.domain.aggregate.RunningRoute
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
+import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
 import tamago.server.core.running.domain.port.outbound.RunningPersistencePort
 import tamago.server.core.running.domain.port.outbound.RunningPlanPersistencePort
-import tamago.server.core.running.domain.port.outbound.RunningRoutePersistencePort
 import tamago.server.core.running.domain.vo.RunningId
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -21,7 +20,6 @@ import java.time.temporal.ChronoUnit
 class RunningQueryService(
     private val runningPersistencePort: RunningPersistencePort,
     private val runningPlanPersistencePort: RunningPlanPersistencePort,
-    private val runningRoutePersistencePort: RunningRoutePersistencePort,
 ) : RunningQueryUseCase {
     fun getRunning(
         runningId: RunningId,
@@ -30,7 +28,12 @@ class RunningQueryService(
         runningPersistencePort.findByIdAndUserId(runningId, userId)
             ?: throw RunningNotFoundException()
 
-    fun getRunningRoute(runningId: RunningId): RunningRoute? = runningRoutePersistencePort.findByRunningId(runningId)
+    fun getRunningFinish(
+        runningId: RunningId,
+        userId: UserId,
+    ): RunningFinishQueryDto =
+        runningPersistencePort.findFinishByIdAndUserId(runningId, userId)
+            ?: throw RunningNotFoundException()
 
     override fun getLastFinishedAt(userId: UserId): LocalDateTime? =
         runningPersistencePort.findLastByUserId(userId)?.finishedAt
