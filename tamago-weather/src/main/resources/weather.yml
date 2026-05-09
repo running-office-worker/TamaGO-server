@@ -1,4 +1,4 @@
 weather:
   kma:
-    base-url: ${KMA_BASE_URL:}
+    base-url: ${KMA_BASE_URL:https://apis.data.go.kr}
     service-key: ${KMA_SERVICE_KEY:}

@@ -1,4 +1,4 @@
-package tamago.server.weather
+package tamago.server.weather.client.kma
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 
