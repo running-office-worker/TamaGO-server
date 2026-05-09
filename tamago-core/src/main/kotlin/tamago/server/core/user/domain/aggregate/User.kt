@@ -41,10 +41,6 @@ class User(
         this.lastLoginAt = LocalDateTime.now()
     }
 
-    fun updateNickname(nickname: String) {
-        this.nickname = nickname
-    }
-
     fun addRunningDistance(distance: Double) {
         this.runningData = runningData.addKilo(distance)
     }
@@ -57,8 +53,6 @@ class User(
     fun restore() {
         this.deletedAt = null
     }
-
-    fun isOnboarded(): Boolean = !nickname.isNullOrBlank()
 
     companion object {
         fun create(

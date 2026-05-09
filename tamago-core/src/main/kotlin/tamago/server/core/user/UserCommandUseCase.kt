@@ -6,11 +6,6 @@ import tamago.server.core.user.domain.port.inbound.command.SignUpCommandDto
 interface UserCommandUseCase {
     fun createUser(command: SignUpCommandDto)
 
-    fun updateNickname(
-        user: User,
-        nickname: String,
-    )
-
     fun recordLogin(user: User)
 
     fun deleteUser(user: User)

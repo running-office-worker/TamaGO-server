@@ -36,6 +36,7 @@ class UserFacade(
 
     fun socialLogin(command: LoginCommandDto): TokenQueryDto {
         val existingUser = userQueryService.findSocialUser(command.provider, command.externalId)
+        val isNewUser = existingUser == null
 
         val user =
             when {
@@ -58,7 +59,7 @@ class UserFacade(
             userId = userId.value,
             accessToken = accessToken,
             refreshToken = refreshToken,
-            isNewUser = !user.isOnboarded(),
+            isNewUser = isNewUser,
         )
     }
 
@@ -86,7 +87,7 @@ class UserFacade(
             userId = userId.value,
             accessToken = accessToken,
             refreshToken = refreshToken,
-            isNewUser = !user.isOnboarded(),
+            isNewUser = false,
         )
     }
 
@@ -105,7 +106,7 @@ class UserFacade(
             userId = userId.value,
             accessToken = newAccessToken,
             refreshToken = newRefreshToken,
-            isNewUser = !user.isOnboarded(),
+            isNewUser = false,
         )
     }
 }

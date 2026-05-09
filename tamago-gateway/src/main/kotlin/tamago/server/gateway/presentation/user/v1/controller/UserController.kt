@@ -2,18 +2,14 @@ package tamago.server.gateway.presentation.user.v1.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.validation.Valid
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import tamago.server.core.user.UserCommandUseCase
 import tamago.server.core.user.domain.aggregate.User
 import tamago.server.gateway.common.annotation.CurrentUser
 import tamago.server.gateway.common.response.CustomResponse
-import tamago.server.gateway.presentation.user.v1.request.NicknameRequest
 import tamago.server.gateway.presentation.user.v1.response.MeResponse
 import tamago.server.gateway.presentation.user.v1.response.RunningDataResponse
 import java.time.LocalDate
@@ -38,17 +34,6 @@ class UserController(
         @CurrentUser user: User,
     ): CustomResponse<Void> {
         userCommandUseCase.deleteUser(user)
-        return CustomResponse.ok()
-    }
-
-    @Operation(summary = "애칭 설정하기", description = "타마고 애칭을 설정합니다.")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping("/api/v1/users/nickname")
-    fun giveNickname(
-        @CurrentUser user: User,
-        @Valid @RequestBody request: NicknameRequest,
-    ): CustomResponse<Void> {
-        userCommandUseCase.updateNickname(user, request.nickname)
         return CustomResponse.ok()
     }
 
