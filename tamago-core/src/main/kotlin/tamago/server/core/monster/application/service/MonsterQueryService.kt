@@ -12,9 +12,11 @@ import tamago.server.core.monster.application.exception.MonsterNotFoundException
 import tamago.server.core.monster.application.exception.OwnedMonsterNotFoundException
 import tamago.server.core.monster.domain.aggregate.Monster
 import tamago.server.core.monster.domain.aggregate.MonsterAsset
+import tamago.server.core.monster.domain.aggregate.MonsterGroupAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePort
+import tamago.server.core.monster.domain.port.outbound.MonsterGroupAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
 import java.time.LocalDateTime
@@ -24,6 +26,7 @@ class MonsterQueryService(
     private val monsterPersistencePort: MonsterPersistencePort,
     private val ownedMonsterPersistencePort: OwnedMonsterPersistencePort,
     private val monsterAssetPersistencePort: MonsterAssetPersistencePort,
+    private val monsterGroupAssetPersistencePort: MonsterGroupAssetPersistencePort,
 ) : MonsterQueryUseCase {
     fun get(id: MonsterId): Monster =
         monsterPersistencePort.findById(id)
@@ -52,6 +55,8 @@ class MonsterQueryService(
     ): List<MonsterAsset> = monsterAssetPersistencePort.findAllByMonsterIdsAndAssetType(monsterIds, assetType)
 
     fun getAllMonsterAssets(): List<MonsterAsset> = monsterAssetPersistencePort.findAll()
+
+    fun getAllMonsterGroupAssets(): List<MonsterGroupAsset> = monsterGroupAssetPersistencePort.findAll()
 
     override fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean =
         lastLoginAt?.let { monsterAssetPersistencePort.existsByUpdatedAtAfter(it) } ?: true

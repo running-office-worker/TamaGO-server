@@ -10,6 +10,8 @@ import tamago.server.core.common.vo.UserId
 import tamago.server.core.monster.application.service.MonsterCommandService
 import tamago.server.core.monster.application.service.MonsterQueryService
 import tamago.server.core.monster.domain.aggregate.Monster
+import tamago.server.core.monster.domain.aggregate.MonsterAsset
+import tamago.server.core.monster.domain.aggregate.MonsterGroupAsset
 import tamago.server.core.monster.domain.aggregate.OwnedMonster
 import tamago.server.core.monster.domain.enum.AssetType
 import tamago.server.core.monster.domain.port.inbound.query.CreateMonsterAssetQueryDto
@@ -71,15 +73,17 @@ class MonsterFacade(
     ): CreateMonsterAssetQueryDto {
         // 특정 몬스터에 이미 해당 타입의 에셋이 존재하는지 확인하고 존재하면 예외 처리
         monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
+        val monster = monsterQueryService.get(monsterId)
+        val assetPath = monster.assetPath()
 
         // 이미지 파일 경로 생성
-        val imageFilePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
+        val imageFilePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, assetPath)
 
         // 랜덤한 assetName 생성하고 presigned upload URL 생성
         val generatedUrl =
             imageProcessor.createUploadUrl(
                 prefix = ImagePrefix.MONSTER.value,
-                prefixId = monsterId.value,
+                prefixPath = assetPath,
                 contentType = assetType.contentType,
                 extension = assetType.extension,
             )
@@ -103,9 +107,11 @@ class MonsterFacade(
     ): UploadMonsterAssetQueryDto {
         // 특정 몬스터에 이미 해당 타입의 에셋이 존재하는지 확인하고 존재하면 예외 처리
         monsterQueryService.checkMonsterAssetNotExists(monsterId, assetType)
+        val monster = monsterQueryService.get(monsterId)
+        val assetPath = monster.assetPath()
 
         // 이미지 파일 경로와 이름 생성
-        val filePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, monsterId.value)
+        val filePath = imageFileConstructor.imageFilePath(ImagePrefix.MONSTER.value, assetPath)
         val fileName = imageFileConstructor.imageFileName(assetType.extension)
         val assetKey = "$filePath/$fileName"
 
@@ -114,7 +120,7 @@ class MonsterFacade(
         val uploaded =
             imageProcessor.uploadFile(
                 prefix = ImagePrefix.MONSTER.value,
-                prefixId = monsterId.value,
+                prefixPath = assetPath,
                 contentType = assetType.contentType,
                 extension = assetType.extension,
                 fileBytes = fileBytes,
@@ -127,30 +133,46 @@ class MonsterFacade(
     @Transactional(readOnly = true)
     fun getAllMonsterAssetBundles(): List<MonsterAssetBundleQueryDto> {
         val allAssets = monsterQueryService.getAllMonsterAssets()
+        val allBackgroundAssets = monsterQueryService.getAllMonsterGroupAssets()
+        val monsterAssetsByGroup =
+            allAssets
+                .filter { it.assetName != null && it.assetType != null }
+                .map { MonsterAssetWithMonster(it, monsterQueryService.get(it.monsterId)) }
+                .groupBy { it.monster.monsterGroupId!!.value }
+        val backgroundAssetsByGroup =
+            allBackgroundAssets
+                .filter { it.assetName != null && it.assetType != null && it.monsterGroupCode != null }
+                .groupBy { it.monsterGroupId.value }
 
-        return allAssets
-            .filter { it.assetName != null && it.assetType != null }
-            .groupBy { it.monsterId }
-            .map { (monsterId, assets) ->
-                val assetList =
-                    assets.map { asset ->
-                        MonsterAssetBundleQueryDto.AssetDetail(
-                            assetType = asset.assetType!!.name,
-                            url =
-                                imageProcessor
-                                    .getImageUrl(
-                                        prefix = ImagePrefix.MONSTER.value,
-                                        prefixId = monsterId.value,
-                                        fileName = asset.assetName,
-                                    ).firstOrNull()
-                                    ?.url
-                                    .orEmpty(),
-                            lastModifiedAt = asset.updatedAt!!,
-                        )
-                    }
+        return (monsterAssetsByGroup.keys + backgroundAssetsByGroup.keys)
+            .map { groupId ->
+                val monsterAssets = monsterAssetsByGroup[groupId].orEmpty()
+                val backgroundAssets = backgroundAssetsByGroup[groupId].orEmpty()
+                val code =
+                    monsterAssets.firstOrNull()?.monster?.monsterGroupCode
+                        ?: backgroundAssets.first().monsterGroupCode!!
+                val name =
+                    monsterAssets.firstOrNull()?.monster?.monsterGroupName
+                        ?: backgroundAssets.firstOrNull()?.monsterGroupName
+
                 MonsterAssetBundleQueryDto(
-                    monsterId = monsterId.value,
-                    assets = assetList,
+                    monsterGroupId = groupId,
+                    code = code,
+                    name = name,
+                    backgroundAssets =
+                        backgroundAssets.map { it.toAssetDetail() },
+                    monsters =
+                        monsterAssets
+                            .groupBy { it.monster.id!!.value }
+                            .values
+                            .map { assets ->
+                                val monster = assets.first().monster
+                                MonsterAssetBundleQueryDto.MonsterAssetDetail(
+                                    monsterId = monster.id!!.value,
+                                    evolutionStage = monster.evolutionStage,
+                                    assets = assets.map { it.asset.toAssetDetail() },
+                                )
+                            },
                 )
             }
     }
@@ -161,10 +183,11 @@ class MonsterFacade(
         assetType: AssetType,
     ) {
         val asset = monsterQueryService.getMonsterAsset(monsterId, assetType)
+        val monster = monsterQueryService.get(monsterId)
 
         imageProcessor.deleteFile(
             prefix = ImagePrefix.MONSTER.value,
-            prefixId = monsterId.value,
+            prefixPath = monster.assetPath(),
             fileName = asset.assetName!!,
         )
 
@@ -179,4 +202,29 @@ class MonsterFacade(
         monsterQueryService.get(monsterId)
         monsterCommandService.ownMonster(monsterId, userId)
     }
+
+    private fun Monster.assetPath(): String =
+        "${requireNotNull(monsterGroupCode) { "monsterGroupCode is required" }}/" +
+            requireNotNull(evolutionStage) { "evolutionStage is required" }
+
+    private fun MonsterAsset.toAssetDetail(): MonsterAssetBundleQueryDto.AssetDetail =
+        MonsterAssetBundleQueryDto.AssetDetail(
+            assetType = assetType!!.name,
+            fileName = assetName!!,
+            url = imageProcessor.getImageUrl(assetKey!!),
+            lastModifiedAt = updatedAt!!,
+        )
+
+    private fun MonsterGroupAsset.toAssetDetail(): MonsterAssetBundleQueryDto.AssetDetail =
+        MonsterAssetBundleQueryDto.AssetDetail(
+            assetType = assetType!!.name,
+            fileName = assetName!!,
+            url = imageProcessor.getImageUrl(assetKey!!),
+            lastModifiedAt = updatedAt!!,
+        )
+
+    private data class MonsterAssetWithMonster(
+        val asset: MonsterAsset,
+        val monster: Monster,
+    )
 }

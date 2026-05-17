@@ -19,6 +19,9 @@ enum class AssetType(
     /** 몬스터 기본 이미지 (PNG) */
     M_PNG("image/png", "png"),
 
-    /** 몬스터 배경 PNG 이미지 (미사용) */
-    B_PNG("image/png", "png"),
+    /** 몬스터 그룹 왼쪽 배경 PNG 이미지 */
+    LBG_PNG("image/png", "png"),
+
+    /** 몬스터 그룹 오른쪽 배경 PNG 이미지 */
+    RBG_PNG("image/png", "png"),
 }

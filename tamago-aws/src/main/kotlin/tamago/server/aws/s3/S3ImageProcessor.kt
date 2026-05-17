@@ -21,12 +21,12 @@ class S3ImageProcessor(
 ) : ImageProcessor {
     override fun createUploadUrl(
         prefix: String,
-        prefixId: Long,
+        prefixPath: String,
         contentType: String,
         extension: String,
     ): ImageUrl {
         try {
-            val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+            val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixPath)
             val imageFileName = imageFileConstructor.imageFileName(extension)
 
             val presignedUrl =
@@ -50,11 +50,11 @@ class S3ImageProcessor(
 
     override fun getImageUrl(
         prefix: String,
-        prefixId: Long,
+        prefixPath: String,
         fileName: String?,
     ): List<ImageInfo> {
         try {
-            val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+            val imageFilePath = imageFileConstructor.imageFilePath(prefix, prefixPath)
 
             return fileName
                 ?.let {
@@ -65,16 +65,22 @@ class S3ImageProcessor(
         }
     }
 
+    override fun getImageUrl(assetKey: String): String {
+        val filePath = assetKey.substringBeforeLast("/")
+        val fileName = assetKey.substringAfterLast("/")
+        return generateGetUrl(filePath, fileName)
+    }
+
     override fun uploadFile(
         prefix: String,
-        prefixId: Long,
+        prefixPath: String,
         contentType: String,
         extension: String,
         fileBytes: ByteArray,
         fileName: String,
     ): UploadedImage {
         try {
-            val filePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+            val filePath = imageFileConstructor.imageFilePath(prefix, prefixPath)
 
             awsS3Client.putObject(awsProperties.s3.bucket, filePath, fileName, contentType, fileBytes)
 
@@ -89,11 +95,11 @@ class S3ImageProcessor(
 
     override fun deleteFile(
         prefix: String,
-        prefixId: Long,
+        prefixPath: String,
         fileName: String,
     ) {
         try {
-            val filePath = imageFileConstructor.imageFilePath(prefix, prefixId)
+            val filePath = imageFileConstructor.imageFilePath(prefix, prefixPath)
             awsS3Client.deleteObject(awsProperties.s3.bucket, "$filePath/$fileName")
         } catch (e: SdkException) {
             throw S3Exception(e)
