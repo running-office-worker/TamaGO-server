@@ -2,6 +2,7 @@ package tamago.server.gateway.presentation.monster.v1.response
 
 import io.swagger.v3.oas.annotations.media.Schema
 import tamago.server.core.monster.domain.port.inbound.query.MonsterAssetBundleQueryDto
+import tamago.server.core.monster.domain.vo.AssetMetadata
 import java.time.LocalDateTime
 
 @Schema(description = "몬스터 에셋 번들 응답")
@@ -50,6 +51,8 @@ data class MonsterAssetBundleResponse(
         val url: String,
         @field:Schema(description = "마지막 수정 일시", requiredMode = Schema.RequiredMode.REQUIRED)
         val lastModifiedAt: LocalDateTime,
+        @field:Schema(description = "에셋 부가 메타데이터")
+        val metadata: AssetMetadata?,
     ) {
         companion object {
             fun from(dto: MonsterAssetBundleQueryDto.AssetDetail): AssetDetailResponse =
@@ -58,6 +61,7 @@ data class MonsterAssetBundleResponse(
                     fileName = dto.fileName,
                     url = dto.url,
                     lastModifiedAt = dto.lastModifiedAt,
+                    metadata = dto.metadata,
                 )
         }
     }

@@ -1,6 +1,7 @@
 package tamago.server.core.monster.domain.aggregate
 
 import tamago.server.core.monster.domain.enum.AssetType
+import tamago.server.core.monster.domain.vo.AssetMetadata
 import tamago.server.core.monster.domain.vo.MonsterGroupAssetId
 import tamago.server.core.monster.domain.vo.MonsterGroupId
 import java.time.LocalDateTime
@@ -13,6 +14,7 @@ class MonsterGroupAsset(
     val assetKey: String? = null,
     val assetName: String? = null,
     val assetType: AssetType? = null,
+    val metadata: AssetMetadata? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,

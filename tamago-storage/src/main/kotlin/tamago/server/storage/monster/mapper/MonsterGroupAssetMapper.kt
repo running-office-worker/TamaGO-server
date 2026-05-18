@@ -17,6 +17,7 @@ object MonsterGroupAssetMapper {
             assetKey = domain.assetKey,
             assetName = domain.assetName,
             assetType = domain.assetType,
+            metadata = domain.metadata,
         )
 
     fun toDomain(entity: MonsterGroupAssetEntity?): MonsterGroupAsset? {
@@ -30,6 +31,7 @@ object MonsterGroupAssetMapper {
             assetKey = entity.assetKey,
             assetName = entity.assetName,
             assetType = entity.assetType,
+            metadata = entity.metadata,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
             deletedAt = entity.deletedAt,

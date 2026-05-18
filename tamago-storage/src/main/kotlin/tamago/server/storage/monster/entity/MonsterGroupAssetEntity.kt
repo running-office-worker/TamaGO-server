@@ -2,6 +2,7 @@ package tamago.server.storage.monster.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -14,6 +15,8 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import tamago.server.core.monster.domain.enum.AssetType
+import tamago.server.core.monster.domain.vo.AssetMetadata
+import tamago.server.storage.monster.converter.MonsterGroupAssetMetadataConverter
 import tamago.server.storage.support.BaseTimeEntity
 
 @Entity
@@ -37,4 +40,7 @@ class MonsterGroupAssetEntity(
     @Enumerated(EnumType.STRING)
     @Column(name = "asset_type")
     val assetType: AssetType? = null,
+    @Convert(converter = MonsterGroupAssetMetadataConverter::class)
+    @Column(name = "metadata", columnDefinition = "json")
+    val metadata: AssetMetadata? = null,
 ) : BaseTimeEntity()

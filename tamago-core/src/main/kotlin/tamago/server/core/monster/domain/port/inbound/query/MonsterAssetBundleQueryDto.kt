@@ -1,5 +1,6 @@
 package tamago.server.core.monster.domain.port.inbound.query
 
+import tamago.server.core.monster.domain.vo.AssetMetadata
 import java.time.LocalDateTime
 
 data class MonsterAssetBundleQueryDto(
@@ -20,5 +21,6 @@ data class MonsterAssetBundleQueryDto(
         val fileName: String,
         val url: String,
         val lastModifiedAt: LocalDateTime,
+        val metadata: AssetMetadata?,
     )
 }

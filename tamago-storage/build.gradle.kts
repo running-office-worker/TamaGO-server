@@ -25,6 +25,7 @@ dependencies {
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.7")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
 
 buildscript {

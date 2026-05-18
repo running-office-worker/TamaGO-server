@@ -213,6 +213,7 @@ class MonsterFacade(
             fileName = assetName!!,
             url = imageProcessor.getImageUrl(assetKey!!),
             lastModifiedAt = updatedAt!!,
+            metadata = null,
         )
 
     private fun MonsterGroupAsset.toAssetDetail(): MonsterAssetBundleQueryDto.AssetDetail =
@@ -221,6 +222,7 @@ class MonsterFacade(
             fileName = assetName!!,
             url = imageProcessor.getImageUrl(assetKey!!),
             lastModifiedAt = updatedAt!!,
+            metadata = metadata,
         )
 
     private data class MonsterAssetWithMonster(
