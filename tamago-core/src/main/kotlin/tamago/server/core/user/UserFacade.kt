@@ -92,7 +92,13 @@ class UserFacade(
     }
 
     fun reissueToken(refreshToken: String): TokenQueryDto {
-        val userId = jwtTokenProvider.getUserId(refreshToken)
+        val userId =
+            try {
+                jwtTokenProvider.getUserId(refreshToken)
+            } catch (exception: Exception) {
+                refreshTokenQueryUseCase.validateToken(refreshToken)
+                throw exception
+            }
         val user = userQueryService.get(userId)
 
         refreshTokenQueryUseCase.validation(userId, refreshToken)

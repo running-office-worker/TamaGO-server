@@ -22,11 +22,15 @@ class RefreshTokenQueryService(
 
     override fun findByUserId(userId: UserId): RefreshToken? = refreshTokenPersistencePort.findByUserId(userId)
 
+    override fun validateToken(token: String) {
+        validator.validate(token)
+    }
+
     override fun validation(
         userId: UserId,
         token: String,
     ) {
-        validator.validate(token)
+        validateToken(token)
         validator.typeCheck(token)
 
         val storedToken =
