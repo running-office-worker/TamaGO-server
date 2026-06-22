@@ -24,4 +24,7 @@ enum class AssetType(
 
     /** 몬스터 그룹 오른쪽 배경 PNG 이미지 */
     RBG_PNG("image/png", "png"),
+
+    /** 몬스터 애니메이션 */
+    M_GIF("image/gif", "gif"),
 }
