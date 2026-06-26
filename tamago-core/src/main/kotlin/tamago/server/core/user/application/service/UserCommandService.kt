@@ -43,14 +43,6 @@ class UserCommandService(
             .save(User.create(command.email, command.provider, command.externalId))
             .also { publishUserSignedUpEvent(it.id!!) }
 
-    override fun updateNickname(
-        user: User,
-        nickname: String,
-    ) {
-        user.updateNickname(nickname)
-        userPersistencePort.save(user)
-    }
-
     override fun recordLogin(user: User) {
         user.updateLastLogin()
         userPersistencePort.save(user)

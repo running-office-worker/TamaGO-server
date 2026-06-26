@@ -2,10 +2,12 @@ package tamago.server.storage.monster.entity
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
+import jakarta.persistence.ConstraintMode
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
+import jakarta.persistence.ForeignKey
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -24,6 +26,11 @@ class MonsterEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "monster_id")
     val id: Long? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "monster_group_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    val monsterGroup: MonsterGroupEntity? = null,
+    @Column(name = "evolution_stage")
+    val evolutionStage: Int? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "previous_monster_id")
     val previousMonster: MonsterEntity? = null,

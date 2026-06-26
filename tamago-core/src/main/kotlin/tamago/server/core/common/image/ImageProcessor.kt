@@ -12,6 +12,13 @@ interface ImageProcessor {
         prefixId: Long,
         contentType: String = "image/jpeg",
         extension: String = "jpeg",
+    ): ImageUrl = createUploadUrl(prefix, prefixId.toString(), contentType, extension)
+
+    fun createUploadUrl(
+        prefix: String,
+        prefixPath: String,
+        contentType: String = "image/jpeg",
+        extension: String = "jpeg",
     ): ImageUrl
 
     /**
@@ -23,11 +30,28 @@ interface ImageProcessor {
         prefix: String,
         prefixId: Long,
         fileName: String?,
+    ): List<ImageInfo> = getImageUrl(prefix, prefixId.toString(), fileName)
+
+    fun getImageUrl(
+        prefix: String,
+        prefixPath: String,
+        fileName: String?,
     ): List<ImageInfo>
+
+    fun getImageUrl(assetKey: String): String
 
     fun uploadFile(
         prefix: String,
         prefixId: Long,
+        contentType: String,
+        extension: String,
+        fileBytes: ByteArray,
+        fileName: String,
+    ): UploadedImage = uploadFile(prefix, prefixId.toString(), contentType, extension, fileBytes, fileName)
+
+    fun uploadFile(
+        prefix: String,
+        prefixPath: String,
         contentType: String,
         extension: String,
         fileBytes: ByteArray,
@@ -37,6 +61,12 @@ interface ImageProcessor {
     fun deleteFile(
         prefix: String,
         prefixId: Long,
+        fileName: String,
+    ) = deleteFile(prefix, prefixId.toString(), fileName)
+
+    fun deleteFile(
+        prefix: String,
+        prefixPath: String,
         fileName: String,
     )
 }

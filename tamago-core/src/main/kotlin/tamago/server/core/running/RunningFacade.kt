@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.event.RunningCompletedEvent
 import tamago.server.core.common.vo.UserId
-import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.application.service.RunningCommandService
 import tamago.server.core.running.application.service.RunningPlanCommandService
 import tamago.server.core.running.application.service.RunningPlanQueryService
@@ -24,7 +23,6 @@ class RunningFacade(
     private val runningQueryService: RunningQueryService,
     private val runningPlanQueryService: RunningPlanQueryService,
     private val runningPlanCommandService: RunningPlanCommandService,
-    private val monsterQueryUseCase: MonsterQueryUseCase,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
@@ -66,29 +64,7 @@ class RunningFacade(
     fun getRunningResult(
         runningId: RunningId,
         userId: UserId,
-    ): RunningFinishQueryDto {
-        val running = runningQueryService.getRunning(runningId, userId)
-        val runningRoute = runningQueryService.getRunningRoute(runningId)
-
-        // LineString 좌표 → WaypointDto 변환
-        val waypoints =
-            runningRoute?.route?.let { lineString ->
-                lineString.coordinates.map { coordinate ->
-                    RunningFinishQueryDto.WaypointDto(
-                        latitude = coordinate.y,
-                        longitude = coordinate.x,
-                    )
-                }
-            } ?: emptyList()
-
-        val xpResult = monsterQueryUseCase.calculateEarnedXp(running.ownedMonsterId, running.distance ?: 0.0)
-
-        return RunningFinishQueryDto.of(
-            running = running,
-            xpResult = xpResult,
-            waypoints = waypoints,
-        )
-    }
+    ): RunningFinishQueryDto = runningQueryService.getRunningFinish(runningId, userId)
 
     @Transactional(readOnly = true)
     fun getStatsByOwnedMonsterIds(

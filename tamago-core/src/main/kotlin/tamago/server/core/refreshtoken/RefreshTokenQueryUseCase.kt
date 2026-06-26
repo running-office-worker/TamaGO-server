@@ -8,6 +8,8 @@ interface RefreshTokenQueryUseCase {
 
     fun findByUserId(userId: UserId): RefreshToken?
 
+    fun validateToken(token: String)
+
     fun validation(
         userId: UserId,
         token: String,

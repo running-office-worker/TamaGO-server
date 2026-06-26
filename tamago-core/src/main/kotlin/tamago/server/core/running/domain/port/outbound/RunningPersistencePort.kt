@@ -3,6 +3,7 @@ package tamago.server.core.running.domain.port.outbound
 import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.domain.aggregate.Running
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
+import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
 import tamago.server.core.running.domain.vo.RunningId
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -14,6 +15,11 @@ interface RunningPersistencePort {
         runningId: RunningId,
         userId: UserId,
     ): Running?
+
+    fun findFinishByIdAndUserId(
+        runningId: RunningId,
+        userId: UserId,
+    ): RunningFinishQueryDto?
 
     fun findAllByUserIdAndMonth(
         userId: UserId,

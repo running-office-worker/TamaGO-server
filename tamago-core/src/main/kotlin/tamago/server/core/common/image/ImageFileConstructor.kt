@@ -23,9 +23,14 @@ class ImageFileConstructor(
     fun imageFilePath(
         prefix: String,
         prefixId: Long,
+    ): String = imageFilePath(prefix, prefixId.toString())
+
+    fun imageFilePath(
+        prefix: String,
+        prefixPath: String,
     ): String {
         val profile = environment.activeProfiles.firstOrNull() ?: "dev"
-        return "$profile/$prefix/$prefixId"
+        return "$profile/$prefix/$prefixPath"
     }
 
     private fun randomFileName(): String =

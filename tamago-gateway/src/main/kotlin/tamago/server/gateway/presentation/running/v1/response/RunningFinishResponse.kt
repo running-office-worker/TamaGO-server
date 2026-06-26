@@ -13,37 +13,19 @@ data class RunningFinishResponse(
     val elapsedTime: Int,
     @field:Schema(description = "총 소모 칼로리 (kcal)", example = "350", requiredMode = Schema.RequiredMode.REQUIRED)
     val totalCalories: Int,
-    @field:Schema(description = "원래 경험치", example = "500", requiredMode = Schema.RequiredMode.REQUIRED)
-    val originXp: Int,
-    @field:Schema(description = "현재 경험치", example = "700", requiredMode = Schema.RequiredMode.REQUIRED)
-    val earnedXp: Int,
-    @field:Schema(description = "진화 단계별 몬스터 정보 (최대 4단계)", requiredMode = Schema.RequiredMode.REQUIRED)
-    val evolutionStages: List<EvolutionStageResponse>,
-    @field:Schema(description = "러닝 경로 좌표 목록", requiredMode = Schema.RequiredMode.REQUIRED)
-    val waypoints: List<WaypointResponse>,
+    @field:Schema(description = "거리 기준 일회성 칭호", requiredMode = Schema.RequiredMode.REQUIRED)
+    val distanceTitle: DistanceTitleResponse,
 ) {
-    @Schema(description = "경로 좌표")
-    data class WaypointResponse(
-        @field:Schema(description = "위도", example = "37.5665", requiredMode = Schema.RequiredMode.REQUIRED)
-        val latitude: Double,
-        @field:Schema(description = "경도", example = "126.9780", requiredMode = Schema.RequiredMode.REQUIRED)
-        val longitude: Double,
-    )
-
-    @Schema(description = "진화 단계 정보 응답")
-    data class EvolutionStageResponse(
-        @field:Schema(description = "진화 단계 (1~4)", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-        val stage: Int,
-        @field:Schema(description = "해당 단계 몬스터 ID", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
-        val monsterId: Long,
+    @Schema(description = "거리 기준 일회성 칭호")
+    data class DistanceTitleResponse(
+        @field:Schema(description = "칭호", example = "모험 러너", requiredMode = Schema.RequiredMode.REQUIRED)
+        val title: String,
         @field:Schema(
-            description = "다음 단계로 진화에 필요한 경험치",
-            example = "200",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+            description = "말풍선 문구",
+            example = "5km 돌파! 우리 오늘 꽤 멀리 왔어!",
+            requiredMode = Schema.RequiredMode.REQUIRED,
         )
-        val evolutionXp: Int?,
-        @field:Schema(description = "현재 단계 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
-        val current: Boolean,
+        val message: String,
     )
 
     companion object {
@@ -53,18 +35,18 @@ data class RunningFinishResponse(
                 cadence = dto.cadence,
                 elapsedTime = dto.elapsedTime,
                 totalCalories = dto.totalCalories,
-                originXp = dto.originXp,
-                earnedXp = dto.earnedXp,
-                evolutionStages =
-                    dto.evolutionStages.map { stage ->
-                        EvolutionStageResponse(
-                            stage = stage.stage,
-                            monsterId = stage.monsterId,
-                            evolutionXp = stage.evolutionXp,
-                            current = stage.current,
-                        )
-                    },
-                waypoints = dto.waypoints.map { WaypointResponse(it.latitude, it.longitude) },
+                distanceTitle = resolveDistanceTitle(dto.distance),
             )
+
+        private fun resolveDistanceTitle(distance: Double): DistanceTitleResponse =
+            when {
+                distance >= 10.0 -> DistanceTitleResponse("레전드 러너", "10km 돌파! 오늘은 레전드야!")
+                distance >= 7.0 -> DistanceTitleResponse("강철 러너", "강철 러너 등극! 오늘 진짜 잘 달렸어!")
+                distance >= 5.0 -> DistanceTitleResponse("모험 러너", "5km 돌파! 우리 오늘 꽤 멀리 왔어!")
+                distance >= 3.0 -> DistanceTitleResponse("성장 러너", "성장 러너 칭호 획득! 나도 더 컸어!")
+                distance >= 2.0 -> DistanceTitleResponse("꾸준한 러너", "오늘도 꾸준히 달렸어, 좋아!")
+                distance >= 1.0 -> DistanceTitleResponse("가벼운 러너", "1km 돌파! 몸 풀기 제대로 했네!")
+                else -> DistanceTitleResponse("첫 걸음 러너", "첫 걸음 성공! 오늘도 같이 달렸어!")
+            }
     }
 }

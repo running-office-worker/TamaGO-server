@@ -34,6 +34,7 @@ dependencies {
     implementation(project(":tamago-aws"))
     implementation(project(":tamago-notification"))
     implementation(project(":tamago-monitoring"))
+    implementation(project(":tamago-weather"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")

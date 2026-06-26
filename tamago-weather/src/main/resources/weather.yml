@@ -1,0 +1,3 @@
+weather:
+  kma:
+    service-key: ${KMA_SERVICE_KEY:}
