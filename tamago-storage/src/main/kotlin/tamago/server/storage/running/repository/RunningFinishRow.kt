@@ -5,4 +5,5 @@ data class RunningFinishRow(
     val cadence: Int?,
     val elapsedTime: Int?,
     val totalCalories: Int?,
+    val distance: Double?,
 )
