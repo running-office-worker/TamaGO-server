@@ -3,21 +3,19 @@ package tamago.server.core.letter.application.scheduler
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import tamago.server.core.letter.application.service.LetterQueryService
 import tamago.server.core.letter.application.service.UserLetterCommandService
 import tamago.server.core.letter.application.service.UserLetterQueryService
 import tamago.server.core.notification.NotificationCommandUseCase
-import tamago.server.core.running.RunningQueryUseCase
 import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger {}
+private const val LETTER_NOTIFICATION_TITLE = "타마고의 편지"
+private const val LETTER_NOTIFICATION_CONTENT = "새로운 편지가 도착했어요."
 
 @Component
 class UserLetterSender(
     private val userLetterQueryService: UserLetterQueryService,
     private val userLetterCommandService: UserLetterCommandService,
-    private val letterQueryService: LetterQueryService,
-    private val runningQueryUseCase: RunningQueryUseCase,
     private val notificationCommandUseCase: NotificationCommandUseCase,
 ) {
     @Scheduled(fixedDelay = 60_000)
@@ -36,13 +34,10 @@ class UserLetterSender(
         val userIds = scheduledLetters.map { it.userId }.distinct()
         userIds.forEach { userId ->
             try {
-                val letterId = scheduledLetters.first { it.userId == userId }.letterId
-                val letter = letterQueryService.get(letterId)
-                val monsterNickname = runningQueryUseCase.getLastMonsterNickname(userId)
                 notificationCommandUseCase.createNotification(
                     userId = userId,
-                    title = monsterNickname?.let { "안녕 난 ${it}이야" } ?: letter.title,
-                    content = letter.content.value,
+                    title = LETTER_NOTIFICATION_TITLE,
+                    content = LETTER_NOTIFICATION_CONTENT,
                 )
             } catch (e: Exception) {
                 logger.error(e) { "편지 도착 알림 저장 중 오류 발생 - userId: $userId" }
