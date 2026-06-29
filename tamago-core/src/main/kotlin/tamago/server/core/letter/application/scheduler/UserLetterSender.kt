@@ -18,7 +18,7 @@ class UserLetterSender(
     private val userLetterCommandService: UserLetterCommandService,
     private val notificationCommandUseCase: NotificationCommandUseCase,
 ) {
-    @Scheduled(fixedDelay = 60_000)
+    @Scheduled(fixedDelay = 300_000) // 5분마다 실행
     fun notifyScheduledLetters() {
         val now = LocalDateTime.now()
         val scheduledLetters = userLetterQueryService.getScheduledLettersBeforeOrEqual(now)
