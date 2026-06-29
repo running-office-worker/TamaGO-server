@@ -1,6 +1,7 @@
 package tamago.server.core.letter.application.event
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -23,15 +24,9 @@ class LetterEventListener(
     private val userLetterQueryService: UserLetterQueryService,
     private val userLetterCommandService: UserLetterCommandService,
 ) {
-    @TransactionalEventListener
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @EventListener
     fun onUserDeleted(event: UserDeletedEvent) {
-        try {
-            val userLetters = userLetterQueryService.findByUserId(event.userId)
-            userLetters.forEach { userLetterCommandService.delete(it) }
-        } catch (e: Exception) {
-            logger.error(e) { "회원 탈퇴 후 편지 데이터 삭제 오류 - userId: ${event.userId}" }
-        }
+        userLetterCommandService.hardDeleteAllByUserId(event.userId)
     }
 
     @TransactionalEventListener

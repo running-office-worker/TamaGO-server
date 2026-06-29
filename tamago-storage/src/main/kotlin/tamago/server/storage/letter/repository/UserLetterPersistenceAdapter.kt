@@ -67,6 +67,10 @@ class UserLetterPersistenceAdapter(
             .findAllByUserIdAndDeletedAtIsNotNull(userId.value)
             .mapNotNull { UserLetterMapper.toDomain(it) }
 
+    override fun hardDeleteAllByUserId(userId: UserId) {
+        userLetterJpaRepository.deleteAllByUserId(userId.value)
+    }
+
     override fun findLatestDistinctByUser(): List<UserLetter> =
         userLetterJpaRepository
             .findAll {

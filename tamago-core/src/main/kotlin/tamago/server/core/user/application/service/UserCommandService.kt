@@ -49,9 +49,9 @@ class UserCommandService(
     }
 
     override fun deleteUser(user: User) {
-        user.delete()
-        userPersistencePort.save(user)
-        applicationEventPublisher.publishEvent(UserDeletedEvent(user.id!!))
+        val userId = user.id ?: throw UserSaveErrorException()
+        applicationEventPublisher.publishEvent(UserDeletedEvent(userId))
+        userPersistencePort.hardDeleteById(userId)
     }
 
     fun restoreUser(user: User) {

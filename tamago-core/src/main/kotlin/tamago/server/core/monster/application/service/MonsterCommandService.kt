@@ -77,6 +77,10 @@ class MonsterCommandService(
         ownedMonsterPersistencePort.save(ownedMonster)
     }
 
+    fun hardDeleteOwnedMonstersByUserId(userId: UserId) {
+        ownedMonsterPersistencePort.hardDeleteAllByUserId(userId)
+    }
+
     fun hardDeleteMonsterAsset(monsterAsset: MonsterAsset) {
         monsterAssetPersistencePort.deleteById(monsterAsset)
     }

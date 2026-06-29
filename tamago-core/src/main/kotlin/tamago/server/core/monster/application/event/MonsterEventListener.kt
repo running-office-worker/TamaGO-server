@@ -1,6 +1,7 @@
 package tamago.server.core.monster.application.event
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -31,15 +32,9 @@ class MonsterEventListener(
         }
     }
 
-    @TransactionalEventListener
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @EventListener
     fun onUserDeleted(event: UserDeletedEvent) {
-        try {
-            val ownedMonsters = monsterQueryService.getOwnedMonstersByUserId(event.userId)
-            ownedMonsters.forEach { monsterCommandService.delete(it) }
-        } catch (e: Exception) {
-            logger.error(e) { "회원 탈퇴 후 보유 몬스터 삭제 오류 - userId: ${event.userId}" }
-        }
+        monsterCommandService.hardDeleteOwnedMonstersByUserId(event.userId)
     }
 
     @TransactionalEventListener

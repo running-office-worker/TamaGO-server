@@ -27,24 +27,21 @@ class UserFacade(
     fun signUp(command: SignUpCommandDto) {
         val existingUser = userQueryService.findByEmail(command.email)
 
-        when {
-            existingUser == null -> userCommandService.createUser(command)
-            existingUser.deletedAt != null -> userCommandService.restoreUser(existingUser)
-            else -> throw EmailAlreadyExistsException()
+        if (existingUser == null) {
+            userCommandService.createUser(command)
+            return
         }
+
+        throw EmailAlreadyExistsException()
     }
 
     fun socialLogin(command: LoginCommandDto): TokenQueryDto {
-        val existingUser = userQueryService.findSocialUser(command.provider, command.externalId)
+        val existingUser = userQueryService.findActiveSocialUser(command.provider, command.externalId)
         val isNewUser = existingUser == null
 
         val user =
             when {
                 existingUser == null -> userCommandService.createSocialUser(command)
-                existingUser.deletedAt != null -> {
-                    userCommandService.restoreUser(existingUser)
-                    existingUser
-                }
                 else -> existingUser
             }
 
@@ -67,10 +64,6 @@ class UserFacade(
         val auth = userQueryService.getEmailAuth(command.email)
 
         require(passwordEncoder.matches(command.password, auth.password)) {
-            throw InvalidCredentialsException()
-        }
-
-        if (userQueryService.existsDeletedByEmail(command.email)) {
             throw InvalidCredentialsException()
         }
 

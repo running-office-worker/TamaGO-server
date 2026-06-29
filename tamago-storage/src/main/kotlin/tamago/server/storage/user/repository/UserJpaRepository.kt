@@ -14,7 +14,11 @@ interface UserJpaRepository : JpaRepository<UserEntity, Long> {
         externalId: String,
     ): UserEntity?
 
+    fun findByAuthsEmailAndDeletedAtIsNull(email: String): UserEntity?
+
     fun findByAuthsEmail(email: String): UserEntity?
+
+    fun existsByAuthsEmailAndDeletedAtIsNull(email: String): Boolean
 
     fun existsByAuthsEmail(email: String): Boolean
 

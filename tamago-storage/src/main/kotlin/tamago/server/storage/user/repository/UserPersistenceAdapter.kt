@@ -28,12 +28,13 @@ class UserPersistenceAdapter(
         externalId: String,
     ): User? =
         UserMapper.toDomain(
-            userJpaRepository.findByAuthsProviderAndAuthsExternalId(provider.name, externalId),
+            userJpaRepository.findByAuthsProviderAndAuthsExternalIdAndDeletedAtIsNull(provider.name, externalId),
         )
 
-    override fun findByEmail(email: String): User? = UserMapper.toDomain(userJpaRepository.findByAuthsEmail(email))
+    override fun findByEmail(email: String): User? =
+        UserMapper.toDomain(userJpaRepository.findByAuthsEmailAndDeletedAtIsNull(email))
 
-    override fun existsByEmail(email: String): Boolean = userJpaRepository.existsByAuthsEmail(email)
+    override fun existsByEmail(email: String): Boolean = userJpaRepository.existsByAuthsEmailAndDeletedAtIsNull(email)
 
     override fun existsDeletedByExternalId(
         provider: AuthProvider,
@@ -44,4 +45,10 @@ class UserPersistenceAdapter(
 
     override fun existsDeletedByEmail(email: String): Boolean =
         userJpaRepository.existsByAuthsEmailAndDeletedAtIsNotNull(email)
+
+    override fun hardDeleteById(id: UserId) {
+        userJpaRepository
+            .findById(id.value)
+            .ifPresent { userJpaRepository.delete(it) }
+    }
 }

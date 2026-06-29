@@ -29,4 +29,6 @@ interface UserLetterJpaRepository :
     ): List<UserLetterEntity>
 
     fun findAllByUserIdAndDeletedAtIsNotNull(userId: Long): List<UserLetterEntity>
+
+    fun deleteAllByUserId(userId: Long)
 }

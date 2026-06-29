@@ -17,4 +17,9 @@ class RunningRoutePersistenceAdapter(
         runningRouteJpaRepository
             .findByRunningIdAndDeletedAtIsNull(runningId.value)
             ?.let { RunningRouteMapper.toDomain(it) }
+
+    override fun hardDeleteAllByRunningIds(runningIds: List<RunningId>) {
+        if (runningIds.isEmpty()) return
+        runningRouteJpaRepository.deleteAllByRunningIdIn(runningIds.map { it.value })
+    }
 }
