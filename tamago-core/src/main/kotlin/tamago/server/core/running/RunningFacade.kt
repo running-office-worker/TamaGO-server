@@ -4,7 +4,10 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.event.RunningCompletedEvent
+import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.monster.MonsterQuery
+import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.application.service.RunningCommandService
 import tamago.server.core.running.application.service.RunningPlanCommandService
 import tamago.server.core.running.application.service.RunningPlanQueryService
@@ -23,6 +26,8 @@ class RunningFacade(
     private val runningQueryService: RunningQueryService,
     private val runningPlanQueryService: RunningPlanQueryService,
     private val runningPlanCommandService: RunningPlanCommandService,
+    private val monsterQueryUseCase: MonsterQueryUseCase,
+    private val imageProcessor: ImageProcessor,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
@@ -64,7 +69,15 @@ class RunningFacade(
     fun getRunningResult(
         runningId: RunningId,
         userId: UserId,
-    ): RunningFinishQueryDto = runningQueryService.getRunningFinish(runningId, userId)
+    ): RunningFinishQueryDto {
+        val result = runningQueryService.getRunningFinish(runningId, userId)
+        val backgroundAssets =
+            monsterQueryUseCase
+                .getRunningBackgroundAssets(result.ownedMonsterId, result.finishedAt.hour)
+                .map { it.toRunningBackgroundAssetDetail() }
+
+        return result.copy(backgroundAssets = backgroundAssets)
+    }
 
     @Transactional(readOnly = true)
     fun getStatsByOwnedMonsterIds(
@@ -100,4 +113,13 @@ class RunningFacade(
             summary = MonthlyRunningQueryDto.MonthlySummaryDto.from(runnings),
         )
     }
+
+    private fun MonsterQuery.BackgroundAsset.toRunningBackgroundAssetDetail() =
+        RunningFinishQueryDto.BackgroundAssetDetail(
+            assetType = assetType,
+            fileName = fileName,
+            url = imageProcessor.getImageUrl(assetKey),
+            lastModifiedAt = lastModifiedAt,
+            metadata = metadata,
+        )
 }
