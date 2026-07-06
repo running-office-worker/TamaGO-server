@@ -35,12 +35,17 @@ class MonsterFacade(
         val ownedMonsters = monsterQueryService.getOwnedMonstersByUserId(userId)
 
         // 소유 몬스터의 진화 체인을 역추적하여 1단계 몬스터 ID로 매핑
-        val ownedByRootId = mutableMapOf<MonsterId, Pair<OwnedMonster, Monster>>()
+        val ownedByRootId = mutableMapOf<MonsterId, Triple<OwnedMonster, Monster, Int>>()
         for (owned in ownedMonsters) {
             val chain = monsterQueryService.getEvolutionChain(owned.monsterId)
             val root = chain.first()
-            val current = chain.first { it.id == owned.monsterId }
-            ownedByRootId[root.id!!] = owned to current
+            val rootId = root.id!!
+            val currentIndex = chain.indexOfFirst { it.id == owned.monsterId }
+            val current = chain[currentIndex]
+            val existing = ownedByRootId[rootId]
+            if (existing == null || currentIndex > existing.third) {
+                ownedByRootId[rootId] = Triple(owned, current, currentIndex)
+            }
         }
 
         return firstStageMonsters.map { baseMonster ->
