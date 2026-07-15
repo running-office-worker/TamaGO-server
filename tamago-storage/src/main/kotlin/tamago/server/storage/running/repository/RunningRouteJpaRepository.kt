@@ -5,4 +5,6 @@ import tamago.server.storage.running.entity.RunningRouteEntity
 
 interface RunningRouteJpaRepository : JpaRepository<RunningRouteEntity, Long> {
     fun findByRunningIdAndDeletedAtIsNull(runningId: Long): RunningRouteEntity?
+
+    fun deleteAllByRunningIdIn(runningIds: List<Long>)
 }

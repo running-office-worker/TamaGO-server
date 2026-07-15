@@ -36,4 +36,6 @@ interface UserLetterPersistencePort {
     ): List<UserLetter>
 
     fun findAllDeletedByUserId(userId: UserId): List<UserLetter>
+
+    fun hardDeleteAllByUserId(userId: UserId)
 }

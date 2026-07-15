@@ -6,4 +6,6 @@ import tamago.server.storage.notification.entity.NotificationEntity
 
 interface NotificationJpaRepository :
     JpaRepository<NotificationEntity, Long>,
-    KotlinJdslJpqlExecutor
+    KotlinJdslJpqlExecutor {
+    fun deleteAllByUserId(userId: Long)
+}

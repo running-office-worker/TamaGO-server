@@ -56,4 +56,9 @@ class UserLetterCommandService(
         userLetter.restore()
         userLetterPersistencePort.save(userLetter)
     }
+
+    @Transactional
+    fun hardDeleteAllByUserId(userId: UserId) {
+        userLetterPersistencePort.hardDeleteAllByUserId(userId)
+    }
 }

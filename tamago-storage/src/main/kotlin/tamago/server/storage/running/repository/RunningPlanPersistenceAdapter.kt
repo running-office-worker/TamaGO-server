@@ -31,4 +31,8 @@ class RunningPlanPersistenceAdapter(
         runningPlanJpaRepository
             .findAllByUserIdAndDeletedAtIsNotNull(userId.value)
             .mapNotNull { RunningPlanMapper.toDomain(it) }
+
+    override fun hardDeleteAllByUserId(userId: UserId) {
+        runningPlanJpaRepository.deleteAllByUserId(userId.value)
+    }
 }

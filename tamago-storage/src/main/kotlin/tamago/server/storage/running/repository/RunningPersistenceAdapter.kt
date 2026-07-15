@@ -201,4 +201,21 @@ class RunningPersistenceAdapter(
         runningJpaRepository
             .findAllByUserIdAndDeletedAtIsNotNull(userId.value)
             .mapNotNull { RunningMapper.toDomain(it) }
+
+    override fun findIdsByUserId(userId: UserId): List<RunningId> {
+        val query =
+            jpql {
+                select(path(RunningEntity::id))
+                    .from(entity(RunningEntity::class))
+                    .where(path(RunningEntity::userId).equal(userId.value))
+            }
+
+        return entityManager
+            .findAll<Long>(query, jpqlRenderContext)
+            .map { RunningId(it) }
+    }
+
+    override fun hardDeleteAllByUserId(userId: UserId) {
+        runningJpaRepository.deleteAllByUserId(userId.value)
+    }
 }

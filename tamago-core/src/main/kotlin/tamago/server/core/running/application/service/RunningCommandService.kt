@@ -4,6 +4,7 @@ import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.PrecisionModel
 import org.springframework.stereotype.Service
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.running.RunningCommandUseCase
 import tamago.server.core.running.application.exception.InvalidRunningDataException
 import tamago.server.core.running.domain.aggregate.Running
@@ -80,6 +81,13 @@ class RunningCommandService(
     fun restoreRunningPlan(runningPlan: RunningPlan) {
         runningPlan.restore()
         runningPlanPersistencePort.save(runningPlan)
+    }
+
+    fun hardDeleteAllByUserId(userId: UserId) {
+        val runningIds = runningPersistencePort.findIdsByUserId(userId)
+        runningRoutePersistencePort.hardDeleteAllByRunningIds(runningIds)
+        runningPersistencePort.hardDeleteAllByUserId(userId)
+        runningPlanPersistencePort.hardDeleteAllByUserId(userId)
     }
 
     private fun saveRunningRoute(

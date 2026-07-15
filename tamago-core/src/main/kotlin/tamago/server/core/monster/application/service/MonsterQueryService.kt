@@ -19,6 +19,7 @@ import tamago.server.core.monster.domain.port.outbound.MonsterAssetPersistencePo
 import tamago.server.core.monster.domain.port.outbound.MonsterGroupAssetPersistencePort
 import tamago.server.core.monster.domain.port.outbound.MonsterPersistencePort
 import tamago.server.core.monster.domain.port.outbound.OwnedMonsterPersistencePort
+import tamago.server.core.monster.domain.vo.BackgroundAssetMetadata
 import java.time.LocalDateTime
 
 @Service
@@ -57,6 +58,34 @@ class MonsterQueryService(
     fun getAllMonsterAssets(): List<MonsterAsset> = monsterAssetPersistencePort.findAll()
 
     fun getAllMonsterGroupAssets(): List<MonsterGroupAsset> = monsterGroupAssetPersistencePort.findAll()
+
+    override fun getRunningBackgroundAssets(
+        ownedMonsterId: OwnedMonsterId,
+        hour: Int,
+    ): List<MonsterQuery.BackgroundAsset> {
+        val ownedMonster = getOwnedMonster(ownedMonsterId)
+        val monster = get(ownedMonster.monsterId)
+        val monsterGroupId = requireNotNull(monster.monsterGroupId) { "monsterGroupId is required" }
+        val assets =
+            monsterGroupAssetPersistencePort.findAllByMonsterGroupIdAndAssetTypes(
+                monsterGroupId = monsterGroupId,
+                assetTypes = listOf(AssetType.LBG_PNG, AssetType.RBG_PNG),
+            )
+
+        val matchedAssets =
+            assets
+                .filter { asset ->
+                    asset.assetKey != null &&
+                        asset.assetName != null &&
+                        asset.assetType != null &&
+                        (asset.metadata as? BackgroundAssetMetadata)?.containsHour(hour) == true
+                }.associateBy { it.assetType }
+
+        val selectedAssets = listOfNotNull(matchedAssets[AssetType.LBG_PNG], matchedAssets[AssetType.RBG_PNG])
+        if (selectedAssets.size != 2) throw MonsterAssetNotFoundException()
+
+        return selectedAssets.map { it.toRunningBackgroundAsset() }
+    }
 
     override fun hasMonsterAssetUpdates(lastLoginAt: LocalDateTime?): Boolean =
         lastLoginAt?.let { monsterAssetPersistencePort.existsByUpdatedAtAfter(it) } ?: true
@@ -138,6 +167,25 @@ class MonsterQueryService(
                         monsterId = monster.id!!.value,
                         evolutionXp = monster.evolutionXp,
                         current = monster.id == ownedMonster.monsterId,
+                    )
+                },
+        )
+    }
+
+    private fun MonsterGroupAsset.toRunningBackgroundAsset(): MonsterQuery.BackgroundAsset {
+        val backgroundMetadata = metadata as? BackgroundAssetMetadata
+
+        return MonsterQuery.BackgroundAsset(
+            assetType = assetType!!.name,
+            fileName = assetName!!,
+            assetKey = assetKey!!,
+            lastModifiedAt = updatedAt!!,
+            metadata =
+                backgroundMetadata?.let {
+                    MonsterQuery.BackgroundAsset.Metadata(
+                        backgroundColor = it.backgroundColor,
+                        startHour = it.startHour,
+                        endHour = it.endHour,
                     )
                 },
         )

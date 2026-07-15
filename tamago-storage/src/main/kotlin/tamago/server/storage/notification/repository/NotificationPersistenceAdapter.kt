@@ -1,6 +1,7 @@
 package tamago.server.storage.notification.repository
 
 import org.springframework.stereotype.Repository
+import tamago.server.core.common.vo.UserId
 import tamago.server.core.notification.domain.aggregate.Notification
 import tamago.server.core.notification.domain.enum.NotificationStatus
 import tamago.server.core.notification.domain.port.outbound.NotificationPersistencePort
@@ -30,4 +31,8 @@ class NotificationPersistenceAdapter(
                     )
             }.filterNotNull()
             .mapNotNull { NotificationMapper.toDomain(it) }
+
+    override fun hardDeleteAllByUserId(userId: UserId) {
+        notificationJpaRepository.deleteAllByUserId(userId.value)
+    }
 }

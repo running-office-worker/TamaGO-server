@@ -18,4 +18,6 @@ interface OwnedMonsterPersistencePort {
     fun save(ownedMonster: OwnedMonster): OwnedMonster
 
     fun findAllDeletedByUserId(userId: UserId): List<OwnedMonster>
+
+    fun hardDeleteAllByUserId(userId: UserId)
 }

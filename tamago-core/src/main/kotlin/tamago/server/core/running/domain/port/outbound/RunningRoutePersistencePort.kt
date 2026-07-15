@@ -7,4 +7,6 @@ interface RunningRoutePersistencePort {
     fun save(runningRoute: RunningRoute): RunningRoute
 
     fun findByRunningId(runningId: RunningId): RunningRoute?
+
+    fun hardDeleteAllByRunningIds(runningIds: List<RunningId>)
 }

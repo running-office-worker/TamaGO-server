@@ -40,4 +40,8 @@ class OwnedMonsterPersistenceAdapter(
         ownedMonsterJpaRepository
             .findAllByUserIdAndDeletedAtIsNotNull(userId.value)
             .mapNotNull { OwnedMonsterMapper.toDomain(it) }
+
+    override fun hardDeleteAllByUserId(userId: UserId) {
+        ownedMonsterJpaRepository.deleteAllByUserId(userId.value)
+    }
 }

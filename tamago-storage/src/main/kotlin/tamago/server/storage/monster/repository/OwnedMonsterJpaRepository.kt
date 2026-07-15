@@ -13,4 +13,6 @@ interface OwnedMonsterJpaRepository : JpaRepository<OwnedMonsterEntity, Long> {
     ): List<OwnedMonsterEntity>
 
     fun findAllByUserIdAndDeletedAtIsNotNull(userId: Long): List<OwnedMonsterEntity>
+
+    fun deleteAllByUserId(userId: Long)
 }

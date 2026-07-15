@@ -25,4 +25,9 @@ interface MonsterQueryUseCase {
         ownedMonsterId: OwnedMonsterId,
         distance: Double,
     ): MonsterQuery.XpResult
+
+    fun getRunningBackgroundAssets(
+        ownedMonsterId: OwnedMonsterId,
+        hour: Int,
+    ): List<MonsterQuery.BackgroundAsset>
 }

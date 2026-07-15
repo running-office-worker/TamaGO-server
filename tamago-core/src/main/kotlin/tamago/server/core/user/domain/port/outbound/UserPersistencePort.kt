@@ -29,4 +29,6 @@ interface UserPersistencePort {
     ): Boolean
 
     fun existsDeletedByEmail(email: String): Boolean
+
+    fun hardDeleteById(id: UserId)
 }

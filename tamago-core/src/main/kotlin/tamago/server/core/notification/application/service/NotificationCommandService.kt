@@ -68,6 +68,11 @@ class NotificationCommandService(
         fcmTokenPersistencePort.deleteAllByUserId(userId)
     }
 
+    fun hardDeleteAllByUserId(userId: UserId) {
+        notificationPersistencePort.hardDeleteAllByUserId(userId)
+        fcmTokenPersistencePort.deleteAllByUserId(userId)
+    }
+
     fun delete(fcmToken: FcmToken) {
         fcmTokenPersistencePort.delete(fcmToken)
     }

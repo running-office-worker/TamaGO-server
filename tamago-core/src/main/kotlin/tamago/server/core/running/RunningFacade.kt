@@ -4,7 +4,10 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import tamago.server.core.common.event.RunningCompletedEvent
+import tamago.server.core.common.image.ImageProcessor
 import tamago.server.core.common.vo.UserId
+import tamago.server.core.monster.MonsterQuery
+import tamago.server.core.monster.MonsterQueryUseCase
 import tamago.server.core.running.application.service.RunningCommandService
 import tamago.server.core.running.application.service.RunningPlanCommandService
 import tamago.server.core.running.application.service.RunningPlanQueryService
@@ -14,8 +17,9 @@ import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommand
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
+import tamago.server.core.running.domain.port.inbound.query.RunningPlanResultQueryDto
 import tamago.server.core.running.domain.vo.RunningId
-import tamago.server.core.running.domain.vo.RunningPlanId
+import java.time.LocalDateTime
 
 @Component
 class RunningFacade(
@@ -23,11 +27,23 @@ class RunningFacade(
     private val runningQueryService: RunningQueryService,
     private val runningPlanQueryService: RunningPlanQueryService,
     private val runningPlanCommandService: RunningPlanCommandService,
+    private val monsterQueryUseCase: MonsterQueryUseCase,
+    private val imageProcessor: ImageProcessor,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
-    fun makeRunningPlan(command: CreateRunningPlanCommandDto): RunningPlanId =
-        runningPlanCommandService.create(command).id!!
+    fun makeRunningPlan(command: CreateRunningPlanCommandDto): RunningPlanResultQueryDto {
+        val runningPlanId = runningPlanCommandService.create(command).id!!
+        val backgroundAssets =
+            monsterQueryUseCase
+                .getRunningBackgroundAssets(command.ownedMonsterId, LocalDateTime.now().hour)
+                .map { it.toRunningPlanBackgroundAssetDetail() }
+
+        return RunningPlanResultQueryDto(
+            runningPlanId = runningPlanId,
+            backgroundAssets = backgroundAssets,
+        )
+    }
 
     @Transactional
     fun finishRun(command: SaveRunningCommandDto) =
@@ -100,4 +116,13 @@ class RunningFacade(
             summary = MonthlyRunningQueryDto.MonthlySummaryDto.from(runnings),
         )
     }
+
+    private fun MonsterQuery.BackgroundAsset.toRunningPlanBackgroundAssetDetail() =
+        RunningPlanResultQueryDto.BackgroundAssetDetail(
+            assetType = assetType,
+            fileName = fileName,
+            url = imageProcessor.getImageUrl(assetKey),
+            lastModifiedAt = lastModifiedAt,
+            metadata = metadata,
+        )
 }

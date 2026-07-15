@@ -48,4 +48,8 @@ interface RunningPersistencePort {
     fun findAllByUserId(userId: UserId): List<Running>
 
     fun findAllDeletedByUserId(userId: UserId): List<Running>
+
+    fun findIdsByUserId(userId: UserId): List<RunningId>
+
+    fun hardDeleteAllByUserId(userId: UserId)
 }
