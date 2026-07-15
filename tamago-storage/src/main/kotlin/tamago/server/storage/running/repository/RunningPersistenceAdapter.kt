@@ -48,8 +48,6 @@ class RunningPersistenceAdapter(
                     path(RunningEntity::elapsedTime),
                     path(RunningEntity::calories),
                     path(RunningEntity::distance),
-                    path(RunningEntity::ownedMonsterId),
-                    path(RunningEntity::finishedAt),
                 ).from(entity(RunningEntity::class))
                     .where(
                         path(RunningEntity::id)
@@ -68,8 +66,6 @@ class RunningPersistenceAdapter(
                     elapsedTime = it.elapsedTime,
                     totalCalories = it.totalCalories,
                     distance = it.distance,
-                    ownedMonsterId = it.ownedMonsterId,
-                    finishedAt = it.finishedAt,
                 )
             }
     }

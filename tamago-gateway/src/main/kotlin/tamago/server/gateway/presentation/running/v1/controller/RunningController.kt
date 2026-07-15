@@ -40,8 +40,8 @@ class RunningController(
         @CurrentUser user: User,
         @RequestBody @Valid request: RunningPlanRequest,
     ): CustomResponse<RunningPlanResponse> {
-        val runningPlanId = runningFacade.makeRunningPlan(request.toCommand(user.id!!))
-        return CustomResponse.created(RunningPlanResponse.from(runningPlanId))
+        val result = runningFacade.makeRunningPlan(request.toCommand(user.id!!))
+        return CustomResponse.created(RunningPlanResponse.from(result))
     }
 
     @Operation(summary = "러닝 데이터 저장", description = "사용자의 러닝 데이터를 저장하고, 러닝 기록 ID를 반환합니다.")

@@ -17,8 +17,9 @@ import tamago.server.core.running.domain.port.inbound.command.SaveRunningCommand
 import tamago.server.core.running.domain.port.inbound.query.MonsterRunningStatsQueryDto
 import tamago.server.core.running.domain.port.inbound.query.MonthlyRunningQueryDto
 import tamago.server.core.running.domain.port.inbound.query.RunningFinishQueryDto
+import tamago.server.core.running.domain.port.inbound.query.RunningPlanResultQueryDto
 import tamago.server.core.running.domain.vo.RunningId
-import tamago.server.core.running.domain.vo.RunningPlanId
+import java.time.LocalDateTime
 
 @Component
 class RunningFacade(
@@ -31,8 +32,18 @@ class RunningFacade(
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
-    fun makeRunningPlan(command: CreateRunningPlanCommandDto): RunningPlanId =
-        runningPlanCommandService.create(command).id!!
+    fun makeRunningPlan(command: CreateRunningPlanCommandDto): RunningPlanResultQueryDto {
+        val runningPlanId = runningPlanCommandService.create(command).id!!
+        val backgroundAssets =
+            monsterQueryUseCase
+                .getRunningBackgroundAssets(command.ownedMonsterId, LocalDateTime.now().hour)
+                .map { it.toRunningPlanBackgroundAssetDetail() }
+
+        return RunningPlanResultQueryDto(
+            runningPlanId = runningPlanId,
+            backgroundAssets = backgroundAssets,
+        )
+    }
 
     @Transactional
     fun finishRun(command: SaveRunningCommandDto) =
@@ -69,15 +80,7 @@ class RunningFacade(
     fun getRunningResult(
         runningId: RunningId,
         userId: UserId,
-    ): RunningFinishQueryDto {
-        val result = runningQueryService.getRunningFinish(runningId, userId)
-        val backgroundAssets =
-            monsterQueryUseCase
-                .getRunningBackgroundAssets(result.ownedMonsterId, result.finishedAt.hour)
-                .map { it.toRunningBackgroundAssetDetail() }
-
-        return result.copy(backgroundAssets = backgroundAssets)
-    }
+    ): RunningFinishQueryDto = runningQueryService.getRunningFinish(runningId, userId)
 
     @Transactional(readOnly = true)
     fun getStatsByOwnedMonsterIds(
@@ -114,8 +117,8 @@ class RunningFacade(
         )
     }
 
-    private fun MonsterQuery.BackgroundAsset.toRunningBackgroundAssetDetail() =
-        RunningFinishQueryDto.BackgroundAssetDetail(
+    private fun MonsterQuery.BackgroundAsset.toRunningPlanBackgroundAssetDetail() =
+        RunningPlanResultQueryDto.BackgroundAssetDetail(
             assetType = assetType,
             fileName = fileName,
             url = imageProcessor.getImageUrl(assetKey),
